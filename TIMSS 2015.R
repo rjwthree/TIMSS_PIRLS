@@ -51,6 +51,8 @@
 # [8] Output
 # write dataframe with all needed variables
 
+# ratios are log-transformed to place them on a linear scale
+
 # *nontrivial runtime (more than a few seconds on a personal computer)
 # a higher number of asterisks indicates longer runtime
 # updates are printed while long loops are running
