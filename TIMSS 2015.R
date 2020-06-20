@@ -351,11 +351,11 @@ LGMDRfn <- function(d1, d2, v) {
 
 
 
-##################################################################
-##### Means, Tail Proportion Ratios (TPRs), U3 Ratios (U3Rs) #####
-##################################################################
+##############################################################################
+##### Means and Medians, Tail Proportion Ratios (TPRs), U3 Ratios (U3Rs) #####
+##############################################################################
 
-### Means
+### Means and Medians
 
 # total group
 Mn1 <- wt.mn(x = T15$PV1, w = T15$HWt) # PV1
@@ -366,6 +366,15 @@ Mn5 <- wt.mn(x = T15$PV5, w = T15$HWt) # PV5
 
 Mns <- c(Mn1, Mn2, Mn3, Mn4, Mn5)
 Mn <- mean(Mns)
+
+Md1 <- wt.qnt(x = T15$PV1, w = T15$HWt, q = .5) # PV1
+Md2 <- wt.qnt(x = T15$PV2, w = T15$HWt, q = .5) # PV2
+Md3 <- wt.qnt(x = T15$PV3, w = T15$HWt, q = .5) # PV3
+Md4 <- wt.qnt(x = T15$PV4, w = T15$HWt, q = .5) # PV4
+Md5 <- wt.qnt(x = T15$PV5, w = T15$HWt, q = .5) # PV5
+
+Mds <- c(Md1, Md2, Md3, Md4, Md5)
+Md <- mean(Mds)
 
 
 # females
@@ -378,6 +387,15 @@ Mn5_F <- wt.mn(x = T15_F$PV5, w = T15_F$HWt) # PV5
 Mns_F <- c(Mn1_F, Mn2_F, Mn3_F, Mn4_F, Mn5_F)
 Mn_F <- mean(Mns_F)
 
+Md1_F <- wt.qnt(x = T15_F$PV1, w = T15_F$HWt, q = .5) # PV1
+Md2_F <- wt.qnt(x = T15_F$PV2, w = T15_F$HWt, q = .5) # PV2
+Md3_F <- wt.qnt(x = T15_F$PV3, w = T15_F$HWt, q = .5) # PV3
+Md4_F <- wt.qnt(x = T15_F$PV4, w = T15_F$HWt, q = .5) # PV4
+Md5_F <- wt.qnt(x = T15_F$PV5, w = T15_F$HWt, q = .5) # PV5
+
+Mds_F <- c(Md1_F, Md2_F, Md3_F, Md4_F, Md5_F)
+Md_F <- mean(Mds_F)
+
 
 # males
 Mn1_M <- wt.mn(x = T15_M$PV1, w = T15_M$HWt) # PV1
@@ -389,6 +407,15 @@ Mn5_M <- wt.mn(x = T15_M$PV5, w = T15_M$HWt) # PV5
 Mns_M <- c(Mn1_M, Mn2_M, Mn3_M, Mn4_M, Mn5_M)
 Mn_M <- mean(Mns_M)
 
+Md1_M <- wt.qnt(x = T15_M$PV1, w = T15_M$HWt, q = .5) # PV1
+Md2_M <- wt.qnt(x = T15_M$PV2, w = T15_M$HWt, q = .5) # PV2
+Md3_M <- wt.qnt(x = T15_M$PV3, w = T15_M$HWt, q = .5) # PV3
+Md4_M <- wt.qnt(x = T15_M$PV4, w = T15_M$HWt, q = .5) # PV4
+Md5_M <- wt.qnt(x = T15_M$PV5, w = T15_M$HWt, q = .5) # PV5
+
+Mds_M <- c(Md1_M, Md2_M, Md3_M, Md4_M, Md5_M)
+Md_M <- mean(Mds_M)
+
 
 # difference
 MnDf1 <- Mn1_M-Mn1_F # PV1
@@ -399,6 +426,15 @@ MnDf5 <- Mn5_M-Mn5_F # PV5
 
 MnDfs <- c(MnDf1, MnDf2, MnDf3, MnDf4, MnDf5)
 MnDf <- mean(MnDfs)
+
+MdDf1 <- Md1_M-Md1_F # PV1
+MdDf2 <- Md2_M-Md2_F # PV2
+MdDf3 <- Md3_M-Md3_F # PV3
+MdDf4 <- Md4_M-Md4_F # PV4
+MdDf5 <- Md5_M-Md5_F # PV5
+
+MdDfs <- c(MdDf1, MdDf2, MdDf3, MdDf4, MdDf5)
+MdDf <- mean(MdDfs)
 
 
 
@@ -1126,11 +1162,15 @@ GMDR_A <- exp(LGMDR_A)
 ###########################
 ##### Standard Errors #####
 ###########################
-#### SEs: Means and Mean Difference ####
+
+#### SEs: Means and Medians ####
 
 J1 <- J2 <- J3 <- J4 <- J5 <- numeric(2*L) # empty containers
+A1 <- A2 <- A3 <- A4 <- A5 <- numeric(2*L) # empty containers
 C1 <- C2 <- C3 <- C4 <- C5 <- numeric(2*L) # empty containers
 K1 <- K2 <- K3 <- K4 <- K5 <- numeric(2*L) # empty containers
+N1 <- N2 <- N3 <- N4 <- N5 <- numeric(2*L) # empty containers
+F1 <- F2 <- F3 <- F4 <- F5 <- numeric(2*L) # empty containers
 
 # perform jackknife resampling of means and mean difference
 for (i in 1:L) { # for each JK zone
@@ -1145,16 +1185,31 @@ for (i in 1:L) { # for each JK zone
   J3[i] <- wt.mn(T0$PV3, T0$HWt) # PV3
   J4[i] <- wt.mn(T0$PV4, T0$HWt) # PV4
   J5[i] <- wt.mn(T0$PV5, T0$HWt) # PV5
+  A1[i] <- wt.qnt(T0$PV1, T0$HWt, .5) # PV1 reweighted median (total)
+  A2[i] <- wt.qnt(T0$PV2, T0$HWt, .5) # PV2
+  A3[i] <- wt.qnt(T0$PV3, T0$HWt, .5) # PV3
+  A4[i] <- wt.qnt(T0$PV4, T0$HWt, .5) # PV4
+  A5[i] <- wt.qnt(T0$PV5, T0$HWt, .5) # PV5
   C1[i] <- wt.mn(T0_F$PV1, T0_F$HWt) # PV1 reweighted mean (females)
   C2[i] <- wt.mn(T0_F$PV2, T0_F$HWt) # PV2
   C3[i] <- wt.mn(T0_F$PV3, T0_F$HWt) # PV3
   C4[i] <- wt.mn(T0_F$PV4, T0_F$HWt) # PV4
   C5[i] <- wt.mn(T0_F$PV5, T0_F$HWt) # PV5
-  K1[i] <- wt.mn(T0_M$PV1, T0_M$HWt) # PV1 reweighted mean (males)
-  K2[i] <- wt.mn(T0_M$PV2, T0_M$HWt) # PV2
-  K3[i] <- wt.mn(T0_M$PV3, T0_M$HWt) # PV3
-  K4[i] <- wt.mn(T0_M$PV4, T0_M$HWt) # PV4
-  K5[i] <- wt.mn(T0_M$PV5, T0_M$HWt) # PV5
+  K1[i] <- wt.qnt(T0_F$PV1, T0_F$HWt, .5) # PV1 reweighted median (females)
+  K2[i] <- wt.qnt(T0_F$PV2, T0_F$HWt, .5) # PV2
+  K3[i] <- wt.qnt(T0_F$PV3, T0_F$HWt, .5) # PV3
+  K4[i] <- wt.qnt(T0_F$PV4, T0_F$HWt, .5) # PV4
+  K5[i] <- wt.qnt(T0_F$PV5, T0_F$HWt, .5) # PV5
+  N1[i] <- wt.mn(T0_M$PV1, T0_M$HWt) # PV1 reweighted mean (males)
+  N2[i] <- wt.mn(T0_M$PV2, T0_M$HWt) # PV2
+  N3[i] <- wt.mn(T0_M$PV3, T0_M$HWt) # PV3
+  N4[i] <- wt.mn(T0_M$PV4, T0_M$HWt) # PV4
+  N5[i] <- wt.mn(T0_M$PV5, T0_M$HWt) # PV5
+  F1[i] <- wt.qnt(T0_M$PV1, T0_M$HWt, .5) # PV1 reweighted median (males)
+  F2[i] <- wt.qnt(T0_M$PV2, T0_M$HWt, .5) # PV2
+  F3[i] <- wt.qnt(T0_M$PV3, T0_M$HWt, .5) # PV3
+  F4[i] <- wt.qnt(T0_M$PV4, T0_M$HWt, .5) # PV4
+  F5[i] <- wt.qnt(T0_M$PV5, T0_M$HWt, .5) # PV5
   
   T0 <- T15 # restore duplicate
   # double weights if JK code is 0 and zero weights if JK code is 1
@@ -1167,59 +1222,110 @@ for (i in 1:L) { # for each JK zone
   J3[i+L] <- wt.mn(T0$PV3, T0$HWt) # PV3
   J4[i+L] <- wt.mn(T0$PV4, T0$HWt) # PV4
   J5[i+L] <- wt.mn(T0$PV5, T0$HWt) # PV5
+  A1[i+L] <- wt.qnt(T0$PV1, T0$HWt, .5) # PV1 reweighted median (total)
+  A2[i+L] <- wt.qnt(T0$PV2, T0$HWt, .5) # PV2
+  A3[i+L] <- wt.qnt(T0$PV3, T0$HWt, .5) # PV3
+  A4[i+L] <- wt.qnt(T0$PV4, T0$HWt, .5) # PV4
+  A5[i+L] <- wt.qnt(T0$PV5, T0$HWt, .5) # PV5
   C1[i+L] <- wt.mn(T0_F$PV1, T0_F$HWt) # PV1 reweighted mean (females)
   C2[i+L] <- wt.mn(T0_F$PV2, T0_F$HWt) # PV2
   C3[i+L] <- wt.mn(T0_F$PV3, T0_F$HWt) # PV3
   C4[i+L] <- wt.mn(T0_F$PV4, T0_F$HWt) # PV4
   C5[i+L] <- wt.mn(T0_F$PV5, T0_F$HWt) # PV5
-  K1[i+L] <- wt.mn(T0_M$PV1, T0_M$HWt) # PV1 reweighted mean (males)
-  K2[i+L] <- wt.mn(T0_M$PV2, T0_M$HWt) # PV2
-  K3[i+L] <- wt.mn(T0_M$PV3, T0_M$HWt) # PV3
-  K4[i+L] <- wt.mn(T0_M$PV4, T0_M$HWt) # PV4
-  K5[i+L] <- wt.mn(T0_M$PV5, T0_M$HWt) # PV5
+  K1[i+L] <- wt.qnt(T0_F$PV1, T0_F$HWt, .5) # PV1 reweighted median (females)
+  K2[i+L] <- wt.qnt(T0_F$PV2, T0_F$HWt, .5) # PV2
+  K3[i+L] <- wt.qnt(T0_F$PV3, T0_F$HWt, .5) # PV3
+  K4[i+L] <- wt.qnt(T0_F$PV4, T0_F$HWt, .5) # PV4
+  K5[i+L] <- wt.qnt(T0_F$PV5, T0_F$HWt, .5) # PV5
+  N1[i+L] <- wt.mn(T0_M$PV1, T0_M$HWt) # PV1 reweighted mean (males)
+  N2[i+L] <- wt.mn(T0_M$PV2, T0_M$HWt) # PV2
+  N3[i+L] <- wt.mn(T0_M$PV3, T0_M$HWt) # PV3
+  N4[i+L] <- wt.mn(T0_M$PV4, T0_M$HWt) # PV4
+  N5[i+L] <- wt.mn(T0_M$PV5, T0_M$HWt) # PV5
+  F1[i+L] <- wt.qnt(T0_M$PV1, T0_M$HWt, .5) # PV1 reweighted median (males)
+  F2[i+L] <- wt.qnt(T0_M$PV2, T0_M$HWt, .5) # PV2
+  F3[i+L] <- wt.qnt(T0_M$PV3, T0_M$HWt, .5) # PV3
+  F4[i+L] <- wt.qnt(T0_M$PV4, T0_M$HWt, .5) # PV4
+  F5[i+L] <- wt.qnt(T0_M$PV5, T0_M$HWt, .5) # PV5
 }
 
 # jackknife sampling variance
-JSV_MnT <- mean(c(sum((J1-Mn1)^2), # total
+JSV_MnT <- mean(c(sum((J1-Mn1)^2), # mean (total)
                   sum((J2-Mn2)^2),
                   sum((J3-Mn3)^2),
                   sum((J4-Mn4)^2),
                   sum((J5-Mn5)^2)))/2
-JSV_MnF <- mean(c(sum((C1-Mn1_F)^2), # females
+JSV_MdT <- mean(c(sum((A1-Md1)^2), # median (total)
+                  sum((A2-Md2)^2),
+                  sum((A3-Md3)^2),
+                  sum((A4-Md4)^2),
+                  sum((A5-Md5)^2)))/2
+JSV_MnF <- mean(c(sum((C1-Mn1_F)^2), # mean (females)
                   sum((C2-Mn2_F)^2),
                   sum((C3-Mn3_F)^2),
                   sum((C4-Mn4_F)^2),
                   sum((C5-Mn5_F)^2)))/2
-JSV_MnM <- mean(c(sum((K1-Mn1_M)^2), # males
-                  sum((K2-Mn2_M)^2),
-                  sum((K3-Mn3_M)^2),
-                  sum((K4-Mn4_M)^2),
-                  sum((K5-Mn5_M)^2)))/2
-JSV_MnDf <- mean(c(sum((K1-C1-MnDf1)^2), # difference
-                   sum((K2-C2-MnDf2)^2),
-                   sum((K3-C3-MnDf3)^2),
-                   sum((K4-C4-MnDf4)^2),
-                   sum((K5-C5-MnDf5)^2)))/2
+JSV_MdF <- mean(c(sum((K1-Md1_F)^2), # median (females)
+                  sum((K2-Md2_F)^2),
+                  sum((K3-Md3_F)^2),
+                  sum((K4-Md4_F)^2),
+                  sum((K5-Md5_F)^2)))/2
+JSV_MnM <- mean(c(sum((N1-Mn1_M)^2), # mean (males)
+                  sum((N2-Mn2_M)^2),
+                  sum((N3-Mn3_M)^2),
+                  sum((N4-Mn4_M)^2),
+                  sum((N5-Mn5_M)^2)))/2
+JSV_MdM <- mean(c(sum((F1-Md1_M)^2), # median (males)
+                  sum((F2-Md2_M)^2),
+                  sum((F3-Md3_M)^2),
+                  sum((F4-Md4_M)^2),
+                  sum((F5-Md5_M)^2)))/2
+JSV_MnDf <- mean(c(sum((N1-C1-MnDf1)^2), # mean difference
+                   sum((N2-C2-MnDf2)^2),
+                   sum((N3-C3-MnDf3)^2),
+                   sum((N4-C4-MnDf4)^2),
+                   sum((N5-C5-MnDf5)^2)))/2
+JSV_MdDf <- mean(c(sum((F1-K1-MdDf1)^2), # median difference
+                   sum((F2-K2-MdDf2)^2),
+                   sum((F3-K3-MdDf3)^2),
+                   sum((F4-K4-MdDf4)^2),
+                   sum((F5-K5-MdDf5)^2)))/2
 
 # imputation variance
-IV_MnT <- .3*sum((Mns-Mn)^2) # total
-IV_MnF <- .3*sum((Mns_F-Mn_F)^2) # females
-IV_MnM <- .3*sum((Mns_M-Mn_M)^2) # males
-IV_MnDf <- .3*sum((MnDfs-MnDf)^2) # difference
+IV_MnT <- .3*sum((Mns-Mn)^2) # mean (total)
+IV_MdT <- .3*sum((Mds-Md)^2) # median (total)
+IV_MnF <- .3*sum((Mns_F-Mn_F)^2) # mean (females)
+IV_MdF <- .3*sum((Mds_F-Md_F)^2) # median (females)
+IV_MnM <- .3*sum((Mns_M-Mn_M)^2) # mean (males)
+IV_MdM <- .3*sum((Mds_M-Md_M)^2) # median (males)
+IV_MnDf <- .3*sum((MnDfs-MnDf)^2) # mean difference
+IV_MdDf <- .3*sum((MdDfs-MdDf)^2) # median difference
 
 
 # total variance = jackknife + imputation
 TV_MnT <- JSV_MnT + IV_MnT # total variance of mean (total)
 SE_MnT <- sqrt(TV_MnT) # standard error of mean (total)
 
+TV_MdT <- JSV_MdT + IV_MdT # total variance of median (total)
+SE_MdT <- sqrt(TV_MdT) # standard error of median (total)
+
 TV_MnF <- JSV_MnF + IV_MnF # total variance of mean (females)
 SE_MnF <- sqrt(TV_MnF) # standard error of mean (females)
+
+TV_MdF <- JSV_MdF + IV_MdF # total variance of median (females)
+SE_MdF <- sqrt(TV_MdF) # standard error of median (females)
 
 TV_MnM <- JSV_MnM + IV_MnM # total variance of mean (males)
 SE_MnM <- sqrt(TV_MnM) # standard error of mean (males)
 
+TV_MdM <- JSV_MdM + IV_MdM # total variance of median (males)
+SE_MdM <- sqrt(TV_MdM) # standard error of median (males)
+
 TV_MnDf <- JSV_MnDf + IV_MnDf # total variance of mean difference
 SE_MnDf <- sqrt(TV_MnDf) # standard error of mean difference
+
+TV_MdDf <- JSV_MdDf + IV_MdDf # total variance of median difference
+SE_MdDf <- sqrt(TV_MdDf) # standard error of median difference
 
 
 
@@ -2435,18 +2541,30 @@ SE_PS <- sqrt(TV_PS) # standard error of PS
 CI95 <- qnorm(.975)
 
 
-### Means
+### Means and Medians
 Mn_lo <- Mn-SE_MnT*CI95
 Mn_up <- Mn+SE_MnT*CI95
+
+Md_lo <- Md-SE_MdT*CI95
+Md_up <- Md+SE_MdT*CI95
 
 Mn_F_lo <- Mn_F-SE_MnF*CI95
 Mn_F_up <- Mn_F+SE_MnF*CI95
 
+Md_F_lo <- Md_F-SE_MdF*CI95
+Md_F_up <- Md_F+SE_MdF*CI95
+
 Mn_M_lo <- Mn_M-SE_MnM*CI95
 Mn_M_up <- Mn_M+SE_MnM*CI95
 
+Md_M_lo <- Md_M-SE_MdM*CI95
+Md_M_up <- Md_M+SE_MdM*CI95
+
 MnDf_lo <- MnDf-SE_MnDf*CI95
 MnDf_up <- MnDf+SE_MnDf*CI95
+
+MdDf_lo <- MdDf-SE_MdDf*CI95
+MdDf_up <- MdDf+SE_MdDf*CI95
 
 
 ### TPRs
@@ -2675,8 +2793,11 @@ TV_LSDR_R <- (log(SDR_R_up/SDR_R)/CI95)^2
 
 # summary table
 Labels <- c('CNT', 'Size', 'FSize', 'MSize', 'M/F Wt Ratio', 'Low %',
-            'Mean', 'Mean Low', 'Mean Upp', 'F Mean', 'F Mean Low', 'F Mean Upp',
-            'M Mean', 'M Mean Low', 'M Mean Upp', 'Mean Diff', 'Mean Diff Low', 'Mean Diff Upp',
+            'Mean', 'Mean Low', 'Mean Upp', 'Median', 'Median Low', 'Median Upp',
+            'F Mean', 'F Mean Low', 'F Mean Upp', 'F Median', 'F Median Low', 'F Median Upp',
+            'M Mean', 'M Mean Low', 'M Mean Upp', 'M Median', 'M Median Low', 'M Median Upp',
+            'Mean Diff', 'Mean Diff Low', 'Mean Diff Upp',
+            'Med Diff', 'Med Diff Low', 'Med Diff Upp',
             'TPRMn', 'TPRMn Low', 'TPRMn Upp', 'TPR05', 'TPR05 Low', 'TPR05 Upp',
             'TPR10', 'TPR10 Low', 'TPR10 Upp', 'TPR15', 'TPR15 Low', 'TPR15 Upp',
             'TPR20', 'TPR20 Low', 'TPR20 Upp', 'TPR25', 'TPR25 Low', 'TPR25 Upp',
@@ -2749,8 +2870,11 @@ Labels <- c('CNT', 'Size', 'FSize', 'MSize', 'M/F Wt Ratio', 'Low %',
             'MADR_R AgeCor', 'LMADR_R AgeCor', 'GMDR AgeCor', 'LGMDR AgeCor')
 
 Variables <- c(CNT, Size, FSize, MSize, WtRatio, Low,
-               Mn, Mn_lo, Mn_up, Mn_F, Mn_F_lo, Mn_F_up,
-               Mn_M, Mn_M_lo, Mn_M_up, MnDf, MnDf_lo, MnDf_up,
+               Mn, Mn_lo, Mn_up, Md, Md_lo, Md_up,
+               Mn_F, Mn_F_lo, Mn_F_up, Md_F, Md_F_lo, Md_F_up,
+               Mn_M, Mn_M_lo, Mn_M_up, Md_M, Md_M_lo, Md_M_up,
+               MnDf, MnDf_lo, MnDf_up,
+               MdDf, MdDf_lo, MdDf_up,
                TPRMn, TPRMn_lo, TPRMn_up, TPR05, TPR05_lo, TPR05_up,
                TPR10, TPR10_lo, TPR10_up, TPR15, TPR15_lo, TPR15_up,
                TPR20, TPR20_lo, TPR20_up, TPR25, TPR25_lo, TPR25_up,
@@ -2825,9 +2949,6 @@ Variables <- c(CNT, Size, FSize, MSize, WtRatio, Low,
 Output <- format(data.frame(Labels, Variables), scientific = F) # put everything in this
 
 write.csv(x = Output, file = 'TIMSS output/AUS 2015.csv') # select file name, store it as a csv
-
-
-
 
 
 
