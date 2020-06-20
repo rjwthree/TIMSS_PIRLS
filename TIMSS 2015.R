@@ -2816,8 +2816,8 @@ Variables <- c(CNT, Size, FSize, MSize, WtRatio, Low,
                MADR_L, MADR_L_lo, MADR_L_up, LMADR_L, TV_LMADR_L,
                MADR_R, MADR_R_lo, MADR_R_up, LMADR_R, TV_LMADR_R,
                GMDR, GMDR_lo, GMDR_up, LGMDR, TV_LGMDR, 
-               AgeU3, AgeMADR, AgeLMADR, d_A, U3_A, PS_A,
-               VR_A, LVR_A, VR_LA,
+               AgeU3, AgeMADR, AgeLMADR, d_A, U3_A,
+               PS_A, VR_A, LVR_A, VR_LA,
                LVR_LA, VR_RA, LVR_RA,
                MADR_A, LMADR_A, MADR_LA, LMADR_LA,
                MADR_RA, LMADR_RA, GMDR_A, LGMDR_A)
@@ -2825,6 +2825,9 @@ Variables <- c(CNT, Size, FSize, MSize, WtRatio, Low,
 Output <- format(data.frame(Labels, Variables), scientific = F) # put everything in this
 
 write.csv(x = Output, file = 'TIMSS output/AUS 2015.csv') # select file name, store it as a csv
+
+
+
 
 
 
