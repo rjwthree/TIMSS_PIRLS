@@ -74,7 +74,7 @@ library(haven) # read SPSS
 
 CNT <- 'AUS' # enter country code manually
 
-TIMSS15 <- read_spss(file = 'TIMSS/2015/T15_4_1/ASGAUSM6.sav') # read data
+TIMSS15 <- read_spss('TIMSS/2015/T15_4_1/ASGAUSM6.sav') # read data
 
 T15 <- TIMSS15[c('IDSTUD', 'ITSEX', 'ASDAGE', 'HOUWGT', 'JKZONE', 'JKREP', 'ASDMLOWP',
                  'ASMMAT01', 'ASMMAT02', 'ASMMAT03', 'ASMMAT04', 'ASMMAT05')] # subset columns
