@@ -2948,7 +2948,7 @@ Variables <- c(CNT, Size, FSize, MSize, WtRatio, Low,
 
 Output <- format(data.frame(Labels, Variables), scientific = F) # put everything in this
 
-write.csv(x = Output, file = 'TIMSS output/AUS 2015.csv') # select file name, store it as a csv
+write.csv(x = Output, file = 'TIMSS output/2015/AUS.csv') # select file name, store as a csv
 
 
 
