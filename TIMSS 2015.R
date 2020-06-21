@@ -72,8 +72,8 @@
 
 library(haven) # read SPSS
 
+Country <- 'Australia' # enter country manually
 CNT <- 'AUS' # enter country code manually
-
 Grade <- 4 # enter grade manually
 
 TIMSS15 <- read_spss('TIMSS/2015/T15_4_1/ASGAUSM6.sav') # read data
@@ -2794,7 +2794,7 @@ TV_LSDR_R <- (log(SDR_R_up/SDR_R)/CI95)^2
 
 
 # summary table
-Labels <- c('CNT', 'Grade', 'Size', 'FSize', 'MSize', 'M/F Wt Ratio', 'Low %',
+Labels <- c('Country', 'CNT', 'Grade', 'Size', 'FSize', 'MSize', 'M/F Wt Ratio', 'Low %',
             'Mean', 'Mean Low', 'Mean Upp', 'Median', 'Median Low', 'Median Upp',
             'F Mean', 'F Mean Low', 'F Mean Upp', 'F Median', 'F Median Low', 'F Median Upp',
             'M Mean', 'M Mean Low', 'M Mean Upp', 'M Median', 'M Median Low', 'M Median Upp',
@@ -2871,7 +2871,7 @@ Labels <- c('CNT', 'Grade', 'Size', 'FSize', 'MSize', 'M/F Wt Ratio', 'Low %',
             'MADR AgeCor', 'LMADR AgeCor', 'MADR_L AgeCor', 'LMADR_L AgeCor',
             'MADR_R AgeCor', 'LMADR_R AgeCor', 'GMDR AgeCor', 'LGMDR AgeCor')
 
-Variables <- c(CNT, Grade, Size, FSize, MSize, WtRatio, Low,
+Variables <- c(Country, CNT, Grade, Size, FSize, MSize, WtRatio, Low,
                Mn, Mn_lo, Mn_up, Md, Md_lo, Md_up,
                Mn_F, Mn_F_lo, Mn_F_up, Md_F, Md_F_lo, Md_F_up,
                Mn_M, Mn_M_lo, Mn_M_up, Md_M, Md_M_lo, Md_M_up,
