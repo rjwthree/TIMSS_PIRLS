@@ -60,7 +60,7 @@ Left MADR and Right MADR* - The MADR divided into the left and right tails. That
 
 Gini's Mean Difference Ratio (GMDR) - Imagine randomly selecting two students and finding the absolute difference between their scores; GMD gives the expected value of this interval. The GMDR is the male-female ratio of this distance.
 
-The following section adjusts the scores linearly for age and recalculates all the effect sizes from Cohen's d down.
+The next section adjusts the scores linearly for age and recalculates all the effect sizes from Cohen's d down.
 
 ## Standard Errors and Confidence Intervals
 Computing standard errors is the most computationally intensive procedure. The jackknife resampling section, in combination with the five sets of plausible values, means that each effect size must be reweighted and recalculated 750 times. The jackknife variance and imputation variance are then calculated according to formulas described by 'Methods and Procedures in TIMSS 2015'. The sum of jackknife and imputation variance is the total variance, and its square root is the standard error. The standard errors are then converted to 95% confidence intervals through typical methods, and the lower and upper bounds of these confidence intervals are recorded.
