@@ -13,8 +13,8 @@
 # [2] Weighted Functions
 # functions needed throughout the script, with descriptions
 
-# [3] Means, Tail Proportion Ratios (TPRs), U3 Ratios (U3Rs)
-# Means of total group, females, males and mean difference
+# [3] Means and Medians, Tail Proportion Ratios (TPRs), U3 Ratios (U3Rs)
+# Means and medians of total group, females, males, as well as mean and median differences
 # TPRs and LTPRs above mean and percentiles
 # LTPR tail-center differences
 # U3Rs and LU3Rs above percentiles
@@ -25,9 +25,9 @@
 # U3
 # Probability of superiority (PS)
 # Variance ratio (VR), Log-transformed VR (LVR)
-# Left tail and right tail VR and LVR (VR_L, VR_R, LVR_L, LVR_R)
+# Left and right VR and LVR (VR_L, VR_R, LVR_L, LVR_R)
 # Mean absolute deviation (from the median) ratio (MADR), Log-transformed MADR (LMADR)
-# Left tail and right tail MADR and LMADR (MADR_L, MADR_R, LMADR_L, LMADR_R)
+# Left and right MADR and LMADR (MADR_L, MADR_R, LMADR_L, LMADR_R)
 # Gini's mean difference ratio (GMDR), Log-transformed GMDR (LGMDR)
 
 # [5] Other Effect Sizes Adjusted for Age
@@ -947,7 +947,7 @@ LVR <- mean(LVRs)
 VR <- exp(LVR)
 
 
-### Left tail and right tail VR and LVR (VR_L, VR_R, LVR_L, LVR_R)
+### Left and right VR and LVR (VR_L, VR_R, LVR_L, LVR_R)
 
 LVR_L1 <- LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV1', t = 'L') # PV1
 LVR_L2 <- LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV2', t = 'L') # PV2
@@ -983,7 +983,7 @@ LMADR <- mean(LMADRs)
 MADR <- exp(LMADR)
 
 
-### Left tail and right tail MADR and LMADR (MADR_L, MADR_R, LMADR_L, LMADR_R)
+### Left and right MADR and LMADR (MADR_L, MADR_R, LMADR_L, LMADR_R)
 
 LMADR_L1 <- LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV1', t = 'L') # PV1
 LMADR_L2 <- LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV2', t = 'L') # PV2
@@ -1097,7 +1097,7 @@ LVR_A <- mean(c(LVRfn(d1 = A15_M, d2 = A15_F, v = 'PV1A'),  # PV1
 VR_A <- exp(LVR_A)
 
 
-### Age-corrected Left tail and right tail VR and LVR (VR_LA, VR_RA, LVR_LA, LVR_RA)
+### Age-corrected Left and right VR and LVR (VR_LA, VR_RA, LVR_LA, LVR_RA)
 
 LVR_LA <- mean(c(LVR_Tfn(d1 = A15_M, d2 = A15_F, v = 'PV1A', t = 'L'),  # PV1
                  LVR_Tfn(d1 = A15_M, d2 = A15_F, v = 'PV2A', t = 'L'),  # PV2
@@ -1127,7 +1127,7 @@ LMADR_A <- mean(c(LMADRfn(d1 = A15_M, d2 = A15_F, v = 'PV1A'),  # PV1
 MADR_A <- exp(LMADR_A)
 
 
-### Age-corrected Left tail and right tail MADR and LMADR (MADR_LA, MADR_RA, LMADR_LA, LMADR_RA)
+### Age-corrected Left and right MADR and LMADR (MADR_LA, MADR_RA, LMADR_LA, LMADR_RA)
 
 LMADR_LA <- mean(c(LMADR_Tfn(d1 = A15_M, d2 = A15_F, v = 'PV1A', t = 'L'),  # PV1
                    LMADR_Tfn(d1 = A15_M, d2 = A15_F, v = 'PV2A', t = 'L'),  # PV2
