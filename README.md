@@ -11,11 +11,11 @@ The script proceeds as follows:
 
 (4) Standard Errors and Confidence Intervals
 
-(5) Summary and output
-
-The data are complex for two reasons: (1) each student responds to only a subset of all questions, so each student is given five imputed scores, also known as plausible values (PVs); and (2) the sampling procedures employ clustering and stratification, so a jackknife method is needed to compute standard errors. Due to the first point standard errors incorporate not only sampling variance but also imputation variance. The sampling design also means that each student is assigned their own weight. The data files are designed for SPSS and SAS and are analyzed almost exclusively as such.
+(5) Summary and Output
 
 Effect sizes were selected (or created) to be robust, intuitive and useful. They examine sex differences throughout the distribution, not just at the center. Common effect sizes (e.g., Cohen's d) were also used. An attitude of 'multiverse analysis' was used: when multiple reasonable analyses exist, they are all conducted so that the sensitivity of substantive conclusions to specific analytic choices can be observed.
+
+The data are complex for two reasons: (1) each student responds to only a subset of all questions, so each student is given five imputed scores, also known as plausible values (PVs); and (2) the sampling procedures employ clustering and stratification, so a jackknife method is needed to compute standard errors. Due to the first point standard errors incorporate not only sampling variance but also imputation variance. The sampling design also means that each student is assigned their own weight. The data files are designed for SPSS and SAS and are analyzed almost exclusively as such.
 
 Ratios are log-transformed to place them on a linear scale.
 
