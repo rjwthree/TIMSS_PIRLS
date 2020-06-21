@@ -7,13 +7,13 @@ The script proceeds as follows:
 
 (2) Weighted User-defined Functions
 
-(3) A variety of effect sizes expressing sex differences in central tendency, in variability, and in the tails. Scores are then controlled for age and effect sizes are recalculated.
+(3) Effect Sizes and effect sizes adjusted for age
 
 (4) Standard Errors and Confidence Intervals
 
 (5) Summary and Output
 
-Effect sizes were selected (or created) to be robust, intuitive and useful. They examine sex differences throughout the distribution, not just at the center. Common effect sizes (e.g., Cohen's d) were also used. An attitude of 'multiverse analysis' was used: when multiple reasonable analyses exist, they are all conducted so that the sensitivity of substantive conclusions to specific analytic choices can be observed.
+Effect sizes were selected (or created) to be robust, intuitive and useful. They examine sex differences throughout the distribution, not just at the center. Common effect sizes (e.g., Cohen's d) are also used. An attitude of 'multiverse analysis' is applied: when multiple reasonable analyses exist, they are all conducted so that the sensitivity of substantive conclusions to specific analytic choices can be observed.
 
 The data are complex for two reasons: (1) each student responds to only a subset of all questions, so each student is given five imputed scores, also known as plausible values (PVs); and (2) the sampling procedures employ clustering and stratification, so a jackknife method is needed to compute standard errors. Due to the first point standard errors incorporate not only sampling variance but also imputation variance. The sampling design also means that each student is assigned their own weight. The data files are designed for SPSS and SAS and are analyzed almost exclusively as such.
 
@@ -63,6 +63,6 @@ Gini's Mean Difference Ratio (GMDR) - Imagine randomly selecting two students an
 The following section adjusts the scores linearly for age and recalculates all the effect sizes from Cohen's d down.
 
 ## Standard Errors and Confidence Intervals
-This section is the most computationally intensive. The jackknife resampling section, in combination with the five plausible values, means that each effect size must be reweighted and recalculated 750 times. The jackknife variance and imputation variance are then calculated according to procedures described by 'Methods and Procedures in TIMSS 2015'. The sum of jackknife and imputation variance is the total variance, and its square root is the standard error. The standard errors are then converted to 95% confidence intervals through typical methods, and the lower and upper bounds of these confidence intervals are computed.
+Computing standard errors is the most computationally intensive procedure. The jackknife resampling section, in combination with the five sets of plausible values, means that each effect size must be reweighted and recalculated 750 times. The jackknife variance and imputation variance are then calculated according to formulas described by 'Methods and Procedures in TIMSS 2015'. The sum of jackknife and imputation variance is the total variance, and its square root is the standard error. The standard errors are then converted to 95% confidence intervals through typical methods, and the lower and upper bounds of these confidence intervals are computed.
 
 The results are then summarized in a dataframe called 'Output' and written to the working directory.
