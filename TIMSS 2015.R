@@ -67,8 +67,10 @@
 # in the selected file ASGAUSM6.sav, AUS is the country code for Australia
 # see pp. 47-49 of the "TIMSS 2015 User Guide for the International Database" for country codes
 # the initial 'A' in ASGAUSM6.sav is instead 'B' for 8th grade files
-# the initial 'A' in columns ASDAGE, ASDMLOWP, ASMMAT01, etc. is instead 'B' for 8th grade files
-# Armenia is in the database but is not in the report due to late testing
+# Armenia (ARM) is in the database (4th and 8th) but is not in the report due to late testing
+# Norway adminstered the 4th grade assessment to 5th graders
+# Norway, South Africa, and Botswana adminstered the 8th grade assessment to 9th graders
+# Norway also tested benchmark samples of similar size in the 4th and 8th grades
 
 library(haven) # read SPSS
 
@@ -78,8 +80,13 @@ Grade <- 4 # enter grade manually
 
 TIMSS15 <- read_spss('TIMSS/2015/T15_4_1/ASGAUSM6.sav') # read data
 
-T15 <- TIMSS15[c('IDSTUD', 'ITSEX', 'ASDAGE', 'HOUWGT', 'JKZONE', 'JKREP', 'ASDMLOWP',
-                 'ASMMAT01', 'ASMMAT02', 'ASMMAT03', 'ASMMAT04', 'ASMMAT05')] # subset columns
+if (Grade == 4 | Grade == 5 | Grade == 'N') { # subset columns
+  T15 <- TIMSS15[c('IDSTUD', 'ITSEX', 'ASDAGE', 'HOUWGT', 'JKZONE', 'JKREP', 'ASDMLOWP',
+                   'ASMMAT01', 'ASMMAT02', 'ASMMAT03', 'ASMMAT04', 'ASMMAT05')]
+} else if (Grade == 8 | Grade == 9) {
+  T15 <- TIMSS15[c('IDSTUD', 'ITSEX', 'BSDAGE', 'HOUWGT', 'JKZONE', 'JKREP', 'BSDMLOWP',
+                   'BSMMAT01', 'BSMMAT02', 'BSMMAT03', 'BSMMAT04', 'BSMMAT05')]
+}
 
 remove(TIMSS15) # remove unneeded file
 
@@ -89,7 +96,7 @@ names(T15) <- c('Student', 'Sex', 'Age', 'HWt', 'JKZ', 'JKR', 'Low',
 for (i in names(T15)) {attributes(T15[[i]])$label <- NULL} # delete column labels
 T15 <- data.frame(zap_labels(T15)) # remove all labels and convert to dataframe
 
-L <- length(unique(T15$JKZ)) # number of JK zones
+L <- length(unique(T15$JKZ)) # number of jackknife zones
 
 Size <- nrow(T15) # sample size
 T15$HWt <- Size/sum(T15$HWt)*T15$HWt # equalize sample size and sum of HWt
@@ -2950,7 +2957,8 @@ Variables <- c(Country, CNT, Grade, Size, FSize, MSize, WtRatio, Low,
 
 Output <- format(data.frame(Labels, Variables), scientific = F) # put everything in this
 
-write.csv(x = Output, file = 'TIMSS output/2015 4/AUS.csv') # select file name, store as a csv
+# select file name manually, store as a csv
+write.csv(x = Output, file = 'TIMSS output/2015 4/Countries/AUS.csv')
 
 
 
