@@ -46,7 +46,7 @@ LU3R Tail-Center Differences* - Differences between log-transformed U3Rs (LU3Rs)
 
 Cohen's d - This is a very common effect size and it is implemented as usual: the raw mean difference divided by the quadratic mean of standard deviations.
 
-U3* - The proportion of males above the female median. Adapted from Cohen's U3, which is based on the mean rather than median.
+U3* - The proportion of males above the female median. Adapted from the canonical Cohen's U3, which is incorrectly based on the mean rather than the median.
 
 Probability of Superiority (PS) - The probability that a random male will have a higher score than a random female.
 
@@ -65,4 +65,4 @@ The next section adjusts the scores linearly for age and recalculates all the ef
 ## Standard Errors and Confidence Intervals
 Computing standard errors is the most computationally intensive procedure. The jackknife resampling section, in combination with the five sets of plausible values, means that each effect size must be reweighted and recalculated 750 times. The jackknife variance and imputation variance are then calculated according to formulas described by 'Methods and Procedures in TIMSS 2015'. The sum of jackknife and imputation variance is the total variance, and its square root is the standard error. The standard errors are then converted to 95% confidence intervals through typical methods, and the lower and upper bounds of these confidence intervals are recorded.
 
-The results are then summarized in a dataframe called 'Output' and written to the working directory.
+The results are then summarized in a dataframe called 'Output' and written to the appropriate directory.
