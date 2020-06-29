@@ -1,5 +1,5 @@
 # Sex Differences in TIMSS 2015 Math
-These are the most recently released data on math exams from the quadrennial Trends in International Mathematics and Science Study (TIMSS) of 4th and 8th grade students.
+These are the most recently released data on 4th and 8th grade math exams from the Trends in International Mathematics and Science Study (TIMSS). It is administered quadrennially by the International Association for the Evaluation of Educational Achievement (IEA), which also administers the Progress in International Reading Literacy Study (PIRLS).
 
 The script proceeds as follows:
 
@@ -15,7 +15,7 @@ The script proceeds as follows:
 
 Effect sizes were selected (or created) to be robust, intuitive and useful. They examine sex differences throughout the distribution, not just at the center. Common effect sizes (e.g., Cohen's d) are also used. An attitude of 'multiverse analysis' is applied: when multiple reasonable analyses exist, they are all conducted so that the sensitivity of substantive conclusions to specific analytic choices can be observed.
 
-The data are complex for two reasons: (1) each student responds to only a subset of all questions, so each student is given five imputed scores, also known as plausible values (PVs); and (2) the sampling procedures employ clustering and stratification, so a jackknife method is needed to compute standard errors. Due to the first point standard errors incorporate not only sampling variance but also imputation variance. The sampling design also means that each student is assigned their own weight. The data files are designed for SPSS and SAS and are analyzed almost exclusively as such.
+The data are complex for two reasons: (1) each student responds to only a subset of all questions, so each student is given five imputed scores, also known as plausible values (PVs); and (2) the sampling procedures employ clustering and stratification, so a jackknife method is used to compute standard errors. Due to the first point, standard errors incorporate not only sampling variance but also imputation variance. The sampling design also means that each student is assigned their own weight. The data files are designed for SPSS and SAS and are analyzed almost exclusively as such.
 
 Ratios are log-transformed to place them on a linear scale.
 
