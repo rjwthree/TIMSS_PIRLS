@@ -1181,7 +1181,7 @@ K1 <- K2 <- K3 <- K4 <- K5 <- numeric(2*L) # empty containers
 N1 <- N2 <- N3 <- N4 <- N5 <- numeric(2*L) # empty containers
 F1 <- F2 <- F3 <- F4 <- F5 <- numeric(2*L) # empty containers
 
-# perform jackknife resampling of means and mean difference
+# perform jackknife resampling of means and medians
 for (i in 1:L) { # for each JK zone
   T0 <- T15 # create/restore duplicate
   # double weights if JK code is 1 and zero weights if JK code is 0
@@ -2296,7 +2296,7 @@ F1 <- F2 <- F3 <- F4 <- F5 <- numeric(2*L) # empty containers
 E1 <- E2 <- E3 <- E4 <- E5 <- numeric(2*L) # empty containers
 G1 <- G2 <- G3 <- G4 <- G5 <- numeric(2*L) # empty containers
 
-# perform jackknife resampling of d, U3, LVR, LVR_L, LVR_R, LMADR, LMADR_L, LMADR_R
+# perform jackknife resampling of d, U3, LVR, LVR_L, LVR_R, LMADR, LMADR_L, LMADR_R, LGMDR
 for (i in 1:L) { # for each JK zone
   T0 <- T15 # create/restore duplicate
   # double weights if JK code is 1 and zero weights if JK code is 0
