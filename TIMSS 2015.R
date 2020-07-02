@@ -1369,7 +1369,7 @@ for (i in 1:L) { # for each JK zone
   T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 0
   T0_F <- T0[which(T0$Sex == 1),] # female subset
   T0_M <- T0[which(T0$Sex == 2),] # male subset
-  A1[i] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV1, T0$HWt), 'PV1') # PV1 reweighted mean
+  A1[i] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV1, T0$HWt), 'PV1') # PV1 reweighted mean LTPR
   A2[i] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV2, T0$HWt), 'PV2') # PV2
   A3[i] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV3, T0$HWt), 'PV3') # PV3
   A4[i] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV4, T0$HWt), 'PV4') # PV4
@@ -1476,7 +1476,7 @@ for (i in 1:L) { # for each JK zone
   T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 0
   T0_F <- T0[which(T0$Sex == 1),] # female subset
   T0_M <- T0[which(T0$Sex == 2),] # male subset
-  A1[i+L] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV1, T0$HWt), 'PV1') # PV1 reweighted mean
+  A1[i+L] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV1, T0$HWt), 'PV1') # PV1 reweighted mean LTPR
   A2[i+L] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV2, T0$HWt), 'PV2') # PV2
   A3[i+L] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV3, T0$HWt), 'PV3') # PV3
   A4[i+L] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV4, T0$HWt), 'PV4') # PV4
