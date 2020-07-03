@@ -97,6 +97,7 @@ for (i in names(T15)) {attributes(T15[[i]])$label <- NULL} # delete column label
 T15 <- data.frame(zap_labels(T15)) # remove all labels and convert to dataframe
 
 L <- length(unique(T15$JKZ)) # number of jackknife zones
+L2 <- 2*L
 
 Size <- nrow(T15) # sample size
 T15$HWt <- Size/sum(T15$HWt)*T15$HWt # equalize sample size and sum of HWt
@@ -367,208 +368,169 @@ LGMDRfn <- function(d1, d2, v) {
 ### Means and Medians
 
 # total group
-Mn1 <- wt.mn(x = T15$PV1, w = T15$HWt) # PV1
-Mn2 <- wt.mn(x = T15$PV2, w = T15$HWt) # PV2
-Mn3 <- wt.mn(x = T15$PV3, w = T15$HWt) # PV3
-Mn4 <- wt.mn(x = T15$PV4, w = T15$HWt) # PV4
-Mn5 <- wt.mn(x = T15$PV5, w = T15$HWt) # PV5
+Mns <- c(wt.mn(x = T15$PV1, w = T15$HWt), # PV1
+         wt.mn(x = T15$PV2, w = T15$HWt), # PV2
+         wt.mn(x = T15$PV3, w = T15$HWt), # PV3
+         wt.mn(x = T15$PV4, w = T15$HWt), # PV4
+         wt.mn(x = T15$PV5, w = T15$HWt)) # PV5
 
-Mns <- c(Mn1, Mn2, Mn3, Mn4, Mn5)
 Mn <- mean(Mns)
 
-Md1 <- wt.qnt(x = T15$PV1, w = T15$HWt, q = .5) # PV1
-Md2 <- wt.qnt(x = T15$PV2, w = T15$HWt, q = .5) # PV2
-Md3 <- wt.qnt(x = T15$PV3, w = T15$HWt, q = .5) # PV3
-Md4 <- wt.qnt(x = T15$PV4, w = T15$HWt, q = .5) # PV4
-Md5 <- wt.qnt(x = T15$PV5, w = T15$HWt, q = .5) # PV5
+Mds <- c(wt.qnt(x = T15$PV1, w = T15$HWt, q = .5), # PV1
+         wt.qnt(x = T15$PV2, w = T15$HWt, q = .5), # PV2
+         wt.qnt(x = T15$PV3, w = T15$HWt, q = .5), # PV3
+         wt.qnt(x = T15$PV4, w = T15$HWt, q = .5), # PV4
+         wt.qnt(x = T15$PV5, w = T15$HWt, q = .5)) # PV5
 
-Mds <- c(Md1, Md2, Md3, Md4, Md5)
 Md <- mean(Mds)
 
 
 # females
-Mn1_F <- wt.mn(x = T15_F$PV1, w = T15_F$HWt) # PV1
-Mn2_F <- wt.mn(x = T15_F$PV2, w = T15_F$HWt) # PV2
-Mn3_F <- wt.mn(x = T15_F$PV3, w = T15_F$HWt) # PV3
-Mn4_F <- wt.mn(x = T15_F$PV4, w = T15_F$HWt) # PV4
-Mn5_F <- wt.mn(x = T15_F$PV5, w = T15_F$HWt) # PV5
+Mns_F <- c(wt.mn(x = T15_F$PV1, w = T15_F$HWt), # PV1
+           wt.mn(x = T15_F$PV2, w = T15_F$HWt), # PV2
+           wt.mn(x = T15_F$PV3, w = T15_F$HWt), # PV3
+           wt.mn(x = T15_F$PV4, w = T15_F$HWt), # PV4
+           wt.mn(x = T15_F$PV5, w = T15_F$HWt)) # PV5
 
-Mns_F <- c(Mn1_F, Mn2_F, Mn3_F, Mn4_F, Mn5_F)
 Mn_F <- mean(Mns_F)
 
-Md1_F <- wt.qnt(x = T15_F$PV1, w = T15_F$HWt, q = .5) # PV1
-Md2_F <- wt.qnt(x = T15_F$PV2, w = T15_F$HWt, q = .5) # PV2
-Md3_F <- wt.qnt(x = T15_F$PV3, w = T15_F$HWt, q = .5) # PV3
-Md4_F <- wt.qnt(x = T15_F$PV4, w = T15_F$HWt, q = .5) # PV4
-Md5_F <- wt.qnt(x = T15_F$PV5, w = T15_F$HWt, q = .5) # PV5
+Mds_F <- c(wt.qnt(x = T15_F$PV1, w = T15_F$HWt, q = .5), # PV1
+           wt.qnt(x = T15_F$PV2, w = T15_F$HWt, q = .5), # PV2
+           wt.qnt(x = T15_F$PV3, w = T15_F$HWt, q = .5), # PV3
+           wt.qnt(x = T15_F$PV4, w = T15_F$HWt, q = .5), # PV4
+           wt.qnt(x = T15_F$PV5, w = T15_F$HWt, q = .5)) # PV5
 
-Mds_F <- c(Md1_F, Md2_F, Md3_F, Md4_F, Md5_F)
 Md_F <- mean(Mds_F)
 
 
 # males
-Mn1_M <- wt.mn(x = T15_M$PV1, w = T15_M$HWt) # PV1
-Mn2_M <- wt.mn(x = T15_M$PV2, w = T15_M$HWt) # PV2
-Mn3_M <- wt.mn(x = T15_M$PV3, w = T15_M$HWt) # PV3
-Mn4_M <- wt.mn(x = T15_M$PV4, w = T15_M$HWt) # PV4
-Mn5_M <- wt.mn(x = T15_M$PV5, w = T15_M$HWt) # PV5
+Mns_M <- c(wt.mn(x = T15_M$PV1, w = T15_M$HWt), # PV1
+           wt.mn(x = T15_M$PV2, w = T15_M$HWt), # PV2
+           wt.mn(x = T15_M$PV3, w = T15_M$HWt), # PV3
+           wt.mn(x = T15_M$PV4, w = T15_M$HWt), # PV4
+           wt.mn(x = T15_M$PV5, w = T15_M$HWt)) # PV5
 
-Mns_M <- c(Mn1_M, Mn2_M, Mn3_M, Mn4_M, Mn5_M)
 Mn_M <- mean(Mns_M)
 
-Md1_M <- wt.qnt(x = T15_M$PV1, w = T15_M$HWt, q = .5) # PV1
-Md2_M <- wt.qnt(x = T15_M$PV2, w = T15_M$HWt, q = .5) # PV2
-Md3_M <- wt.qnt(x = T15_M$PV3, w = T15_M$HWt, q = .5) # PV3
-Md4_M <- wt.qnt(x = T15_M$PV4, w = T15_M$HWt, q = .5) # PV4
-Md5_M <- wt.qnt(x = T15_M$PV5, w = T15_M$HWt, q = .5) # PV5
+Mds_M <- c(wt.qnt(x = T15_M$PV1, w = T15_M$HWt, q = .5), # PV1
+           wt.qnt(x = T15_M$PV2, w = T15_M$HWt, q = .5), # PV2
+           wt.qnt(x = T15_M$PV3, w = T15_M$HWt, q = .5), # PV3
+           wt.qnt(x = T15_M$PV4, w = T15_M$HWt, q = .5), # PV4
+           wt.qnt(x = T15_M$PV5, w = T15_M$HWt, q = .5)) # PV5
 
-Mds_M <- c(Md1_M, Md2_M, Md3_M, Md4_M, Md5_M)
 Md_M <- mean(Mds_M)
 
 
-# difference
-MnDf1 <- Mn1_M-Mn1_F # PV1
-MnDf2 <- Mn2_M-Mn2_F # PV2
-MnDf3 <- Mn3_M-Mn3_F # PV3
-MnDf4 <- Mn4_M-Mn4_F # PV4
-MnDf5 <- Mn5_M-Mn5_F # PV5
+# differences
+MnDfs <- Mns_M-Mns_F
+MdDfs <- Mds_M-Mds_F
 
-MnDfs <- c(MnDf1, MnDf2, MnDf3, MnDf4, MnDf5)
 MnDf <- mean(MnDfs)
-
-MdDf1 <- Md1_M-Md1_F # PV1
-MdDf2 <- Md2_M-Md2_F # PV2
-MdDf3 <- Md3_M-Md3_F # PV3
-MdDf4 <- Md4_M-Md4_F # PV4
-MdDf5 <- Md5_M-Md5_F # PV5
-
-MdDfs <- c(MdDf1, MdDf2, MdDf3, MdDf4, MdDf5)
 MdDf <- mean(MdDfs)
 
 
 
 ### TPRs and LTPRs: mean and every 5th percentile from 5 to 95
-LTPRMn_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = Mn1, v = 'PV1') # PV1 mean
-LTPRMn_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = Mn2, v = 'PV2') # PV2
-LTPRMn_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = Mn3, v = 'PV3') # PV3
-LTPRMn_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = Mn4, v = 'PV4') # PV4
-LTPRMn_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = Mn5, v = 'PV5') # PV5
-LTPR05_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .05), v = 'PV1') # PV1 5th
-LTPR05_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .05), v = 'PV2') # PV2
-LTPR05_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .05), v = 'PV3') # PV3
-LTPR05_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .05), v = 'PV4') # PV4
-LTPR05_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .05), v = 'PV5') # PV5
-LTPR10_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .10), v = 'PV1') # PV1 10th
-LTPR10_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .10), v = 'PV2') # PV2
-LTPR10_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .10), v = 'PV3') # PV3
-LTPR10_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .10), v = 'PV4') # PV4
-LTPR10_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .10), v = 'PV5') # PV5
-LTPR15_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .15), v = 'PV1') # PV1 15th
-LTPR15_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .15), v = 'PV2') # PV2
-LTPR15_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .15), v = 'PV3') # PV3
-LTPR15_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .15), v = 'PV4') # PV4
-LTPR15_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .15), v = 'PV5') # PV5
-LTPR20_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .20), v = 'PV1') # PV1 20th
-LTPR20_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .20), v = 'PV2') # PV2
-LTPR20_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .20), v = 'PV3') # PV3
-LTPR20_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .20), v = 'PV4') # PV4
-LTPR20_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .20), v = 'PV5') # PV5
-LTPR25_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .25), v = 'PV1') # PV1 25th
-LTPR25_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .25), v = 'PV2') # PV2
-LTPR25_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .25), v = 'PV3') # PV3
-LTPR25_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .25), v = 'PV4') # PV4
-LTPR25_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .25), v = 'PV5') # PV5
-LTPR30_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .30), v = 'PV1') # PV1 30th
-LTPR30_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .30), v = 'PV2') # PV2
-LTPR30_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .30), v = 'PV3') # PV3
-LTPR30_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .30), v = 'PV4') # PV4
-LTPR30_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .30), v = 'PV5') # PV5
-LTPR35_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .35), v = 'PV1') # PV1 35th
-LTPR35_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .35), v = 'PV2') # PV2
-LTPR35_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .35), v = 'PV3') # PV3
-LTPR35_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .35), v = 'PV4') # PV4
-LTPR35_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .35), v = 'PV5') # PV5
-LTPR40_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .40), v = 'PV1') # PV1 40th
-LTPR40_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .40), v = 'PV2') # PV2
-LTPR40_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .40), v = 'PV3') # PV3
-LTPR40_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .40), v = 'PV4') # PV4
-LTPR40_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .40), v = 'PV5') # PV5
-LTPR45_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .45), v = 'PV1') # PV1 45th
-LTPR45_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .45), v = 'PV2') # PV2
-LTPR45_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .45), v = 'PV3') # PV3
-LTPR45_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .45), v = 'PV4') # PV4
-LTPR45_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .45), v = 'PV5') # PV5
-LTPR50_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .50), v = 'PV1') # PV1 50th
-LTPR50_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .50), v = 'PV2') # PV2
-LTPR50_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .50), v = 'PV3') # PV3
-LTPR50_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .50), v = 'PV4') # PV4
-LTPR50_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .50), v = 'PV5') # PV5
-LTPR55_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .55), v = 'PV1') # PV1 55th
-LTPR55_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .55), v = 'PV2') # PV2
-LTPR55_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .55), v = 'PV3') # PV3
-LTPR55_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .55), v = 'PV4') # PV4
-LTPR55_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .55), v = 'PV5') # PV5
-LTPR60_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .60), v = 'PV1') # PV1 60th
-LTPR60_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .60), v = 'PV2') # PV2
-LTPR60_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .60), v = 'PV3') # PV3
-LTPR60_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .60), v = 'PV4') # PV4
-LTPR60_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .60), v = 'PV5') # PV5
-LTPR65_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .65), v = 'PV1') # PV1 65th
-LTPR65_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .65), v = 'PV2') # PV2
-LTPR65_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .65), v = 'PV3') # PV3
-LTPR65_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .65), v = 'PV4') # PV4
-LTPR65_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .65), v = 'PV5') # PV5
-LTPR70_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .70), v = 'PV1') # PV1 70th
-LTPR70_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .70), v = 'PV2') # PV2
-LTPR70_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .70), v = 'PV3') # PV3
-LTPR70_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .70), v = 'PV4') # PV4
-LTPR70_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .70), v = 'PV5') # PV5
-LTPR75_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .75), v = 'PV1') # PV1 75th
-LTPR75_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .75), v = 'PV2') # PV2
-LTPR75_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .75), v = 'PV3') # PV3
-LTPR75_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .75), v = 'PV4') # PV4
-LTPR75_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .75), v = 'PV5') # PV5
-LTPR80_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .80), v = 'PV1') # PV1 80th
-LTPR80_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .80), v = 'PV2') # PV2
-LTPR80_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .80), v = 'PV3') # PV3
-LTPR80_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .80), v = 'PV4') # PV4
-LTPR80_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .80), v = 'PV5') # PV5
-LTPR85_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .85), v = 'PV1') # PV1 85th
-LTPR85_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .85), v = 'PV2') # PV2
-LTPR85_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .85), v = 'PV3') # PV3
-LTPR85_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .85), v = 'PV4') # PV4
-LTPR85_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .85), v = 'PV5') # PV5
-LTPR90_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .90), v = 'PV1') # PV1 90th
-LTPR90_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .90), v = 'PV2') # PV2
-LTPR90_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .90), v = 'PV3') # PV3
-LTPR90_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .90), v = 'PV4') # PV4
-LTPR90_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .90), v = 'PV5') # PV5
-LTPR95_1 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .95), v = 'PV1') # PV1 95th
-LTPR95_2 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .95), v = 'PV2') # PV2
-LTPR95_3 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .95), v = 'PV3') # PV3
-LTPR95_4 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .95), v = 'PV4') # PV4
-LTPR95_5 <- LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .95), v = 'PV5') # PV5
-
-LTPRMns <- c(LTPRMn_1, LTPRMn_2, LTPRMn_3, LTPRMn_4, LTPRMn_5) # mean
-LTPR05s <- c(LTPR05_1, LTPR05_2, LTPR05_3, LTPR05_4, LTPR05_5) # 5th
-LTPR10s <- c(LTPR10_1, LTPR10_2, LTPR10_3, LTPR10_4, LTPR10_5) # 10th
-LTPR15s <- c(LTPR15_1, LTPR15_2, LTPR15_3, LTPR15_4, LTPR15_5) # 15th
-LTPR20s <- c(LTPR20_1, LTPR20_2, LTPR20_3, LTPR20_4, LTPR20_5) # 20th
-LTPR25s <- c(LTPR25_1, LTPR25_2, LTPR25_3, LTPR25_4, LTPR25_5) # 25th
-LTPR30s <- c(LTPR30_1, LTPR30_2, LTPR30_3, LTPR30_4, LTPR30_5) # 30th
-LTPR35s <- c(LTPR35_1, LTPR35_2, LTPR35_3, LTPR35_4, LTPR35_5) # 35th
-LTPR40s <- c(LTPR40_1, LTPR40_2, LTPR40_3, LTPR40_4, LTPR40_5) # 40th
-LTPR45s <- c(LTPR45_1, LTPR45_2, LTPR45_3, LTPR45_4, LTPR45_5) # 45th
-LTPR50s <- c(LTPR50_1, LTPR50_2, LTPR50_3, LTPR50_4, LTPR50_5) # 50th
-LTPR55s <- c(LTPR55_1, LTPR55_2, LTPR55_3, LTPR55_4, LTPR55_5) # 55th
-LTPR60s <- c(LTPR60_1, LTPR60_2, LTPR60_3, LTPR60_4, LTPR60_5) # 60th
-LTPR65s <- c(LTPR65_1, LTPR65_2, LTPR65_3, LTPR65_4, LTPR65_5) # 65th
-LTPR70s <- c(LTPR70_1, LTPR70_2, LTPR70_3, LTPR70_4, LTPR70_5) # 70th
-LTPR75s <- c(LTPR75_1, LTPR75_2, LTPR75_3, LTPR75_4, LTPR75_5) # 75th
-LTPR80s <- c(LTPR80_1, LTPR80_2, LTPR80_3, LTPR80_4, LTPR80_5) # 80th
-LTPR85s <- c(LTPR85_1, LTPR85_2, LTPR85_3, LTPR85_4, LTPR85_5) # 85th
-LTPR90s <- c(LTPR90_1, LTPR90_2, LTPR90_3, LTPR90_4, LTPR90_5) # 90th
-LTPR95s <- c(LTPR95_1, LTPR95_2, LTPR95_3, LTPR95_4, LTPR95_5) # 95th
+LTPRMns <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = Mns[1], v = 'PV1'), # PV1 mean
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = Mns[2], v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = Mns[3], v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = Mns[4], v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = Mns[5], v = 'PV5')) # PV5
+LTPR05s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .05), v = 'PV1'), # PV1 5th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .05), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .05), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .05), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .05), v = 'PV5')) # PV5
+LTPR10s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .10), v = 'PV1'), # PV1 10th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .10), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .10), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .10), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .10), v = 'PV5')) # PV5
+LTPR15s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .15), v = 'PV1'), # PV1 15th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .15), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .15), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .15), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .15), v = 'PV5')) # PV5
+LTPR20s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .20), v = 'PV1'), # PV1 20th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .20), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .20), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .20), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .20), v = 'PV5')) # PV5
+LTPR25s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .25), v = 'PV1'), # PV1 25th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .25), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .25), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .25), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .25), v = 'PV5')) # PV5
+LTPR30s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .30), v = 'PV1'), # PV1 30th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .30), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .30), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .30), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .30), v = 'PV5')) # PV5
+LTPR35s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .35), v = 'PV1'), # PV1 35th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .35), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .35), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .35), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .35), v = 'PV5')) # PV5
+LTPR40s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .40), v = 'PV1'), # PV1 40th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .40), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .40), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .40), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .40), v = 'PV5')) # PV5
+LTPR45s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .45), v = 'PV1'), # PV1 45th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .45), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .45), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .45), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .45), v = 'PV5')) # PV5
+LTPR50s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = Mds[1], v = 'PV1'), # PV1 50th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = Mds[2], v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = Mds[3], v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = Mds[4], v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = Mds[5], v = 'PV5')) # PV5
+LTPR55s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .55), v = 'PV1'), # PV1 55th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .55), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .55), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .55), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .55), v = 'PV5')) # PV5
+LTPR60s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .60), v = 'PV1'), # PV1 60th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .60), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .60), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .60), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .60), v = 'PV5')) # PV5
+LTPR65s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .65), v = 'PV1'), # PV1 65th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .65), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .65), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .65), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .65), v = 'PV5')) # PV5
+LTPR70s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .70), v = 'PV1'), # PV1 70th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .70), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .70), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .70), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .70), v = 'PV5')) # PV5
+LTPR75s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .75), v = 'PV1'), # PV1 75th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .75), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .75), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .75), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .75), v = 'PV5')) # PV5
+LTPR80s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .80), v = 'PV1'), # PV1 80th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .80), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .80), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .80), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .80), v = 'PV5')) # PV5
+LTPR85s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .85), v = 'PV1'), # PV1 85th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .85), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .85), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .85), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .85), v = 'PV5')) # PV5
+LTPR90s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .90), v = 'PV1'), # PV1 90th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .90), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .90), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .90), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .90), v = 'PV5')) # PV5
+LTPR95s <- c(LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV1, T15$HWt, .95), v = 'PV1'), # PV1 95th
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV2, T15$HWt, .95), v = 'PV2'), # PV2
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV3, T15$HWt, .95), v = 'PV3'), # PV3
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV4, T15$HWt, .95), v = 'PV4'), # PV4
+             LTPRfn(d1 = T15_M, d2 = T15_F, q = wt.qnt(T15$PV5, T15$HWt, .95), v = 'PV5')) # PV5
 
 LTPRMn <- mean(LTPRMns) # mean
 LTPR05 <- mean(LTPR05s) # 5th
@@ -616,205 +578,122 @@ TPR95 <- exp(LTPR95) # 95th
 
 ### LTPR tail-center differences
 
-# LTPR difference between 95th percentile and median
-Md95T_1 <- LTPR95_1-LTPR50_1 # PV1
-Md95T_2 <- LTPR95_2-LTPR50_2 # PV2
-Md95T_3 <- LTPR95_3-LTPR50_3 # PV3
-Md95T_4 <- LTPR95_4-LTPR50_4 # PV4
-Md95T_5 <- LTPR95_5-LTPR50_5 # PV5
+Md95Ts <- LTPR95s-LTPR50s # 95th percentile and median
+Md90Ts <- LTPR90s-LTPR50s # 90th percentile and median
+Md10Ts <- LTPR50s-LTPR10s # median and 10th percentile
+Md05Ts <- LTPR50s-LTPR05s # median and 5th percentile
+Mn95Ts <- LTPR95s-LTPRMns # 95th percentile and mean
+Mn90Ts <- LTPR90s-LTPRMns # 90th percentile and mean
+Mn10Ts <- LTPRMns-LTPR10s # mean and 10th percentile
+Mn05Ts <- LTPRMns-LTPR05s # mean and 5th percentile
 
-Md95Ts <- c(Md95T_1, Md95T_2, Md95T_3, Md95T_4, Md95T_5)
-Md95T <- mean(Md95Ts)
-
-# LTPR difference between 90th percentile and median
-Md90T_1 <- LTPR90_1-LTPR50_1 # PV1
-Md90T_2 <- LTPR90_2-LTPR50_2 # PV2
-Md90T_3 <- LTPR90_3-LTPR50_3 # PV3
-Md90T_4 <- LTPR90_4-LTPR50_4 # PV4
-Md90T_5 <- LTPR90_5-LTPR50_5 # PV5
-
-Md90Ts <- c(Md90T_1, Md90T_2, Md90T_3, Md90T_4, Md90T_5)
-Md90T <- mean(Md90Ts)
-
-# LTPR difference between median and 10th percentile
-Md10T_1 <- LTPR50_1-LTPR10_1 # PV1
-Md10T_2 <- LTPR50_2-LTPR10_2 # PV2
-Md10T_3 <- LTPR50_3-LTPR10_3 # PV3
-Md10T_4 <- LTPR50_4-LTPR10_4 # PV4
-Md10T_5 <- LTPR50_5-LTPR10_5 # PV5
-
-Md10Ts <- c(Md10T_1, Md10T_2, Md10T_3, Md10T_4, Md10T_5)
-Md10T <- mean(Md10Ts)
-
-# LTPR difference between median and 5th percentile
-Md05T_1 <- LTPR50_1-LTPR05_1 # PV1
-Md05T_2 <- LTPR50_2-LTPR05_2 # PV2
-Md05T_3 <- LTPR50_3-LTPR05_3 # PV3
-Md05T_4 <- LTPR50_4-LTPR05_4 # PV4
-Md05T_5 <- LTPR50_5-LTPR05_5 # PV5
-
-Md05Ts <- c(Md05T_1, Md05T_2, Md05T_3, Md05T_4, Md05T_5)
-Md05T <- mean(Md05Ts)
-
-
-# LTPR difference between 95th percentile and mean
-Mn95T_1 <- LTPR95_1-LTPRMn_1 # PV1
-Mn95T_2 <- LTPR95_2-LTPRMn_2 # PV2
-Mn95T_3 <- LTPR95_3-LTPRMn_3 # PV3
-Mn95T_4 <- LTPR95_4-LTPRMn_4 # PV4
-Mn95T_5 <- LTPR95_5-LTPRMn_5 # PV5
-
-Mn95Ts <- c(Mn95T_1, Mn95T_2, Mn95T_3, Mn95T_4, Mn95T_5)
-Mn95T <- mean(Mn95Ts)
-
-# LTPR difference between 90th percentile and mean
-Mn90T_1 <- LTPR90_1-LTPRMn_1 # PV1
-Mn90T_2 <- LTPR90_2-LTPRMn_2 # PV2
-Mn90T_3 <- LTPR90_3-LTPRMn_3 # PV3
-Mn90T_4 <- LTPR90_4-LTPRMn_4 # PV4
-Mn90T_5 <- LTPR90_5-LTPRMn_5 # PV5
-
-Mn90Ts <- c(Mn90T_1, Mn90T_2, Mn90T_3, Mn90T_4, Mn90T_5)
-Mn90T <- mean(Mn90Ts)
-
-# LTPR difference between mean and 10th percentile
-Mn10T_1 <- LTPRMn_1-LTPR10_1 # PV1
-Mn10T_2 <- LTPRMn_2-LTPR10_2 # PV2
-Mn10T_3 <- LTPRMn_3-LTPR10_3 # PV3
-Mn10T_4 <- LTPRMn_4-LTPR10_4 # PV4
-Mn10T_5 <- LTPRMn_5-LTPR10_5 # PV5
-
-Mn10Ts <- c(Mn10T_1, Mn10T_2, Mn10T_3, Mn10T_4, Mn10T_5)
-Mn10T <- mean(Mn10Ts)
-
-# LTPR difference between mean and 5th percentile
-Mn05T_1 <- LTPRMn_1-LTPR05_1 # PV1
-Mn05T_2 <- LTPRMn_2-LTPR05_2 # PV2
-Mn05T_3 <- LTPRMn_3-LTPR05_3 # PV3
-Mn05T_4 <- LTPRMn_4-LTPR05_4 # PV4
-Mn05T_5 <- LTPRMn_5-LTPR05_5 # PV5
-
-Mn05Ts <- c(Mn05T_1, Mn05T_2, Mn05T_3, Mn05T_4, Mn05T_5)
-Mn05T <- mean(Mn05Ts)
+Md95T <- mean(Md95Ts) # 95th percentile and median
+Md90T <- mean(Md90Ts) # 90th percentile and median
+Md10T <- mean(Md10Ts) # median and 10th percentile
+Md05T <- mean(Md05Ts) # median and 5th percentile
+Mn95T <- mean(Mn95Ts) # 95th percentile and mean
+Mn90T <- mean(Mn90Ts) # 90th percentile and mean
+Mn10T <- mean(Mn10Ts) # mean and 10th percentile
+Mn05T <- mean(Mn05Ts) # mean and 5th percentile
 
 
 
 ### U3Rs and LU3Rs: every 5th percentile from 5 to 95
-LU3R05_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .05, v = 'PV1') # PV1 5th
-LU3R05_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .05, v = 'PV2') # PV2
-LU3R05_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .05, v = 'PV3') # PV3
-LU3R05_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .05, v = 'PV4') # PV4
-LU3R05_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .05, v = 'PV5') # PV5
-LU3R10_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .10, v = 'PV1') # PV1 10th
-LU3R10_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .10, v = 'PV2') # PV2
-LU3R10_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .10, v = 'PV3') # PV3
-LU3R10_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .10, v = 'PV4') # PV4
-LU3R10_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .10, v = 'PV5') # PV5
-LU3R15_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .15, v = 'PV1') # PV1 15th
-LU3R15_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .15, v = 'PV2') # PV2
-LU3R15_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .15, v = 'PV3') # PV3
-LU3R15_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .15, v = 'PV4') # PV4
-LU3R15_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .15, v = 'PV5') # PV5
-LU3R20_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .20, v = 'PV1') # PV1 20th
-LU3R20_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .20, v = 'PV2') # PV2
-LU3R20_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .20, v = 'PV3') # PV3
-LU3R20_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .20, v = 'PV4') # PV4
-LU3R20_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .20, v = 'PV5') # PV5
-LU3R25_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .25, v = 'PV1') # PV1 25th
-LU3R25_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .25, v = 'PV2') # PV2
-LU3R25_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .25, v = 'PV3') # PV3
-LU3R25_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .25, v = 'PV4') # PV4
-LU3R25_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .25, v = 'PV5') # PV5
-LU3R30_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .30, v = 'PV1') # PV1 30th
-LU3R30_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .30, v = 'PV2') # PV2
-LU3R30_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .30, v = 'PV3') # PV3
-LU3R30_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .30, v = 'PV4') # PV4
-LU3R30_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .30, v = 'PV5') # PV5
-LU3R35_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .35, v = 'PV1') # PV1 35th
-LU3R35_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .35, v = 'PV2') # PV2
-LU3R35_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .35, v = 'PV3') # PV3
-LU3R35_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .35, v = 'PV4') # PV4
-LU3R35_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .35, v = 'PV5') # PV5
-LU3R40_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .40, v = 'PV1') # PV1 40th
-LU3R40_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .40, v = 'PV2') # PV2
-LU3R40_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .40, v = 'PV3') # PV3
-LU3R40_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .40, v = 'PV4') # PV4
-LU3R40_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .40, v = 'PV5') # PV5
-LU3R45_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .45, v = 'PV1') # PV1 45th
-LU3R45_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .45, v = 'PV2') # PV2
-LU3R45_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .45, v = 'PV3') # PV3
-LU3R45_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .45, v = 'PV4') # PV4
-LU3R45_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .45, v = 'PV5') # PV5
-LU3R50_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .50, v = 'PV1') # PV1 50th
-LU3R50_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .50, v = 'PV2') # PV2
-LU3R50_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .50, v = 'PV3') # PV3
-LU3R50_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .50, v = 'PV4') # PV4
-LU3R50_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .50, v = 'PV5') # PV5
-LU3R55_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .55, v = 'PV1') # PV1 55th
-LU3R55_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .55, v = 'PV2') # PV2
-LU3R55_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .55, v = 'PV3') # PV3
-LU3R55_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .55, v = 'PV4') # PV4
-LU3R55_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .55, v = 'PV5') # PV5
-LU3R60_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .60, v = 'PV1') # PV1 60th
-LU3R60_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .60, v = 'PV2') # PV2
-LU3R60_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .60, v = 'PV3') # PV3
-LU3R60_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .60, v = 'PV4') # PV4
-LU3R60_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .60, v = 'PV5') # PV5
-LU3R65_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .65, v = 'PV1') # PV1 65th
-LU3R65_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .65, v = 'PV2') # PV2
-LU3R65_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .65, v = 'PV3') # PV3
-LU3R65_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .65, v = 'PV4') # PV4
-LU3R65_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .65, v = 'PV5') # PV5
-LU3R70_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .70, v = 'PV1') # PV1 70th
-LU3R70_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .70, v = 'PV2') # PV2
-LU3R70_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .70, v = 'PV3') # PV3
-LU3R70_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .70, v = 'PV4') # PV4
-LU3R70_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .70, v = 'PV5') # PV5
-LU3R75_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .75, v = 'PV1') # PV1 75th
-LU3R75_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .75, v = 'PV2') # PV2
-LU3R75_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .75, v = 'PV3') # PV3
-LU3R75_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .75, v = 'PV4') # PV4
-LU3R75_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .75, v = 'PV5') # PV5
-LU3R80_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .80, v = 'PV1') # PV1 80th
-LU3R80_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .80, v = 'PV2') # PV2
-LU3R80_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .80, v = 'PV3') # PV3
-LU3R80_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .80, v = 'PV4') # PV4
-LU3R80_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .80, v = 'PV5') # PV5
-LU3R85_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .85, v = 'PV1') # PV1 85th
-LU3R85_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .85, v = 'PV2') # PV2
-LU3R85_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .85, v = 'PV3') # PV3
-LU3R85_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .85, v = 'PV4') # PV4
-LU3R85_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .85, v = 'PV5') # PV5
-LU3R90_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .90, v = 'PV1') # PV1 90th
-LU3R90_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .90, v = 'PV2') # PV2
-LU3R90_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .90, v = 'PV3') # PV3
-LU3R90_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .90, v = 'PV4') # PV4
-LU3R90_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .90, v = 'PV5') # PV5
-LU3R95_1 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .95, v = 'PV1') # PV1 95th
-LU3R95_2 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .95, v = 'PV2') # PV2
-LU3R95_3 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .95, v = 'PV3') # PV3
-LU3R95_4 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .95, v = 'PV4') # PV4
-LU3R95_5 <- LU3Rfn(d1 = T15_M, d2 = T15_F, q = .95, v = 'PV5') # PV5
-
-LU3R05s <- c(LU3R05_1, LU3R05_2, LU3R05_3, LU3R05_4, LU3R05_5) # 5th
-LU3R10s <- c(LU3R10_1, LU3R10_2, LU3R10_3, LU3R10_4, LU3R10_5) # 10th
-LU3R15s <- c(LU3R15_1, LU3R15_2, LU3R15_3, LU3R15_4, LU3R15_5) # 15th
-LU3R20s <- c(LU3R20_1, LU3R20_2, LU3R20_3, LU3R20_4, LU3R20_5) # 20th
-LU3R25s <- c(LU3R25_1, LU3R25_2, LU3R25_3, LU3R25_4, LU3R25_5) # 25th
-LU3R30s <- c(LU3R30_1, LU3R30_2, LU3R30_3, LU3R30_4, LU3R30_5) # 30th
-LU3R35s <- c(LU3R35_1, LU3R35_2, LU3R35_3, LU3R35_4, LU3R35_5) # 35th
-LU3R40s <- c(LU3R40_1, LU3R40_2, LU3R40_3, LU3R40_4, LU3R40_5) # 40th
-LU3R45s <- c(LU3R45_1, LU3R45_2, LU3R45_3, LU3R45_4, LU3R45_5) # 45th
-LU3R50s <- c(LU3R50_1, LU3R50_2, LU3R50_3, LU3R50_4, LU3R50_5) # 50th
-LU3R55s <- c(LU3R55_1, LU3R55_2, LU3R55_3, LU3R55_4, LU3R55_5) # 55th
-LU3R60s <- c(LU3R60_1, LU3R60_2, LU3R60_3, LU3R60_4, LU3R60_5) # 60th
-LU3R65s <- c(LU3R65_1, LU3R65_2, LU3R65_3, LU3R65_4, LU3R65_5) # 65th
-LU3R70s <- c(LU3R70_1, LU3R70_2, LU3R70_3, LU3R70_4, LU3R70_5) # 70th
-LU3R75s <- c(LU3R75_1, LU3R75_2, LU3R75_3, LU3R75_4, LU3R75_5) # 75th
-LU3R80s <- c(LU3R80_1, LU3R80_2, LU3R80_3, LU3R80_4, LU3R80_5) # 80th
-LU3R85s <- c(LU3R85_1, LU3R85_2, LU3R85_3, LU3R85_4, LU3R85_5) # 85th
-LU3R90s <- c(LU3R90_1, LU3R90_2, LU3R90_3, LU3R90_4, LU3R90_5) # 90th
-LU3R95s <- c(LU3R95_1, LU3R95_2, LU3R95_3, LU3R95_4, LU3R95_5) # 95th
+LU3R05s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .05, v = 'PV1'), # PV1 5th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .05, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .05, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .05, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .05, v = 'PV5')) # PV5
+LU3R10s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .10, v = 'PV1'), # PV1 10th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .10, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .10, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .10, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .10, v = 'PV5')) # PV5
+LU3R15s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .15, v = 'PV1'), # PV1 15th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .15, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .15, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .15, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .15, v = 'PV5')) # PV5
+LU3R20s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .20, v = 'PV1'), # PV1 20th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .20, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .20, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .20, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .20, v = 'PV5')) # PV5
+LU3R25s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .25, v = 'PV1'), # PV1 25th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .25, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .25, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .25, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .25, v = 'PV5')) # PV5
+LU3R30s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .30, v = 'PV1'), # PV1 30th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .30, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .30, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .30, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .30, v = 'PV5')) # PV5
+LU3R35s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .35, v = 'PV1'), # PV1 35th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .35, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .35, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .35, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .35, v = 'PV5')) # PV5
+LU3R40s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .40, v = 'PV1'), # PV1 40th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .40, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .40, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .40, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .40, v = 'PV5')) # PV5
+LU3R45s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .45, v = 'PV1'), # PV1 45th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .45, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .45, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .45, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .45, v = 'PV5')) # PV5
+LU3R50s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .50, v = 'PV1'), # PV1 50th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .50, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .50, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .50, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .50, v = 'PV5')) # PV5
+LU3R55s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .55, v = 'PV1'), # PV1 55th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .55, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .55, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .55, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .55, v = 'PV5')) # PV5
+LU3R60s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .60, v = 'PV1'), # PV1 60th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .60, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .60, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .60, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .60, v = 'PV5')) # PV5
+LU3R65s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .65, v = 'PV1'), # PV1 65th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .65, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .65, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .65, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .65, v = 'PV5')) # PV5
+LU3R70s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .70, v = 'PV1'), # PV1 70th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .70, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .70, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .70, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .70, v = 'PV5')) # PV5
+LU3R75s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .75, v = 'PV1'), # PV1 75th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .75, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .75, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .75, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .75, v = 'PV5')) # PV5
+LU3R80s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .80, v = 'PV1'), # PV1 80th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .80, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .80, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .80, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .80, v = 'PV5')) # PV5
+LU3R85s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .85, v = 'PV1'), # PV1 85th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .85, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .85, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .85, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .85, v = 'PV5')) # PV5
+LU3R90s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .90, v = 'PV1'), # PV1 90th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .90, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .90, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .90, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .90, v = 'PV5')) # PV5
+LU3R95s <- c(LU3Rfn(d1 = T15_M, d2 = T15_F, q = .95, v = 'PV1'), # PV1 95th
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .95, v = 'PV2'), # PV2
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .95, v = 'PV3'), # PV3
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .95, v = 'PV4'), # PV4
+             LU3Rfn(d1 = T15_M, d2 = T15_F, q = .95, v = 'PV5')) # PV5
 
 LU3R05 <- mean(LU3R05s) # 5th
 LU3R10 <- mean(LU3R10s) # 10th
@@ -860,45 +739,15 @@ U3R95 <- exp(LU3R95) # 95th
 
 ### U3R tail-center differences
 
-# LU3R difference between 95th percentile and median
-Md95U_1 <- LU3R95_1-LU3R50_1 # PV1
-Md95U_2 <- LU3R95_2-LU3R50_2 # PV2
-Md95U_3 <- LU3R95_3-LU3R50_3 # PV3
-Md95U_4 <- LU3R95_4-LU3R50_4 # PV4
-Md95U_5 <- LU3R95_5-LU3R50_5 # PV5
+Md95Us <- LU3R95s-LU3R50s # 95th percentile and median
+Md90Us <- LU3R90s-LU3R50s # 90th percentile and median
+Md10Us <- LU3R50s-LU3R10s # median and 10th percentile
+Md05Us <- LU3R50s-LU3R05s # median and 5th percentile
 
-Md95Us <- c(Md95U_1, Md95U_2, Md95U_3, Md95U_4, Md95U_5)
-Md95U <- mean(Md95Us)
-
-# LU3R difference between 90th percentile and median
-Md90U_1 <- LU3R90_1-LU3R50_1 # PV1
-Md90U_2 <- LU3R90_2-LU3R50_2 # PV2
-Md90U_3 <- LU3R90_3-LU3R50_3 # PV3
-Md90U_4 <- LU3R90_4-LU3R50_4 # PV4
-Md90U_5 <- LU3R90_5-LU3R50_5 # PV5
-
-Md90Us <- c(Md90U_1, Md90U_2, Md90U_3, Md90U_4, Md90U_5)
-Md90U <- mean(Md90Us)
-
-# LU3R difference between median and 10th percentile
-Md10U_1 <- LU3R50_1-LU3R10_1 # PV1
-Md10U_2 <- LU3R50_2-LU3R10_2 # PV2
-Md10U_3 <- LU3R50_3-LU3R10_3 # PV3
-Md10U_4 <- LU3R50_4-LU3R10_4 # PV4
-Md10U_5 <- LU3R50_5-LU3R10_5 # PV5
-
-Md10Us <- c(Md10U_1, Md10U_2, Md10U_3, Md10U_4, Md10U_5)
-Md10U <- mean(Md10Us)
-
-# LU3R difference between median and 5th percentile
-Md05U_1 <- LU3R50_1-LU3R05_1 # PV1
-Md05U_2 <- LU3R50_2-LU3R05_2 # PV2
-Md05U_3 <- LU3R50_3-LU3R05_3 # PV3
-Md05U_4 <- LU3R50_4-LU3R05_4 # PV4
-Md05U_5 <- LU3R50_5-LU3R05_5 # PV5
-
-Md05Us <- c(Md05U_1, Md05U_2, Md05U_3, Md05U_4, Md05U_5)
-Md05U <- mean(Md05Us)
+Md95U <- mean(Md95Us) # 95th percentile and median
+Md90U <- mean(Md90Us) # 90th percentile and median
+Md10U <- mean(Md10Us) # median and 10th percentile
+Md05U <- mean(Md05Us) # median and 5th percentile
 
 
 
@@ -909,121 +758,111 @@ Md05U <- mean(Md05Us)
 
 ### Cohen's d
 
-d1 <- dfn(d1 = T15_M, d2 = T15_F, v = 'PV1') # PV1
-d2 <- dfn(d1 = T15_M, d2 = T15_F, v = 'PV2') # PV2
-d3 <- dfn(d1 = T15_M, d2 = T15_F, v = 'PV3') # PV3
-d4 <- dfn(d1 = T15_M, d2 = T15_F, v = 'PV4') # PV4
-d5 <- dfn(d1 = T15_M, d2 = T15_F, v = 'PV5') # PV5
+ds <- c(dfn(d1 = T15_M, d2 = T15_F, v = 'PV1'), # PV1
+        dfn(d1 = T15_M, d2 = T15_F, v = 'PV2'), # PV2
+        dfn(d1 = T15_M, d2 = T15_F, v = 'PV3'), # PV3
+        dfn(d1 = T15_M, d2 = T15_F, v = 'PV4'), # PV4
+        dfn(d1 = T15_M, d2 = T15_F, v = 'PV5')) # PV5
 
-ds <- c(d1, d2, d3, d4, d5)
 d <- mean(ds)
 
 
 ### U3
 
-U3_1 <- U3fn(d1 = T15_M, d2 = T15_F, v = 'PV1') # PV1
-U3_2 <- U3fn(d1 = T15_M, d2 = T15_F, v = 'PV2') # PV2
-U3_3 <- U3fn(d1 = T15_M, d2 = T15_F, v = 'PV3') # PV3
-U3_4 <- U3fn(d1 = T15_M, d2 = T15_F, v = 'PV4') # PV4
-U3_5 <- U3fn(d1 = T15_M, d2 = T15_F, v = 'PV5') # PV5
+U3s <- c(U3fn(d1 = T15_M, d2 = T15_F, v = 'PV1'), # PV1
+         U3fn(d1 = T15_M, d2 = T15_F, v = 'PV2'), # PV2
+         U3fn(d1 = T15_M, d2 = T15_F, v = 'PV3'), # PV3
+         U3fn(d1 = T15_M, d2 = T15_F, v = 'PV4'), # PV4
+         U3fn(d1 = T15_M, d2 = T15_F, v = 'PV5')) # PV5
 
-U3s <- c(U3_1, U3_2, U3_3, U3_4, U3_5)
 U3 <- mean(U3s)
 
 
 ### Probability of superiority (PS)
 
-PS1 <- PSfn(d1 = T15_M, d2 = T15_F, v = 'PV1') # PV1
-PS2 <- PSfn(d1 = T15_M, d2 = T15_F, v = 'PV2') # PV2
-PS3 <- PSfn(d1 = T15_M, d2 = T15_F, v = 'PV3') # PV3
-PS4 <- PSfn(d1 = T15_M, d2 = T15_F, v = 'PV4') # PV4
-PS5 <- PSfn(d1 = T15_M, d2 = T15_F, v = 'PV5') # PV5
+PSs <- c(PSfn(d1 = T15_M, d2 = T15_F, v = 'PV1'), # PV1
+         PSfn(d1 = T15_M, d2 = T15_F, v = 'PV2'), # PV2
+         PSfn(d1 = T15_M, d2 = T15_F, v = 'PV3'), # PV3
+         PSfn(d1 = T15_M, d2 = T15_F, v = 'PV4'), # PV4
+         PSfn(d1 = T15_M, d2 = T15_F, v = 'PV5')) # PV5
 
-PSs <- c(PS1, PS2, PS3, PS4, PS5)
 PS <- mean(PSs)
 
 
 ### Variance ratio (VR), Log-transformed VR (LVR)
 
-LVR1 <- LVRfn(d1 = T15_M, d2 = T15_F, v = 'PV1') # PV1
-LVR2 <- LVRfn(d1 = T15_M, d2 = T15_F, v = 'PV2') # PV2
-LVR3 <- LVRfn(d1 = T15_M, d2 = T15_F, v = 'PV3') # PV3
-LVR4 <- LVRfn(d1 = T15_M, d2 = T15_F, v = 'PV4') # PV4
-LVR5 <- LVRfn(d1 = T15_M, d2 = T15_F, v = 'PV5') # PV5
+LVRs <- c(LVRfn(d1 = T15_M, d2 = T15_F, v = 'PV1'), # PV1
+          LVRfn(d1 = T15_M, d2 = T15_F, v = 'PV2'), # PV2
+          LVRfn(d1 = T15_M, d2 = T15_F, v = 'PV3'), # PV3
+          LVRfn(d1 = T15_M, d2 = T15_F, v = 'PV4'), # PV4
+          LVRfn(d1 = T15_M, d2 = T15_F, v = 'PV5')) # PV5
 
-LVRs <- c(LVR1, LVR2, LVR3, LVR4, LVR5)
 LVR <- mean(LVRs)
 VR <- exp(LVR)
 
 
 ### Left and right VR and LVR (VR_L, VR_R, LVR_L, LVR_R)
 
-LVR_L1 <- LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV1', t = 'L') # PV1
-LVR_L2 <- LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV2', t = 'L') # PV2
-LVR_L3 <- LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV3', t = 'L') # PV3
-LVR_L4 <- LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV4', t = 'L') # PV4
-LVR_L5 <- LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV5', t = 'L') # PV5
+LVR_Ls <- c(LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV1', t = 'L'), # PV1
+            LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV2', t = 'L'), # PV2
+            LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV3', t = 'L'), # PV3
+            LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV4', t = 'L'), # PV4
+            LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV5', t = 'L')) # PV5
 
-LVR_Ls <- c(LVR_L1, LVR_L2, LVR_L3, LVR_L4, LVR_L5)
 LVR_L <- mean(LVR_Ls)
 VR_L <- exp(LVR_L)
 
-LVR_R1 <- LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV1', t = 'R') # PV1
-LVR_R2 <- LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV2', t = 'R') # PV2
-LVR_R3 <- LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV3', t = 'R') # PV3
-LVR_R4 <- LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV4', t = 'R') # PV4
-LVR_R5 <- LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV5', t = 'R') # PV5
+LVR_Rs <- c(LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV1', t = 'R'), # PV1
+            LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV2', t = 'R'), # PV2
+            LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV3', t = 'R'), # PV3
+            LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV4', t = 'R'), # PV4
+            LVR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV5', t = 'R')) # PV5
 
-LVR_Rs <- c(LVR_R1, LVR_R2, LVR_R3, LVR_R4, LVR_R5)
 LVR_R <- mean(LVR_Rs)
 VR_R <- exp(LVR_R)
 
 
 ### Mean absolute deviation (from the median) ratio (MADR), Log-transformed MADR (LMADR)
 
-LMADR1 <- LMADRfn(d1 = T15_M, d2 = T15_F, v = 'PV1') # PV1
-LMADR2 <- LMADRfn(d1 = T15_M, d2 = T15_F, v = 'PV2') # PV2
-LMADR3 <- LMADRfn(d1 = T15_M, d2 = T15_F, v = 'PV3') # PV3
-LMADR4 <- LMADRfn(d1 = T15_M, d2 = T15_F, v = 'PV4') # PV4
-LMADR5 <- LMADRfn(d1 = T15_M, d2 = T15_F, v = 'PV5') # PV5
+LMADRs <- c(LMADRfn(d1 = T15_M, d2 = T15_F, v = 'PV1'), # PV1
+            LMADRfn(d1 = T15_M, d2 = T15_F, v = 'PV2'), # PV2
+            LMADRfn(d1 = T15_M, d2 = T15_F, v = 'PV3'), # PV3
+            LMADRfn(d1 = T15_M, d2 = T15_F, v = 'PV4'), # PV4
+            LMADRfn(d1 = T15_M, d2 = T15_F, v = 'PV5')) # PV5
 
-LMADRs <- c(LMADR1, LMADR2, LMADR3, LMADR4, LMADR5)
 LMADR <- mean(LMADRs)
 MADR <- exp(LMADR)
 
 
 ### Left and right MADR and LMADR (MADR_L, MADR_R, LMADR_L, LMADR_R)
 
-LMADR_L1 <- LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV1', t = 'L') # PV1
-LMADR_L2 <- LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV2', t = 'L') # PV2
-LMADR_L3 <- LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV3', t = 'L') # PV3
-LMADR_L4 <- LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV4', t = 'L') # PV4
-LMADR_L5 <- LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV5', t = 'L') # PV5
+LMADR_Ls <- c(LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV1', t = 'L'), # PV1
+              LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV2', t = 'L'), # PV2
+              LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV3', t = 'L'), # PV3
+              LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV4', t = 'L'), # PV4
+              LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV5', t = 'L')) # PV5
 
-LMADR_Ls <- c(LMADR_L1, LMADR_L2, LMADR_L3, LMADR_L4, LMADR_L5)
 LMADR_L <- mean(LMADR_Ls)
 MADR_L <- exp(LMADR_L)
 
-LMADR_R1 <- LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV1', t = 'R') # PV1
-LMADR_R2 <- LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV2', t = 'R') # PV2
-LMADR_R3 <- LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV3', t = 'R') # PV3
-LMADR_R4 <- LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV4', t = 'R') # PV4
-LMADR_R5 <- LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV5', t = 'R') # PV5
+LMADR_Rs <- c(LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV1', t = 'R'), # PV1
+              LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV2', t = 'R'), # PV2
+              LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV3', t = 'R'), # PV3
+              LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV4', t = 'R'), # PV4
+              LMADR_Tfn(d1 = T15_M, d2 = T15_F, v = 'PV5', t = 'R')) # PV5
 
-LMADR_Rs <- c(LMADR_R1, LMADR_R2, LMADR_R3, LMADR_R4, LMADR_R5)
 LMADR_R <- mean(LMADR_Rs)
 MADR_R <- exp(LMADR_R)
 
 
 ### Gini's mean difference ratio (GMDR), Log-transformed GMDR (LGMDR)
 
-LGMDR1 <- LGMDRfn(d1 = T15_M, d2 = T15_F, v = 'PV1') # PV1
-LGMDR2 <- LGMDRfn(d1 = T15_M, d2 = T15_F, v = 'PV2') # PV2
-LGMDR3 <- LGMDRfn(d1 = T15_M, d2 = T15_F, v = 'PV3') # PV3
-LGMDR4 <- LGMDRfn(d1 = T15_M, d2 = T15_F, v = 'PV4') # PV4
-LGMDR5 <- LGMDRfn(d1 = T15_M, d2 = T15_F, v = 'PV5') # PV5
+LGMDRs <- c(LGMDRfn(d1 = T15_M, d2 = T15_F, v = 'PV1'), # PV1
+            LGMDRfn(d1 = T15_M, d2 = T15_F, v = 'PV2'), # PV2
+            LGMDRfn(d1 = T15_M, d2 = T15_F, v = 'PV3'), # PV3
+            LGMDRfn(d1 = T15_M, d2 = T15_F, v = 'PV4'), # PV4
+            LGMDRfn(d1 = T15_M, d2 = T15_F, v = 'PV5')) # PV5
 
-LGMDRs <- c(LGMDR1, LGMDR2, LGMDR3, LGMDR4, LGMDR5)
 LGMDR <- mean(LGMDRs)
 GMDR <- exp(LGMDR)
 
@@ -1174,21 +1013,28 @@ GMDR_A <- exp(LGMDR_A)
 
 #### SEs: Means and Medians ####
 
-J1 <- J2 <- J3 <- J4 <- J5 <- numeric(2*L) # empty containers
-A1 <- A2 <- A3 <- A4 <- A5 <- numeric(2*L) # empty containers
-C1 <- C2 <- C3 <- C4 <- C5 <- numeric(2*L) # empty containers
-K1 <- K2 <- K3 <- K4 <- K5 <- numeric(2*L) # empty containers
-N1 <- N2 <- N3 <- N4 <- N5 <- numeric(2*L) # empty containers
-F1 <- F2 <- F3 <- F4 <- F5 <- numeric(2*L) # empty containers
+J1 <- J2 <- J3 <- J4 <- J5 <- numeric(L2) # empty containers
+A1 <- A2 <- A3 <- A4 <- A5 <- numeric(L2) # empty containers
+C1 <- C2 <- C3 <- C4 <- C5 <- numeric(L2) # empty containers
+K1 <- K2 <- K3 <- K4 <- K5 <- numeric(L2) # empty containers
+N1 <- N2 <- N3 <- N4 <- N5 <- numeric(L2) # empty containers
+F1 <- F2 <- F3 <- F4 <- F5 <- numeric(L2) # empty containers
 
 # perform jackknife resampling of means and medians
-for (i in 1:L) { # for each JK zone
+for (i in 1:L2) { # for each JK zone, twice
   T0 <- T15 # create/restore duplicate
-  # double weights if JK code is 1 and zero weights if JK code is 0
-  T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 1),'HWt']
-  T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 0
+  if (i <= L) { # first half
+    # double weights if JK code is 1 and zero weights if JK code is 0
+    T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 1),'HWt']
+    T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 0
+  } else { # second half
+    # double weights if JK code is 0 and zero weights if JK code is 1
+    T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt'] <- 2*T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt']
+    T0[which(T0$JKZ == i-L & T0$JKR == 1),'HWt'] <- 0
+  }
   T0_F <- T0[which(T0$Sex == 1),] # female subset
   T0_M <- T0[which(T0$Sex == 2),] # male subset
+  
   J1[i] <- wt.mn(T0$PV1, T0$HWt) # PV1 reweighted mean (total)
   J2[i] <- wt.mn(T0$PV2, T0$HWt) # PV2
   J3[i] <- wt.mn(T0$PV3, T0$HWt) # PV3
@@ -1219,86 +1065,49 @@ for (i in 1:L) { # for each JK zone
   F3[i] <- wt.qnt(T0_M$PV3, T0_M$HWt, .5) # PV3
   F4[i] <- wt.qnt(T0_M$PV4, T0_M$HWt, .5) # PV4
   F5[i] <- wt.qnt(T0_M$PV5, T0_M$HWt, .5) # PV5
-  
-  T0 <- T15 # restore duplicate
-  # double weights if JK code is 0 and zero weights if JK code is 1
-  T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 0),'HWt']
-  T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 0
-  T0_F <- T0[which(T0$Sex == 1),] # female subset
-  T0_M <- T0[which(T0$Sex == 2),] # male subset
-  J1[i+L] <- wt.mn(T0$PV1, T0$HWt) # PV1 reweighted mean (total)
-  J2[i+L] <- wt.mn(T0$PV2, T0$HWt) # PV2
-  J3[i+L] <- wt.mn(T0$PV3, T0$HWt) # PV3
-  J4[i+L] <- wt.mn(T0$PV4, T0$HWt) # PV4
-  J5[i+L] <- wt.mn(T0$PV5, T0$HWt) # PV5
-  A1[i+L] <- wt.qnt(T0$PV1, T0$HWt, .5) # PV1 reweighted median (total)
-  A2[i+L] <- wt.qnt(T0$PV2, T0$HWt, .5) # PV2
-  A3[i+L] <- wt.qnt(T0$PV3, T0$HWt, .5) # PV3
-  A4[i+L] <- wt.qnt(T0$PV4, T0$HWt, .5) # PV4
-  A5[i+L] <- wt.qnt(T0$PV5, T0$HWt, .5) # PV5
-  C1[i+L] <- wt.mn(T0_F$PV1, T0_F$HWt) # PV1 reweighted mean (females)
-  C2[i+L] <- wt.mn(T0_F$PV2, T0_F$HWt) # PV2
-  C3[i+L] <- wt.mn(T0_F$PV3, T0_F$HWt) # PV3
-  C4[i+L] <- wt.mn(T0_F$PV4, T0_F$HWt) # PV4
-  C5[i+L] <- wt.mn(T0_F$PV5, T0_F$HWt) # PV5
-  K1[i+L] <- wt.qnt(T0_F$PV1, T0_F$HWt, .5) # PV1 reweighted median (females)
-  K2[i+L] <- wt.qnt(T0_F$PV2, T0_F$HWt, .5) # PV2
-  K3[i+L] <- wt.qnt(T0_F$PV3, T0_F$HWt, .5) # PV3
-  K4[i+L] <- wt.qnt(T0_F$PV4, T0_F$HWt, .5) # PV4
-  K5[i+L] <- wt.qnt(T0_F$PV5, T0_F$HWt, .5) # PV5
-  N1[i+L] <- wt.mn(T0_M$PV1, T0_M$HWt) # PV1 reweighted mean (males)
-  N2[i+L] <- wt.mn(T0_M$PV2, T0_M$HWt) # PV2
-  N3[i+L] <- wt.mn(T0_M$PV3, T0_M$HWt) # PV3
-  N4[i+L] <- wt.mn(T0_M$PV4, T0_M$HWt) # PV4
-  N5[i+L] <- wt.mn(T0_M$PV5, T0_M$HWt) # PV5
-  F1[i+L] <- wt.qnt(T0_M$PV1, T0_M$HWt, .5) # PV1 reweighted median (males)
-  F2[i+L] <- wt.qnt(T0_M$PV2, T0_M$HWt, .5) # PV2
-  F3[i+L] <- wt.qnt(T0_M$PV3, T0_M$HWt, .5) # PV3
-  F4[i+L] <- wt.qnt(T0_M$PV4, T0_M$HWt, .5) # PV4
-  F5[i+L] <- wt.qnt(T0_M$PV5, T0_M$HWt, .5) # PV5
 }
 
 # jackknife sampling variance
-JSV_MnT <- mean(c(sum((J1-Mn1)^2), # mean (total)
-                  sum((J2-Mn2)^2),
-                  sum((J3-Mn3)^2),
-                  sum((J4-Mn4)^2),
-                  sum((J5-Mn5)^2)))/2
-JSV_MdT <- mean(c(sum((A1-Md1)^2), # median (total)
-                  sum((A2-Md2)^2),
-                  sum((A3-Md3)^2),
-                  sum((A4-Md4)^2),
-                  sum((A5-Md5)^2)))/2
-JSV_MnF <- mean(c(sum((C1-Mn1_F)^2), # mean (females)
-                  sum((C2-Mn2_F)^2),
-                  sum((C3-Mn3_F)^2),
-                  sum((C4-Mn4_F)^2),
-                  sum((C5-Mn5_F)^2)))/2
-JSV_MdF <- mean(c(sum((K1-Md1_F)^2), # median (females)
-                  sum((K2-Md2_F)^2),
-                  sum((K3-Md3_F)^2),
-                  sum((K4-Md4_F)^2),
-                  sum((K5-Md5_F)^2)))/2
-JSV_MnM <- mean(c(sum((N1-Mn1_M)^2), # mean (males)
-                  sum((N2-Mn2_M)^2),
-                  sum((N3-Mn3_M)^2),
-                  sum((N4-Mn4_M)^2),
-                  sum((N5-Mn5_M)^2)))/2
-JSV_MdM <- mean(c(sum((F1-Md1_M)^2), # median (males)
-                  sum((F2-Md2_M)^2),
-                  sum((F3-Md3_M)^2),
-                  sum((F4-Md4_M)^2),
-                  sum((F5-Md5_M)^2)))/2
-JSV_MnDf <- mean(c(sum((N1-C1-MnDf1)^2), # mean difference
-                   sum((N2-C2-MnDf2)^2),
-                   sum((N3-C3-MnDf3)^2),
-                   sum((N4-C4-MnDf4)^2),
-                   sum((N5-C5-MnDf5)^2)))/2
-JSV_MdDf <- mean(c(sum((F1-K1-MdDf1)^2), # median difference
-                   sum((F2-K2-MdDf2)^2),
-                   sum((F3-K3-MdDf3)^2),
-                   sum((F4-K4-MdDf4)^2),
-                   sum((F5-K5-MdDf5)^2)))/2
+JSV_MnT <- mean(c(sum((J1-Mns[1])^2), # mean (total)
+                  sum((J2-Mns[2])^2),
+                  sum((J3-Mns[3])^2),
+                  sum((J4-Mns[4])^2),
+                  sum((J5-Mns[5])^2)))/2
+JSV_MdT <- mean(c(sum((A1-Mds[1])^2), # median (total)
+                  sum((A2-Mds[2])^2),
+                  sum((A3-Mds[3])^2),
+                  sum((A4-Mds[4])^2),
+                  sum((A5-Mds[5])^2)))/2
+JSV_MnF <- mean(c(sum((C1-Mns_F[1])^2), # mean (females)
+                  sum((C2-Mns_F[2])^2),
+                  sum((C3-Mns_F[3])^2),
+                  sum((C4-Mns_F[4])^2),
+                  sum((C5-Mns_F[5])^2)))/2
+JSV_MdF <- mean(c(sum((K1-Mds_F[1])^2), # median (females)
+                  sum((K2-Mds_F[2])^2),
+                  sum((K3-Mds_F[3])^2),
+                  sum((K4-Mds_F[4])^2),
+                  sum((K5-Mds_F[5])^2)))/2
+JSV_MnM <- mean(c(sum((N1-Mns_M[1])^2), # mean (males)
+                  sum((N2-Mns_M[2])^2),
+                  sum((N3-Mns_M[3])^2),
+                  sum((N4-Mns_M[4])^2),
+                  sum((N5-Mns_M[5])^2)))/2
+JSV_MdM <- mean(c(sum((F1-Mds_M[1])^2), # median (males)
+                  sum((F2-Mds_M[2])^2),
+                  sum((F3-Mds_M[3])^2),
+                  sum((F4-Mds_M[4])^2),
+                  sum((F5-Mds_M[5])^2)))/2
+JSV_MnDf <- mean(c(sum((N1-C1-MnDfs[1])^2), # mean difference
+                   sum((N2-C2-MnDfs[2])^2),
+                   sum((N3-C3-MnDfs[3])^2),
+                   sum((N4-C4-MnDfs[4])^2),
+                   sum((N5-C5-MnDfs[5])^2)))/2
+JSV_MdDf <- mean(c(sum((F1-K1-MdDfs[1])^2), # median difference
+                   sum((F2-K2-MdDfs[2])^2),
+                   sum((F3-K3-MdDfs[3])^2),
+                   sum((F4-K4-MdDfs[4])^2),
+                   sum((F5-K5-MdDfs[5])^2)))/2
 
 # imputation variance
 IV_MnT <- .3*sum((Mns-Mn)^2) # mean (total)
@@ -1340,35 +1149,42 @@ SE_MdDf <- sqrt(TV_MdDf) # standard error of median difference
 
 #### SEs: LTPRs and LTPR tail-center differences ####
 
-A1 <- A2 <- A3 <- A4 <- A5 <- numeric(2*L) # empty containers
-B1 <- B2 <- B3 <- B4 <- B5 <- numeric(2*L) # empty containers
-C1 <- C2 <- C3 <- C4 <- C5 <- numeric(2*L) # empty containers
-E1 <- E2 <- E3 <- E4 <- E5 <- numeric(2*L) # empty containers
-F1 <- F2 <- F3 <- F4 <- F5 <- numeric(2*L) # empty containers
-G1 <- G2 <- G3 <- G4 <- G5 <- numeric(2*L) # empty containers
-H1 <- H2 <- H3 <- H4 <- H5 <- numeric(2*L) # empty containers
-I1 <- I2 <- I3 <- I4 <- I5 <- numeric(2*L) # empty containers
-J1 <- J2 <- J3 <- J4 <- J5 <- numeric(2*L) # empty containers
-K1 <- K2 <- K3 <- K4 <- K5 <- numeric(2*L) # empty containers
-M1 <- M2 <- M3 <- M4 <- M5 <- numeric(2*L) # empty containers
-N1 <- N2 <- N3 <- N4 <- N5 <- numeric(2*L) # empty containers
-O1 <- O2 <- O3 <- O4 <- O5 <- numeric(2*L) # empty containers
-P1 <- P2 <- P3 <- P4 <- P5 <- numeric(2*L) # empty containers
-Q1 <- Q2 <- Q3 <- Q4 <- Q5 <- numeric(2*L) # empty containers
-R1 <- R2 <- R3 <- R4 <- R5 <- numeric(2*L) # empty containers
-S1 <- S2 <- S3 <- S4 <- S5 <- numeric(2*L) # empty containers
-T1 <- T2 <- T3 <- T4 <- T5 <- numeric(2*L) # empty containers
-V1 <- V2 <- V3 <- V4 <- V5 <- numeric(2*L) # empty containers
-W1 <- W2 <- W3 <- W4 <- W5 <- numeric(2*L) # empty containers
+A1 <- A2 <- A3 <- A4 <- A5 <- numeric(L2) # empty containers
+B1 <- B2 <- B3 <- B4 <- B5 <- numeric(L2) # empty containers
+C1 <- C2 <- C3 <- C4 <- C5 <- numeric(L2) # empty containers
+E1 <- E2 <- E3 <- E4 <- E5 <- numeric(L2) # empty containers
+F1 <- F2 <- F3 <- F4 <- F5 <- numeric(L2) # empty containers
+G1 <- G2 <- G3 <- G4 <- G5 <- numeric(L2) # empty containers
+H1 <- H2 <- H3 <- H4 <- H5 <- numeric(L2) # empty containers
+I1 <- I2 <- I3 <- I4 <- I5 <- numeric(L2) # empty containers
+J1 <- J2 <- J3 <- J4 <- J5 <- numeric(L2) # empty containers
+K1 <- K2 <- K3 <- K4 <- K5 <- numeric(L2) # empty containers
+M1 <- M2 <- M3 <- M4 <- M5 <- numeric(L2) # empty containers
+N1 <- N2 <- N3 <- N4 <- N5 <- numeric(L2) # empty containers
+O1 <- O2 <- O3 <- O4 <- O5 <- numeric(L2) # empty containers
+P1 <- P2 <- P3 <- P4 <- P5 <- numeric(L2) # empty containers
+Q1 <- Q2 <- Q3 <- Q4 <- Q5 <- numeric(L2) # empty containers
+R1 <- R2 <- R3 <- R4 <- R5 <- numeric(L2) # empty containers
+S1 <- S2 <- S3 <- S4 <- S5 <- numeric(L2) # empty containers
+T1 <- T2 <- T3 <- T4 <- T5 <- numeric(L2) # empty containers
+V1 <- V2 <- V3 <- V4 <- V5 <- numeric(L2) # empty containers
+W1 <- W2 <- W3 <- W4 <- W5 <- numeric(L2) # empty containers
 
-# perform jackknife resampling of LTPRs and LTPR tail-center differences
-for (i in 1:L) { # for each JK zone
+# perform jackknife resampling of LTPRs
+for (i in 1:L2) { # for each JK zone, twice
   T0 <- T15 # create/restore duplicate
-  # double weights if JK code is 1 and zero weights if JK code is 0
-  T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 1),'HWt']
-  T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 0
+  if (i <= L) { # first half
+    # double weights if JK code is 1 and zero weights if JK code is 0
+    T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 1),'HWt']
+    T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 0
+  } else { # second half
+    # double weights if JK code is 0 and zero weights if JK code is 1
+    T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt'] <- 2*T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt']
+    T0[which(T0$JKZ == i-L & T0$JKR == 1),'HWt'] <- 0
+  }
   T0_F <- T0[which(T0$Sex == 1),] # female subset
   T0_M <- T0[which(T0$Sex == 2),] # male subset
+  
   A1[i] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV1, T0$HWt), 'PV1') # PV1 reweighted mean LTPR
   A2[i] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV2, T0$HWt), 'PV2') # PV2
   A3[i] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV3, T0$HWt), 'PV3') # PV3
@@ -1470,257 +1286,150 @@ for (i in 1:L) { # for each JK zone
   W4[i] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .95), 'PV4') # PV4
   W5[i] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .95), 'PV5') # PV5
   
-  T0 <- T15 # restore duplicate
-  # double weights if JK code is 0 and zero weights if JK code is 1
-  T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 0),'HWt']
-  T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 0
-  T0_F <- T0[which(T0$Sex == 1),] # female subset
-  T0_M <- T0[which(T0$Sex == 2),] # male subset
-  A1[i+L] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV1, T0$HWt), 'PV1') # PV1 reweighted mean LTPR
-  A2[i+L] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV2, T0$HWt), 'PV2') # PV2
-  A3[i+L] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV3, T0$HWt), 'PV3') # PV3
-  A4[i+L] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV4, T0$HWt), 'PV4') # PV4
-  A5[i+L] <- LTPRfn(T0_M, T0_F, wt.mn(T0$PV5, T0$HWt), 'PV5') # PV5
-  B1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .05), 'PV1') # PV1 reweighted 5th LTPR
-  B2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .05), 'PV2') # PV2
-  B3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .05), 'PV3') # PV3
-  B4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .05), 'PV4') # PV4
-  B5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .05), 'PV5') # PV5
-  C1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .10), 'PV1') # PV1 reweighted 10th LTPR
-  C2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .10), 'PV2') # PV2
-  C3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .10), 'PV3') # PV3
-  C4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .10), 'PV4') # PV4
-  C5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .10), 'PV5') # PV5
-  E1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .15), 'PV1') # PV1 reweighted 15th LTPR
-  E2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .15), 'PV2') # PV2
-  E3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .15), 'PV3') # PV3
-  E4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .15), 'PV4') # PV4
-  E5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .15), 'PV5') # PV5
-  F1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .20), 'PV1') # PV1 reweighted 20th LTPR
-  F2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .20), 'PV2') # PV2
-  F3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .20), 'PV3') # PV3
-  F4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .20), 'PV4') # PV4
-  F5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .20), 'PV5') # PV5
-  G1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .25), 'PV1') # PV1 reweighted 25th LTPR
-  G2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .25), 'PV2') # PV2
-  G3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .25), 'PV3') # PV3
-  G4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .25), 'PV4') # PV4
-  G5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .25), 'PV5') # PV5
-  H1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .30), 'PV1') # PV1 reweighted 30th LTPR
-  H2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .30), 'PV2') # PV2
-  H3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .30), 'PV3') # PV3
-  H4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .30), 'PV4') # PV4
-  H5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .30), 'PV5') # PV5
-  I1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .35), 'PV1') # PV1 reweighted 35th LTPR
-  I2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .35), 'PV2') # PV2
-  I3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .35), 'PV3') # PV3
-  I4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .35), 'PV4') # PV4
-  I5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .35), 'PV5') # PV5
-  J1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .40), 'PV1') # PV1 reweighted 40th LTPR
-  J2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .40), 'PV2') # PV2
-  J3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .40), 'PV3') # PV3
-  J4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .40), 'PV4') # PV4
-  J5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .40), 'PV5') # PV5
-  K1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .45), 'PV1') # PV1 reweighted 45th LTPR
-  K2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .45), 'PV2') # PV2
-  K3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .45), 'PV3') # PV3
-  K4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .45), 'PV4') # PV4
-  K5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .45), 'PV5') # PV5
-  M1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .50), 'PV1') # PV1 reweighted 50th LTPR
-  M2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .50), 'PV2') # PV2
-  M3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .50), 'PV3') # PV3
-  M4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .50), 'PV4') # PV4
-  M5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .50), 'PV5') # PV5
-  N1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .55), 'PV1') # PV1 reweighted 55th LTPR
-  N2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .55), 'PV2') # PV2
-  N3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .55), 'PV3') # PV3
-  N4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .55), 'PV4') # PV4
-  N5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .55), 'PV5') # PV5
-  O1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .60), 'PV1') # PV1 reweighted 60th LTPR
-  O2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .60), 'PV2') # PV2
-  O3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .60), 'PV3') # PV3
-  O4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .60), 'PV4') # PV4
-  O5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .60), 'PV5') # PV5
-  P1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .65), 'PV1') # PV1 reweighted 65th LTPR
-  P2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .65), 'PV2') # PV2
-  P3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .65), 'PV3') # PV3
-  P4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .65), 'PV4') # PV4
-  P5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .65), 'PV5') # PV5
-  Q1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .70), 'PV1') # PV1 reweighted 70th LTPR
-  Q2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .70), 'PV2') # PV2
-  Q3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .70), 'PV3') # PV3
-  Q4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .70), 'PV4') # PV4
-  Q5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .70), 'PV5') # PV5
-  R1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .75), 'PV1') # PV1 reweighted 75th LTPR
-  R2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .75), 'PV2') # PV2
-  R3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .75), 'PV3') # PV3
-  R4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .75), 'PV4') # PV4
-  R5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .75), 'PV5') # PV5
-  S1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .80), 'PV1') # PV1 reweighted 80th LTPR
-  S2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .80), 'PV2') # PV2
-  S3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .80), 'PV3') # PV3
-  S4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .80), 'PV4') # PV4
-  S5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .80), 'PV5') # PV5
-  T1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .85), 'PV1') # PV1 reweighted 85th LTPR
-  T2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .85), 'PV2') # PV2
-  T3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .85), 'PV3') # PV3
-  T4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .85), 'PV4') # PV4
-  T5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .85), 'PV5') # PV5
-  V1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .90), 'PV1') # PV1 reweighted 90th LTPR
-  V2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .90), 'PV2') # PV2
-  V3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .90), 'PV3') # PV3
-  V4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .90), 'PV4') # PV4
-  V5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .90), 'PV5') # PV5
-  W1[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV1, T0$HWt, .95), 'PV1') # PV1 reweighted 95th LTPR
-  W2[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV2, T0$HWt, .95), 'PV2') # PV2
-  W3[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV3, T0$HWt, .95), 'PV3') # PV3
-  W4[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .95), 'PV4') # PV4
-  W5[i+L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .95), 'PV5') # PV5
-  
-  if (i %% 5 == 0) {print(paste0(i, '/', L, ' at ', Sys.time()), quote = F)} # print updates
+  if (i %% 10 == 0) {print(paste0(i, '/', L2, ' at ', Sys.time()), quote = F)} # print updates
 }
 
 # jackknife sampling variance
-JSV_Mn <- mean(c(sum((A1-LTPRMn_1)^2), # mean LTPR
-                 sum((A2-LTPRMn_2)^2),
-                 sum((A3-LTPRMn_3)^2),
-                 sum((A4-LTPRMn_4)^2),
-                 sum((A5-LTPRMn_5)^2)))/2
-JSV_05 <- mean(c(sum((B1-LTPR05_1)^2), # 5th LTPR
-                 sum((B2-LTPR05_2)^2),
-                 sum((B3-LTPR05_3)^2),
-                 sum((B4-LTPR05_4)^2),
-                 sum((B5-LTPR05_5)^2)))/2
-JSV_10 <- mean(c(sum((C1-LTPR10_1)^2), # 10th LTPR
-                 sum((C2-LTPR10_2)^2),
-                 sum((C3-LTPR10_3)^2),
-                 sum((C4-LTPR10_4)^2),
-                 sum((C5-LTPR10_5)^2)))/2
-JSV_15 <- mean(c(sum((E1-LTPR15_1)^2), # 15th LTPR
-                 sum((E2-LTPR15_2)^2),
-                 sum((E3-LTPR15_3)^2),
-                 sum((E4-LTPR15_4)^2),
-                 sum((E5-LTPR15_5)^2)))/2
-JSV_20 <- mean(c(sum((F1-LTPR20_1)^2), # 20th LTPR
-                 sum((F2-LTPR20_2)^2),
-                 sum((F3-LTPR20_3)^2),
-                 sum((F4-LTPR20_4)^2),
-                 sum((F5-LTPR20_5)^2)))/2
-JSV_25 <- mean(c(sum((G1-LTPR25_1)^2), # 25th LTPR
-                 sum((G2-LTPR25_2)^2),
-                 sum((G3-LTPR25_3)^2),
-                 sum((G4-LTPR25_4)^2),
-                 sum((G5-LTPR25_5)^2)))/2
-JSV_30 <- mean(c(sum((H1-LTPR30_1)^2), # 30th LTPR
-                 sum((H2-LTPR30_2)^2),
-                 sum((H3-LTPR30_3)^2),
-                 sum((H4-LTPR30_4)^2),
-                 sum((H5-LTPR30_5)^2)))/2
-JSV_35 <- mean(c(sum((I1-LTPR35_1)^2), # 35th LTPR
-                 sum((I2-LTPR35_2)^2),
-                 sum((I3-LTPR35_3)^2),
-                 sum((I4-LTPR35_4)^2),
-                 sum((I5-LTPR35_5)^2)))/2
-JSV_40 <- mean(c(sum((J1-LTPR40_1)^2), # 40th LTPR
-                 sum((J2-LTPR40_2)^2),
-                 sum((J3-LTPR40_3)^2),
-                 sum((J4-LTPR40_4)^2),
-                 sum((J5-LTPR40_5)^2)))/2
-JSV_45 <- mean(c(sum((K1-LTPR45_1)^2), # 45th LTPR
-                 sum((K2-LTPR45_2)^2),
-                 sum((K3-LTPR45_3)^2),
-                 sum((K4-LTPR45_4)^2),
-                 sum((K5-LTPR45_5)^2)))/2
-JSV_50 <- mean(c(sum((M1-LTPR50_1)^2), # 50th LTPR
-                 sum((M2-LTPR50_2)^2),
-                 sum((M3-LTPR50_3)^2),
-                 sum((M4-LTPR50_4)^2),
-                 sum((M5-LTPR50_5)^2)))/2
-JSV_55 <- mean(c(sum((N1-LTPR55_1)^2), # 55th LTPR
-                 sum((N2-LTPR55_2)^2),
-                 sum((N3-LTPR55_3)^2),
-                 sum((N4-LTPR55_4)^2),
-                 sum((N5-LTPR55_5)^2)))/2
-JSV_60 <- mean(c(sum((O1-LTPR60_1)^2), # 60th LTPR
-                 sum((O2-LTPR60_2)^2),
-                 sum((O3-LTPR60_3)^2),
-                 sum((O4-LTPR60_4)^2),
-                 sum((O5-LTPR60_5)^2)))/2
-JSV_65 <- mean(c(sum((P1-LTPR65_1)^2), # 65th LTPR
-                 sum((P2-LTPR65_2)^2),
-                 sum((P3-LTPR65_3)^2),
-                 sum((P4-LTPR65_4)^2),
-                 sum((P5-LTPR65_5)^2)))/2
-JSV_70 <- mean(c(sum((Q1-LTPR70_1)^2), # 70th LTPR
-                 sum((Q2-LTPR70_2)^2),
-                 sum((Q3-LTPR70_3)^2),
-                 sum((Q4-LTPR70_4)^2),
-                 sum((Q5-LTPR70_5)^2)))/2
-JSV_75 <- mean(c(sum((R1-LTPR75_1)^2), # 75th LTPR
-                 sum((R2-LTPR75_2)^2),
-                 sum((R3-LTPR75_3)^2),
-                 sum((R4-LTPR75_4)^2),
-                 sum((R5-LTPR75_5)^2)))/2
-JSV_80 <- mean(c(sum((S1-LTPR80_1)^2), # 80th LTPR
-                 sum((S2-LTPR80_2)^2),
-                 sum((S3-LTPR80_3)^2),
-                 sum((S4-LTPR80_4)^2),
-                 sum((S5-LTPR80_5)^2)))/2
-JSV_85 <- mean(c(sum((T1-LTPR85_1)^2), # 85th LTPR
-                 sum((T2-LTPR85_2)^2),
-                 sum((T3-LTPR85_3)^2),
-                 sum((T4-LTPR85_4)^2),
-                 sum((T5-LTPR85_5)^2)))/2
-JSV_90 <- mean(c(sum((V1-LTPR90_1)^2), # 90th LTPR
-                 sum((V2-LTPR90_2)^2),
-                 sum((V3-LTPR90_3)^2),
-                 sum((V4-LTPR90_4)^2),
-                 sum((V5-LTPR90_5)^2)))/2
-JSV_95 <- mean(c(sum((W1-LTPR95_1)^2), # 95th LTPR
-                 sum((W2-LTPR95_2)^2),
-                 sum((W3-LTPR95_3)^2),
-                 sum((W4-LTPR95_4)^2),
-                 sum((W5-LTPR95_5)^2)))/2
-JSV_Md95T <- mean(c(sum((W1-M1-Md95T_1)^2), # Md95T
-                    sum((W2-M2-Md95T_2)^2),
-                    sum((W3-M3-Md95T_3)^2),
-                    sum((W4-M4-Md95T_4)^2),
-                    sum((W5-M5-Md95T_5)^2)))/2
-JSV_Md90T <- mean(c(sum((V1-M1-Md90T_1)^2), # Md90T
-                    sum((V2-M2-Md90T_2)^2),
-                    sum((V3-M3-Md90T_3)^2),
-                    sum((V4-M4-Md90T_4)^2),
-                    sum((V5-M5-Md90T_5)^2)))/2
-JSV_Md10T <- mean(c(sum((M1-C1-Md10T_1)^2), # Md10T
-                    sum((M2-C2-Md10T_2)^2),
-                    sum((M3-C3-Md10T_3)^2),
-                    sum((M4-C4-Md10T_4)^2),
-                    sum((M5-C5-Md10T_5)^2)))/2
-JSV_Md05T <- mean(c(sum((M1-B1-Md05T_1)^2), # Md05T
-                    sum((M2-B2-Md05T_2)^2),
-                    sum((M3-B3-Md05T_3)^2),
-                    sum((M4-B4-Md05T_4)^2),
-                    sum((M5-B5-Md05T_5)^2)))/2
-JSV_Mn95T <- mean(c(sum((W1-A1-Mn95T_1)^2), # Mn95T
-                    sum((W2-A2-Mn95T_2)^2),
-                    sum((W3-A3-Mn95T_3)^2),
-                    sum((W4-A4-Mn95T_4)^2),
-                    sum((W5-A5-Mn95T_5)^2)))/2
-JSV_Mn90T <- mean(c(sum((V1-A1-Mn90T_1)^2), # Mn90T
-                    sum((V2-A2-Mn90T_2)^2),
-                    sum((V3-A3-Mn90T_3)^2),
-                    sum((V4-A4-Mn90T_4)^2),
-                    sum((V5-A5-Mn90T_5)^2)))/2
-JSV_Mn10T <- mean(c(sum((A1-C1-Mn10T_1)^2), # Mn10T
-                    sum((A2-C2-Mn10T_2)^2),
-                    sum((A3-C3-Mn10T_3)^2),
-                    sum((A4-C4-Mn10T_4)^2),
-                    sum((A5-C5-Mn10T_5)^2)))/2
-JSV_Mn05T <- mean(c(sum((A1-B1-Mn05T_1)^2), # Mn05T
-                    sum((A2-B2-Mn05T_2)^2),
-                    sum((A3-B3-Mn05T_3)^2),
-                    sum((A4-B4-Mn05T_4)^2),
-                    sum((A5-B5-Mn05T_5)^2)))/2
+JSV_Mn <- mean(c(sum((A1-LTPRMns[1])^2), # mean LTPR
+                 sum((A2-LTPRMns[2])^2),
+                 sum((A3-LTPRMns[3])^2),
+                 sum((A4-LTPRMns[4])^2),
+                 sum((A5-LTPRMns[5])^2)))/2
+JSV_05 <- mean(c(sum((B1-LTPR05s[1])^2), # 5th LTPR
+                 sum((B2-LTPR05s[2])^2),
+                 sum((B3-LTPR05s[3])^2),
+                 sum((B4-LTPR05s[4])^2),
+                 sum((B5-LTPR05s[5])^2)))/2
+JSV_10 <- mean(c(sum((C1-LTPR10s[1])^2), # 10th LTPR
+                 sum((C2-LTPR10s[2])^2),
+                 sum((C3-LTPR10s[3])^2),
+                 sum((C4-LTPR10s[4])^2),
+                 sum((C5-LTPR10s[5])^2)))/2
+JSV_15 <- mean(c(sum((E1-LTPR15s[1])^2), # 15th LTPR
+                 sum((E2-LTPR15s[2])^2),
+                 sum((E3-LTPR15s[3])^2),
+                 sum((E4-LTPR15s[4])^2),
+                 sum((E5-LTPR15s[5])^2)))/2
+JSV_20 <- mean(c(sum((F1-LTPR20s[1])^2), # 20th LTPR
+                 sum((F2-LTPR20s[2])^2),
+                 sum((F3-LTPR20s[3])^2),
+                 sum((F4-LTPR20s[4])^2),
+                 sum((F5-LTPR20s[5])^2)))/2
+JSV_25 <- mean(c(sum((G1-LTPR25s[1])^2), # 25th LTPR
+                 sum((G2-LTPR25s[2])^2),
+                 sum((G3-LTPR25s[3])^2),
+                 sum((G4-LTPR25s[4])^2),
+                 sum((G5-LTPR25s[5])^2)))/2
+JSV_30 <- mean(c(sum((H1-LTPR30s[1])^2), # 30th LTPR
+                 sum((H2-LTPR30s[2])^2),
+                 sum((H3-LTPR30s[3])^2),
+                 sum((H4-LTPR30s[4])^2),
+                 sum((H5-LTPR30s[5])^2)))/2
+JSV_35 <- mean(c(sum((I1-LTPR35s[1])^2), # 35th LTPR
+                 sum((I2-LTPR35s[2])^2),
+                 sum((I3-LTPR35s[3])^2),
+                 sum((I4-LTPR35s[4])^2),
+                 sum((I5-LTPR35s[5])^2)))/2
+JSV_40 <- mean(c(sum((J1-LTPR40s[1])^2), # 40th LTPR
+                 sum((J2-LTPR40s[2])^2),
+                 sum((J3-LTPR40s[3])^2),
+                 sum((J4-LTPR40s[4])^2),
+                 sum((J5-LTPR40s[5])^2)))/2
+JSV_45 <- mean(c(sum((K1-LTPR45s[1])^2), # 45th LTPR
+                 sum((K2-LTPR45s[2])^2),
+                 sum((K3-LTPR45s[3])^2),
+                 sum((K4-LTPR45s[4])^2),
+                 sum((K5-LTPR45s[5])^2)))/2
+JSV_50 <- mean(c(sum((M1-LTPR50s[1])^2), # 50th LTPR
+                 sum((M2-LTPR50s[2])^2),
+                 sum((M3-LTPR50s[3])^2),
+                 sum((M4-LTPR50s[4])^2),
+                 sum((M5-LTPR50s[5])^2)))/2
+JSV_55 <- mean(c(sum((N1-LTPR55s[1])^2), # 55th LTPR
+                 sum((N2-LTPR55s[2])^2),
+                 sum((N3-LTPR55s[3])^2),
+                 sum((N4-LTPR55s[4])^2),
+                 sum((N5-LTPR55s[5])^2)))/2
+JSV_60 <- mean(c(sum((O1-LTPR60s[1])^2), # 60th LTPR
+                 sum((O2-LTPR60s[2])^2),
+                 sum((O3-LTPR60s[3])^2),
+                 sum((O4-LTPR60s[4])^2),
+                 sum((O5-LTPR60s[5])^2)))/2
+JSV_65 <- mean(c(sum((P1-LTPR65s[1])^2), # 65th LTPR
+                 sum((P2-LTPR65s[2])^2),
+                 sum((P3-LTPR65s[3])^2),
+                 sum((P4-LTPR65s[4])^2),
+                 sum((P5-LTPR65s[5])^2)))/2
+JSV_70 <- mean(c(sum((Q1-LTPR70s[1])^2), # 70th LTPR
+                 sum((Q2-LTPR70s[2])^2),
+                 sum((Q3-LTPR70s[3])^2),
+                 sum((Q4-LTPR70s[4])^2),
+                 sum((Q5-LTPR70s[5])^2)))/2
+JSV_75 <- mean(c(sum((R1-LTPR75s[1])^2), # 75th LTPR
+                 sum((R2-LTPR75s[2])^2),
+                 sum((R3-LTPR75s[3])^2),
+                 sum((R4-LTPR75s[4])^2),
+                 sum((R5-LTPR75s[5])^2)))/2
+JSV_80 <- mean(c(sum((S1-LTPR80s[1])^2), # 80th LTPR
+                 sum((S2-LTPR80s[2])^2),
+                 sum((S3-LTPR80s[3])^2),
+                 sum((S4-LTPR80s[4])^2),
+                 sum((S5-LTPR80s[5])^2)))/2
+JSV_85 <- mean(c(sum((T1-LTPR85s[1])^2), # 85th LTPR
+                 sum((T2-LTPR85s[2])^2),
+                 sum((T3-LTPR85s[3])^2),
+                 sum((T4-LTPR85s[4])^2),
+                 sum((T5-LTPR85s[5])^2)))/2
+JSV_90 <- mean(c(sum((V1-LTPR90s[1])^2), # 90th LTPR
+                 sum((V2-LTPR90s[2])^2),
+                 sum((V3-LTPR90s[3])^2),
+                 sum((V4-LTPR90s[4])^2),
+                 sum((V5-LTPR90s[5])^2)))/2
+JSV_95 <- mean(c(sum((W1-LTPR95s[1])^2), # 95th LTPR
+                 sum((W2-LTPR95s[2])^2),
+                 sum((W3-LTPR95s[3])^2),
+                 sum((W4-LTPR95s[4])^2),
+                 sum((W5-LTPR95s[5])^2)))/2
+JSV_Md95T <- mean(c(sum((W1-M1-Md95Ts[1])^2), # Md95T
+                    sum((W2-M2-Md95Ts[2])^2),
+                    sum((W3-M3-Md95Ts[3])^2),
+                    sum((W4-M4-Md95Ts[4])^2),
+                    sum((W5-M5-Md95Ts[5])^2)))/2
+JSV_Md90T <- mean(c(sum((V1-M1-Md90Ts[1])^2), # Md90T
+                    sum((V2-M2-Md90Ts[2])^2),
+                    sum((V3-M3-Md90Ts[3])^2),
+                    sum((V4-M4-Md90Ts[4])^2),
+                    sum((V5-M5-Md90Ts[5])^2)))/2
+JSV_Md10T <- mean(c(sum((M1-C1-Md10Ts[1])^2), # Md10T
+                    sum((M2-C2-Md10Ts[2])^2),
+                    sum((M3-C3-Md10Ts[3])^2),
+                    sum((M4-C4-Md10Ts[4])^2),
+                    sum((M5-C5-Md10Ts[5])^2)))/2
+JSV_Md05T <- mean(c(sum((M1-B1-Md05Ts[1])^2), # Md05T
+                    sum((M2-B2-Md05Ts[2])^2),
+                    sum((M3-B3-Md05Ts[3])^2),
+                    sum((M4-B4-Md05Ts[4])^2),
+                    sum((M5-B5-Md05Ts[5])^2)))/2
+JSV_Mn95T <- mean(c(sum((W1-A1-Mn95Ts[1])^2), # Mn95T
+                    sum((W2-A2-Mn95Ts[2])^2),
+                    sum((W3-A3-Mn95Ts[3])^2),
+                    sum((W4-A4-Mn95Ts[4])^2),
+                    sum((W5-A5-Mn95Ts[5])^2)))/2
+JSV_Mn90T <- mean(c(sum((V1-A1-Mn90Ts[1])^2), # Mn90T
+                    sum((V2-A2-Mn90Ts[2])^2),
+                    sum((V3-A3-Mn90Ts[3])^2),
+                    sum((V4-A4-Mn90Ts[4])^2),
+                    sum((V5-A5-Mn90Ts[5])^2)))/2
+JSV_Mn10T <- mean(c(sum((A1-C1-Mn10Ts[1])^2), # Mn10T
+                    sum((A2-C2-Mn10Ts[2])^2),
+                    sum((A3-C3-Mn10Ts[3])^2),
+                    sum((A4-C4-Mn10Ts[4])^2),
+                    sum((A5-C5-Mn10Ts[5])^2)))/2
+JSV_Mn05T <- mean(c(sum((A1-B1-Mn05Ts[1])^2), # Mn05T
+                    sum((A2-B2-Mn05Ts[2])^2),
+                    sum((A3-B3-Mn05Ts[3])^2),
+                    sum((A4-B4-Mn05Ts[4])^2),
+                    sum((A5-B5-Mn05Ts[5])^2)))/2
 
 # imputation variance
 IV_Mn <- .3*sum((LTPRMns-LTPRMn)^2) # mean LTPR
@@ -1842,34 +1551,41 @@ SE_Mn05T <- sqrt(TV_Mn05T) # standard error of Mn05T
 
 #### SEs: LU3Rs and LU3R tail-center differences ####
 
-B1 <- B2 <- B3 <- B4 <- B5 <- numeric(2*L) # empty containers
-C1 <- C2 <- C3 <- C4 <- C5 <- numeric(2*L) # empty containers
-E1 <- E2 <- E3 <- E4 <- E5 <- numeric(2*L) # empty containers
-F1 <- F2 <- F3 <- F4 <- F5 <- numeric(2*L) # empty containers
-G1 <- G2 <- G3 <- G4 <- G5 <- numeric(2*L) # empty containers
-H1 <- H2 <- H3 <- H4 <- H5 <- numeric(2*L) # empty containers
-I1 <- I2 <- I3 <- I4 <- I5 <- numeric(2*L) # empty containers
-J1 <- J2 <- J3 <- J4 <- J5 <- numeric(2*L) # empty containers
-K1 <- K2 <- K3 <- K4 <- K5 <- numeric(2*L) # empty containers
-M1 <- M2 <- M3 <- M4 <- M5 <- numeric(2*L) # empty containers
-N1 <- N2 <- N3 <- N4 <- N5 <- numeric(2*L) # empty containers
-O1 <- O2 <- O3 <- O4 <- O5 <- numeric(2*L) # empty containers
-P1 <- P2 <- P3 <- P4 <- P5 <- numeric(2*L) # empty containers
-Q1 <- Q2 <- Q3 <- Q4 <- Q5 <- numeric(2*L) # empty containers
-R1 <- R2 <- R3 <- R4 <- R5 <- numeric(2*L) # empty containers
-S1 <- S2 <- S3 <- S4 <- S5 <- numeric(2*L) # empty containers
-T1 <- T2 <- T3 <- T4 <- T5 <- numeric(2*L) # empty containers
-V1 <- V2 <- V3 <- V4 <- V5 <- numeric(2*L) # empty containers
-W1 <- W2 <- W3 <- W4 <- W5 <- numeric(2*L) # empty containers
+B1 <- B2 <- B3 <- B4 <- B5 <- numeric(L2) # empty containers
+C1 <- C2 <- C3 <- C4 <- C5 <- numeric(L2) # empty containers
+E1 <- E2 <- E3 <- E4 <- E5 <- numeric(L2) # empty containers
+F1 <- F2 <- F3 <- F4 <- F5 <- numeric(L2) # empty containers
+G1 <- G2 <- G3 <- G4 <- G5 <- numeric(L2) # empty containers
+H1 <- H2 <- H3 <- H4 <- H5 <- numeric(L2) # empty containers
+I1 <- I2 <- I3 <- I4 <- I5 <- numeric(L2) # empty containers
+J1 <- J2 <- J3 <- J4 <- J5 <- numeric(L2) # empty containers
+K1 <- K2 <- K3 <- K4 <- K5 <- numeric(L2) # empty containers
+M1 <- M2 <- M3 <- M4 <- M5 <- numeric(L2) # empty containers
+N1 <- N2 <- N3 <- N4 <- N5 <- numeric(L2) # empty containers
+O1 <- O2 <- O3 <- O4 <- O5 <- numeric(L2) # empty containers
+P1 <- P2 <- P3 <- P4 <- P5 <- numeric(L2) # empty containers
+Q1 <- Q2 <- Q3 <- Q4 <- Q5 <- numeric(L2) # empty containers
+R1 <- R2 <- R3 <- R4 <- R5 <- numeric(L2) # empty containers
+S1 <- S2 <- S3 <- S4 <- S5 <- numeric(L2) # empty containers
+T1 <- T2 <- T3 <- T4 <- T5 <- numeric(L2) # empty containers
+V1 <- V2 <- V3 <- V4 <- V5 <- numeric(L2) # empty containers
+W1 <- W2 <- W3 <- W4 <- W5 <- numeric(L2) # empty containers
 
-# perform jackknife resampling of LU3Rs and LU3R tail-center differences
-for (i in 1:L) { # for each JK zone
+# perform jackknife resampling of LU3Rs
+for (i in 1:L2) { # for each JK zone, twice
   T0 <- T15 # create/restore duplicate
-  # double weights if JK code is 1 and zero weights if JK code is 0
-  T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 1),'HWt']
-  T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 0
+  if (i <= L) { # first half
+    # double weights if JK code is 1 and zero weights if JK code is 0
+    T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 1),'HWt']
+    T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 0
+  } else { # second half
+    # double weights if JK code is 0 and zero weights if JK code is 1
+    T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt'] <- 2*T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt']
+    T0[which(T0$JKZ == i-L & T0$JKR == 1),'HWt'] <- 0
+  }
   T0_F <- T0[which(T0$Sex == 1),] # female subset
   T0_M <- T0[which(T0$Sex == 2),] # male subset
+  
   B1[i] <- LU3Rfn(T0_M, T0_F, .05, 'PV1') # PV1 reweighted 5th LU3R
   B2[i] <- LU3Rfn(T0_M, T0_F, .05, 'PV2') # PV2
   B3[i] <- LU3Rfn(T0_M, T0_F, .05, 'PV3') # PV3
@@ -1965,226 +1681,124 @@ for (i in 1:L) { # for each JK zone
   W3[i] <- LU3Rfn(T0_M, T0_F, .95, 'PV3') # PV3
   W4[i] <- LU3Rfn(T0_M, T0_F, .95, 'PV4') # PV4
   W5[i] <- LU3Rfn(T0_M, T0_F, .95, 'PV5') # PV5
-  
-  T0 <- T15 # restore duplicate
-  # double weights if JK code is 0 and zero weights if JK code is 1
-  T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 0),'HWt']
-  T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 0
-  T0_F <- T0[which(T0$Sex == 1),] # female subset
-  T0_M <- T0[which(T0$Sex == 2),] # male subset
-  B1[i+L] <- LU3Rfn(T0_M, T0_F, .05, 'PV1') # PV1 reweighted 5th LU3R
-  B2[i+L] <- LU3Rfn(T0_M, T0_F, .05, 'PV2') # PV2
-  B3[i+L] <- LU3Rfn(T0_M, T0_F, .05, 'PV3') # PV3
-  B4[i+L] <- LU3Rfn(T0_M, T0_F, .05, 'PV4') # PV4
-  B5[i+L] <- LU3Rfn(T0_M, T0_F, .05, 'PV5') # PV5
-  C1[i+L] <- LU3Rfn(T0_M, T0_F, .10, 'PV1') # PV1 reweighted 10th LU3R
-  C2[i+L] <- LU3Rfn(T0_M, T0_F, .10, 'PV2') # PV2
-  C3[i+L] <- LU3Rfn(T0_M, T0_F, .10, 'PV3') # PV3
-  C4[i+L] <- LU3Rfn(T0_M, T0_F, .10, 'PV4') # PV4
-  C5[i+L] <- LU3Rfn(T0_M, T0_F, .10, 'PV5') # PV5
-  E1[i+L] <- LU3Rfn(T0_M, T0_F, .15, 'PV1') # PV1 reweighted 15th LU3R
-  E2[i+L] <- LU3Rfn(T0_M, T0_F, .15, 'PV2') # PV2
-  E3[i+L] <- LU3Rfn(T0_M, T0_F, .15, 'PV3') # PV3
-  E4[i+L] <- LU3Rfn(T0_M, T0_F, .15, 'PV4') # PV4
-  E5[i+L] <- LU3Rfn(T0_M, T0_F, .15, 'PV5') # PV5
-  F1[i+L] <- LU3Rfn(T0_M, T0_F, .20, 'PV1') # PV1 reweighted 20th LU3R
-  F2[i+L] <- LU3Rfn(T0_M, T0_F, .20, 'PV2') # PV2
-  F3[i+L] <- LU3Rfn(T0_M, T0_F, .20, 'PV3') # PV3
-  F4[i+L] <- LU3Rfn(T0_M, T0_F, .20, 'PV4') # PV4
-  F5[i+L] <- LU3Rfn(T0_M, T0_F, .20, 'PV5') # PV5
-  G1[i+L] <- LU3Rfn(T0_M, T0_F, .25, 'PV1') # PV1 reweighted 25th LU3R
-  G2[i+L] <- LU3Rfn(T0_M, T0_F, .25, 'PV2') # PV2
-  G3[i+L] <- LU3Rfn(T0_M, T0_F, .25, 'PV3') # PV3
-  G4[i+L] <- LU3Rfn(T0_M, T0_F, .25, 'PV4') # PV4
-  G5[i+L] <- LU3Rfn(T0_M, T0_F, .25, 'PV5') # PV5
-  H1[i+L] <- LU3Rfn(T0_M, T0_F, .30, 'PV1') # PV1 reweighted 30th LU3R
-  H2[i+L] <- LU3Rfn(T0_M, T0_F, .30, 'PV2') # PV2
-  H3[i+L] <- LU3Rfn(T0_M, T0_F, .30, 'PV3') # PV3
-  H4[i+L] <- LU3Rfn(T0_M, T0_F, .30, 'PV4') # PV4
-  H5[i+L] <- LU3Rfn(T0_M, T0_F, .30, 'PV5') # PV5
-  I1[i+L] <- LU3Rfn(T0_M, T0_F, .35, 'PV1') # PV1 reweighted 35th LU3R
-  I2[i+L] <- LU3Rfn(T0_M, T0_F, .35, 'PV2') # PV2
-  I3[i+L] <- LU3Rfn(T0_M, T0_F, .35, 'PV3') # PV3
-  I4[i+L] <- LU3Rfn(T0_M, T0_F, .35, 'PV4') # PV4
-  I5[i+L] <- LU3Rfn(T0_M, T0_F, .35, 'PV5') # PV5
-  J1[i+L] <- LU3Rfn(T0_M, T0_F, .40, 'PV1') # PV1 reweighted 40th LU3R
-  J2[i+L] <- LU3Rfn(T0_M, T0_F, .40, 'PV2') # PV2
-  J3[i+L] <- LU3Rfn(T0_M, T0_F, .40, 'PV3') # PV3
-  J4[i+L] <- LU3Rfn(T0_M, T0_F, .40, 'PV4') # PV4
-  J5[i+L] <- LU3Rfn(T0_M, T0_F, .40, 'PV5') # PV5
-  K1[i+L] <- LU3Rfn(T0_M, T0_F, .45, 'PV1') # PV1 reweighted 45th LU3R
-  K2[i+L] <- LU3Rfn(T0_M, T0_F, .45, 'PV2') # PV2
-  K3[i+L] <- LU3Rfn(T0_M, T0_F, .45, 'PV3') # PV3
-  K4[i+L] <- LU3Rfn(T0_M, T0_F, .45, 'PV4') # PV4
-  K5[i+L] <- LU3Rfn(T0_M, T0_F, .45, 'PV5') # PV5
-  M1[i+L] <- LU3Rfn(T0_M, T0_F, .50, 'PV1') # PV1 reweighted 50th LU3R
-  M2[i+L] <- LU3Rfn(T0_M, T0_F, .50, 'PV2') # PV2
-  M3[i+L] <- LU3Rfn(T0_M, T0_F, .50, 'PV3') # PV3
-  M4[i+L] <- LU3Rfn(T0_M, T0_F, .50, 'PV4') # PV4
-  M5[i+L] <- LU3Rfn(T0_M, T0_F, .50, 'PV5') # PV5
-  N1[i+L] <- LU3Rfn(T0_M, T0_F, .55, 'PV1') # PV1 reweighted 55th LU3R
-  N2[i+L] <- LU3Rfn(T0_M, T0_F, .55, 'PV2') # PV2
-  N3[i+L] <- LU3Rfn(T0_M, T0_F, .55, 'PV3') # PV3
-  N4[i+L] <- LU3Rfn(T0_M, T0_F, .55, 'PV4') # PV4
-  N5[i+L] <- LU3Rfn(T0_M, T0_F, .55, 'PV5') # PV5
-  O1[i+L] <- LU3Rfn(T0_M, T0_F, .60, 'PV1') # PV1 reweighted 60th LU3R
-  O2[i+L] <- LU3Rfn(T0_M, T0_F, .60, 'PV2') # PV2
-  O3[i+L] <- LU3Rfn(T0_M, T0_F, .60, 'PV3') # PV3
-  O4[i+L] <- LU3Rfn(T0_M, T0_F, .60, 'PV4') # PV4
-  O5[i+L] <- LU3Rfn(T0_M, T0_F, .60, 'PV5') # PV5
-  P1[i+L] <- LU3Rfn(T0_M, T0_F, .65, 'PV1') # PV1 reweighted 65th LU3R
-  P2[i+L] <- LU3Rfn(T0_M, T0_F, .65, 'PV2') # PV2
-  P3[i+L] <- LU3Rfn(T0_M, T0_F, .65, 'PV3') # PV3
-  P4[i+L] <- LU3Rfn(T0_M, T0_F, .65, 'PV4') # PV4
-  P5[i+L] <- LU3Rfn(T0_M, T0_F, .65, 'PV5') # PV5
-  Q1[i+L] <- LU3Rfn(T0_M, T0_F, .70, 'PV1') # PV1 reweighted 70th LU3R
-  Q2[i+L] <- LU3Rfn(T0_M, T0_F, .70, 'PV2') # PV2
-  Q3[i+L] <- LU3Rfn(T0_M, T0_F, .70, 'PV3') # PV3
-  Q4[i+L] <- LU3Rfn(T0_M, T0_F, .70, 'PV4') # PV4
-  Q5[i+L] <- LU3Rfn(T0_M, T0_F, .70, 'PV5') # PV5
-  R1[i+L] <- LU3Rfn(T0_M, T0_F, .75, 'PV1') # PV1 reweighted 75th LU3R
-  R2[i+L] <- LU3Rfn(T0_M, T0_F, .75, 'PV2') # PV2
-  R3[i+L] <- LU3Rfn(T0_M, T0_F, .75, 'PV3') # PV3
-  R4[i+L] <- LU3Rfn(T0_M, T0_F, .75, 'PV4') # PV4
-  R5[i+L] <- LU3Rfn(T0_M, T0_F, .75, 'PV5') # PV5
-  S1[i+L] <- LU3Rfn(T0_M, T0_F, .80, 'PV1') # PV1 reweighted 80th LU3R
-  S2[i+L] <- LU3Rfn(T0_M, T0_F, .80, 'PV2') # PV2
-  S3[i+L] <- LU3Rfn(T0_M, T0_F, .80, 'PV3') # PV3
-  S4[i+L] <- LU3Rfn(T0_M, T0_F, .80, 'PV4') # PV4
-  S5[i+L] <- LU3Rfn(T0_M, T0_F, .80, 'PV5') # PV5
-  T1[i+L] <- LU3Rfn(T0_M, T0_F, .85, 'PV1') # PV1 reweighted 85th LU3R
-  T2[i+L] <- LU3Rfn(T0_M, T0_F, .85, 'PV2') # PV2
-  T3[i+L] <- LU3Rfn(T0_M, T0_F, .85, 'PV3') # PV3
-  T4[i+L] <- LU3Rfn(T0_M, T0_F, .85, 'PV4') # PV4
-  T5[i+L] <- LU3Rfn(T0_M, T0_F, .85, 'PV5') # PV5
-  V1[i+L] <- LU3Rfn(T0_M, T0_F, .90, 'PV1') # PV1 reweighted 90th LU3R
-  V2[i+L] <- LU3Rfn(T0_M, T0_F, .90, 'PV2') # PV2
-  V3[i+L] <- LU3Rfn(T0_M, T0_F, .90, 'PV3') # PV3
-  V4[i+L] <- LU3Rfn(T0_M, T0_F, .90, 'PV4') # PV4
-  V5[i+L] <- LU3Rfn(T0_M, T0_F, .90, 'PV5') # PV5
-  W1[i+L] <- LU3Rfn(T0_M, T0_F, .95, 'PV1') # PV1 reweighted 95th LU3R
-  W2[i+L] <- LU3Rfn(T0_M, T0_F, .95, 'PV2') # PV2
-  W3[i+L] <- LU3Rfn(T0_M, T0_F, .95, 'PV3') # PV3
-  W4[i+L] <- LU3Rfn(T0_M, T0_F, .95, 'PV4') # PV4
-  W5[i+L] <- LU3Rfn(T0_M, T0_F, .95, 'PV5') # PV5
 }
 
 # jackknife sampling variance
-JSV_05 <- mean(c(sum((B1-LU3R05_1)^2), # 5th LU3R
-                 sum((B2-LU3R05_2)^2),
-                 sum((B3-LU3R05_3)^2),
-                 sum((B4-LU3R05_4)^2),
-                 sum((B5-LU3R05_5)^2)))/2
-JSV_10 <- mean(c(sum((C1-LU3R10_1)^2), # 10th LU3R
-                 sum((C2-LU3R10_2)^2),
-                 sum((C3-LU3R10_3)^2),
-                 sum((C4-LU3R10_4)^2),
-                 sum((C5-LU3R10_5)^2)))/2
-JSV_15 <- mean(c(sum((E1-LU3R15_1)^2), # 15th LU3R
-                 sum((E2-LU3R15_2)^2),
-                 sum((E3-LU3R15_3)^2),
-                 sum((E4-LU3R15_4)^2),
-                 sum((E5-LU3R15_5)^2)))/2
-JSV_20 <- mean(c(sum((F1-LU3R20_1)^2), # 20th LU3R
-                 sum((F2-LU3R20_2)^2),
-                 sum((F3-LU3R20_3)^2),
-                 sum((F4-LU3R20_4)^2),
-                 sum((F5-LU3R20_5)^2)))/2
-JSV_25 <- mean(c(sum((G1-LU3R25_1)^2), # 25th LU3R
-                 sum((G2-LU3R25_2)^2),
-                 sum((G3-LU3R25_3)^2),
-                 sum((G4-LU3R25_4)^2),
-                 sum((G5-LU3R25_5)^2)))/2
-JSV_30 <- mean(c(sum((H1-LU3R30_1)^2), # 30th LU3R
-                 sum((H2-LU3R30_2)^2),
-                 sum((H3-LU3R30_3)^2),
-                 sum((H4-LU3R30_4)^2),
-                 sum((H5-LU3R30_5)^2)))/2
-JSV_35 <- mean(c(sum((I1-LU3R35_1)^2), # 35th LU3R
-                 sum((I2-LU3R35_2)^2),
-                 sum((I3-LU3R35_3)^2),
-                 sum((I4-LU3R35_4)^2),
-                 sum((I5-LU3R35_5)^2)))/2
-JSV_40 <- mean(c(sum((J1-LU3R40_1)^2), # 40th LU3R
-                 sum((J2-LU3R40_2)^2),
-                 sum((J3-LU3R40_3)^2),
-                 sum((J4-LU3R40_4)^2),
-                 sum((J5-LU3R40_5)^2)))/2
-JSV_45 <- mean(c(sum((K1-LU3R45_1)^2), # 45th LU3R
-                 sum((K2-LU3R45_2)^2),
-                 sum((K3-LU3R45_3)^2),
-                 sum((K4-LU3R45_4)^2),
-                 sum((K5-LU3R45_5)^2)))/2
-JSV_50 <- mean(c(sum((M1-LU3R50_1)^2), # 50th LU3R
-                 sum((M2-LU3R50_2)^2),
-                 sum((M3-LU3R50_3)^2),
-                 sum((M4-LU3R50_4)^2),
-                 sum((M5-LU3R50_5)^2)))/2
-JSV_55 <- mean(c(sum((N1-LU3R55_1)^2), # 55th LU3R
-                 sum((N2-LU3R55_2)^2),
-                 sum((N3-LU3R55_3)^2),
-                 sum((N4-LU3R55_4)^2),
-                 sum((N5-LU3R55_5)^2)))/2
-JSV_60 <- mean(c(sum((O1-LU3R60_1)^2), # 60th LU3R
-                 sum((O2-LU3R60_2)^2),
-                 sum((O3-LU3R60_3)^2),
-                 sum((O4-LU3R60_4)^2),
-                 sum((O5-LU3R60_5)^2)))/2
-JSV_65 <- mean(c(sum((P1-LU3R65_1)^2), # 65th LU3R
-                 sum((P2-LU3R65_2)^2),
-                 sum((P3-LU3R65_3)^2),
-                 sum((P4-LU3R65_4)^2),
-                 sum((P5-LU3R65_5)^2)))/2
-JSV_70 <- mean(c(sum((Q1-LU3R70_1)^2), # 70th LU3R
-                 sum((Q2-LU3R70_2)^2),
-                 sum((Q3-LU3R70_3)^2),
-                 sum((Q4-LU3R70_4)^2),
-                 sum((Q5-LU3R70_5)^2)))/2
-JSV_75 <- mean(c(sum((R1-LU3R75_1)^2), # 75th LU3R
-                 sum((R2-LU3R75_2)^2),
-                 sum((R3-LU3R75_3)^2),
-                 sum((R4-LU3R75_4)^2),
-                 sum((R5-LU3R75_5)^2)))/2
-JSV_80 <- mean(c(sum((S1-LU3R80_1)^2), # 80th LU3R
-                 sum((S2-LU3R80_2)^2),
-                 sum((S3-LU3R80_3)^2),
-                 sum((S4-LU3R80_4)^2),
-                 sum((S5-LU3R80_5)^2)))/2
-JSV_85 <- mean(c(sum((T1-LU3R85_1)^2), # 85th LU3R
-                 sum((T2-LU3R85_2)^2),
-                 sum((T3-LU3R85_3)^2),
-                 sum((T4-LU3R85_4)^2),
-                 sum((T5-LU3R85_5)^2)))/2
-JSV_90 <- mean(c(sum((V1-LU3R90_1)^2), # 90th LU3R
-                 sum((V2-LU3R90_2)^2),
-                 sum((V3-LU3R90_3)^2),
-                 sum((V4-LU3R90_4)^2),
-                 sum((V5-LU3R90_5)^2)))/2
-JSV_95 <- mean(c(sum((W1-LU3R95_1)^2), # 95th LU3R
-                 sum((W2-LU3R95_2)^2),
-                 sum((W3-LU3R95_3)^2),
-                 sum((W4-LU3R95_4)^2),
-                 sum((W5-LU3R95_5)^2)))/2
-JSV_Md95U <- mean(c(sum((W1-M1-Md95U_1)^2), # Md95U
-                    sum((W2-M2-Md95U_2)^2),
-                    sum((W3-M3-Md95U_3)^2),
-                    sum((W4-M4-Md95U_4)^2),
-                    sum((W5-M5-Md95U_5)^2)))/2
-JSV_Md90U <- mean(c(sum((V1-M1-Md90U_1)^2), # Md90U
-                    sum((V2-M2-Md90U_2)^2),
-                    sum((V3-M3-Md90U_3)^2),
-                    sum((V4-M4-Md90U_4)^2),
-                    sum((V5-M5-Md90U_5)^2)))/2
-JSV_Md10U <- mean(c(sum((M1-C1-Md10U_1)^2), # Md10U
-                    sum((M2-C2-Md10U_2)^2),
-                    sum((M3-C3-Md10U_3)^2),
-                    sum((M4-C4-Md10U_4)^2),
-                    sum((M5-C5-Md10U_5)^2)))/2
-JSV_Md05U <- mean(c(sum((M1-B1-Md05U_1)^2), # Md05U
-                    sum((M2-B2-Md05U_2)^2),
-                    sum((M3-B3-Md05U_3)^2),
-                    sum((M4-B4-Md05U_4)^2),
-                    sum((M5-B5-Md05U_5)^2)))/2
+JSV_05 <- mean(c(sum((B1-LU3R05s[1])^2), # 5th LU3R
+                 sum((B2-LU3R05s[2])^2),
+                 sum((B3-LU3R05s[3])^2),
+                 sum((B4-LU3R05s[4])^2),
+                 sum((B5-LU3R05s[5])^2)))/2
+JSV_10 <- mean(c(sum((C1-LU3R10s[1])^2), # 10th LU3R
+                 sum((C2-LU3R10s[2])^2),
+                 sum((C3-LU3R10s[3])^2),
+                 sum((C4-LU3R10s[4])^2),
+                 sum((C5-LU3R10s[5])^2)))/2
+JSV_15 <- mean(c(sum((E1-LU3R15s[1])^2), # 15th LU3R
+                 sum((E2-LU3R15s[2])^2),
+                 sum((E3-LU3R15s[3])^2),
+                 sum((E4-LU3R15s[4])^2),
+                 sum((E5-LU3R15s[5])^2)))/2
+JSV_20 <- mean(c(sum((F1-LU3R20s[1])^2), # 20th LU3R
+                 sum((F2-LU3R20s[2])^2),
+                 sum((F3-LU3R20s[3])^2),
+                 sum((F4-LU3R20s[4])^2),
+                 sum((F5-LU3R20s[5])^2)))/2
+JSV_25 <- mean(c(sum((G1-LU3R25s[1])^2), # 25th LU3R
+                 sum((G2-LU3R25s[2])^2),
+                 sum((G3-LU3R25s[3])^2),
+                 sum((G4-LU3R25s[4])^2),
+                 sum((G5-LU3R25s[5])^2)))/2
+JSV_30 <- mean(c(sum((H1-LU3R30s[1])^2), # 30th LU3R
+                 sum((H2-LU3R30s[2])^2),
+                 sum((H3-LU3R30s[3])^2),
+                 sum((H4-LU3R30s[4])^2),
+                 sum((H5-LU3R30s[5])^2)))/2
+JSV_35 <- mean(c(sum((I1-LU3R35s[1])^2), # 35th LU3R
+                 sum((I2-LU3R35s[2])^2),
+                 sum((I3-LU3R35s[3])^2),
+                 sum((I4-LU3R35s[4])^2),
+                 sum((I5-LU3R35s[5])^2)))/2
+JSV_40 <- mean(c(sum((J1-LU3R40s[1])^2), # 40th LU3R
+                 sum((J2-LU3R40s[2])^2),
+                 sum((J3-LU3R40s[3])^2),
+                 sum((J4-LU3R40s[4])^2),
+                 sum((J5-LU3R40s[5])^2)))/2
+JSV_45 <- mean(c(sum((K1-LU3R45s[1])^2), # 45th LU3R
+                 sum((K2-LU3R45s[2])^2),
+                 sum((K3-LU3R45s[3])^2),
+                 sum((K4-LU3R45s[4])^2),
+                 sum((K5-LU3R45s[5])^2)))/2
+JSV_50 <- mean(c(sum((M1-LU3R50s[1])^2), # 50th LU3R
+                 sum((M2-LU3R50s[2])^2),
+                 sum((M3-LU3R50s[3])^2),
+                 sum((M4-LU3R50s[4])^2),
+                 sum((M5-LU3R50s[5])^2)))/2
+JSV_55 <- mean(c(sum((N1-LU3R55s[1])^2), # 55th LU3R
+                 sum((N2-LU3R55s[2])^2),
+                 sum((N3-LU3R55s[3])^2),
+                 sum((N4-LU3R55s[4])^2),
+                 sum((N5-LU3R55s[5])^2)))/2
+JSV_60 <- mean(c(sum((O1-LU3R60s[1])^2), # 60th LU3R
+                 sum((O2-LU3R60s[2])^2),
+                 sum((O3-LU3R60s[3])^2),
+                 sum((O4-LU3R60s[4])^2),
+                 sum((O5-LU3R60s[5])^2)))/2
+JSV_65 <- mean(c(sum((P1-LU3R65s[1])^2), # 65th LU3R
+                 sum((P2-LU3R65s[2])^2),
+                 sum((P3-LU3R65s[3])^2),
+                 sum((P4-LU3R65s[4])^2),
+                 sum((P5-LU3R65s[5])^2)))/2
+JSV_70 <- mean(c(sum((Q1-LU3R70s[1])^2), # 70th LU3R
+                 sum((Q2-LU3R70s[2])^2),
+                 sum((Q3-LU3R70s[3])^2),
+                 sum((Q4-LU3R70s[4])^2),
+                 sum((Q5-LU3R70s[5])^2)))/2
+JSV_75 <- mean(c(sum((R1-LU3R75s[1])^2), # 75th LU3R
+                 sum((R2-LU3R75s[2])^2),
+                 sum((R3-LU3R75s[3])^2),
+                 sum((R4-LU3R75s[4])^2),
+                 sum((R5-LU3R75s[5])^2)))/2
+JSV_80 <- mean(c(sum((S1-LU3R80s[1])^2), # 80th LU3R
+                 sum((S2-LU3R80s[2])^2),
+                 sum((S3-LU3R80s[3])^2),
+                 sum((S4-LU3R80s[4])^2),
+                 sum((S5-LU3R80s[5])^2)))/2
+JSV_85 <- mean(c(sum((T1-LU3R85s[1])^2), # 85th LU3R
+                 sum((T2-LU3R85s[2])^2),
+                 sum((T3-LU3R85s[3])^2),
+                 sum((T4-LU3R85s[4])^2),
+                 sum((T5-LU3R85s[5])^2)))/2
+JSV_90 <- mean(c(sum((V1-LU3R90s[1])^2), # 90th LU3R
+                 sum((V2-LU3R90s[2])^2),
+                 sum((V3-LU3R90s[3])^2),
+                 sum((V4-LU3R90s[4])^2),
+                 sum((V5-LU3R90s[5])^2)))/2
+JSV_95 <- mean(c(sum((W1-LU3R95s[1])^2), # 95th LU3R
+                 sum((W2-LU3R95s[2])^2),
+                 sum((W3-LU3R95s[3])^2),
+                 sum((W4-LU3R95s[4])^2),
+                 sum((W5-LU3R95s[5])^2)))/2
+JSV_Md95U <- mean(c(sum((W1-M1-Md95Us[1])^2), # Md95U
+                    sum((W2-M2-Md95Us[2])^2),
+                    sum((W3-M3-Md95Us[3])^2),
+                    sum((W4-M4-Md95Us[4])^2),
+                    sum((W5-M5-Md95Us[5])^2)))/2
+JSV_Md90U <- mean(c(sum((V1-M1-Md90Us[1])^2), # Md90U
+                    sum((V2-M2-Md90Us[2])^2),
+                    sum((V3-M3-Md90Us[3])^2),
+                    sum((V4-M4-Md90Us[4])^2),
+                    sum((V5-M5-Md90Us[5])^2)))/2
+JSV_Md10U <- mean(c(sum((M1-C1-Md10Us[1])^2), # Md10U
+                    sum((M2-C2-Md10Us[2])^2),
+                    sum((M3-C3-Md10Us[3])^2),
+                    sum((M4-C4-Md10Us[4])^2),
+                    sum((M5-C5-Md10Us[5])^2)))/2
+JSV_Md05U <- mean(c(sum((M1-B1-Md05Us[1])^2), # Md05U
+                    sum((M2-B2-Md05Us[2])^2),
+                    sum((M3-B3-Md05Us[3])^2),
+                    sum((M4-B4-Md05Us[4])^2),
+                    sum((M5-B5-Md05Us[5])^2)))/2
 
 # imputation variance
 IV_05 <- .3*sum((LU3R05s-LU3R05)^2) # 5th LU3R
@@ -2286,24 +1900,31 @@ SE_Md05U <- sqrt(TV_Md05U) # standard error of Md05U
 
 #### SEs: d, U3, LVR, LVR_L, LVR_R, LMADR, LMADR_L, LMADR_R, LGMDR ####
 
-J1 <- J2 <- J3 <- J4 <- J5 <- numeric(2*L) # empty containers
-A1 <- A2 <- A3 <- A4 <- A5 <- numeric(2*L) # empty containers
-C1 <- C2 <- C3 <- C4 <- C5 <- numeric(2*L) # empty containers
-K1 <- K2 <- K3 <- K4 <- K5 <- numeric(2*L) # empty containers
-N1 <- N2 <- N3 <- N4 <- N5 <- numeric(2*L) # empty containers
-I1 <- I2 <- I3 <- I4 <- I5 <- numeric(2*L) # empty containers
-F1 <- F2 <- F3 <- F4 <- F5 <- numeric(2*L) # empty containers
-E1 <- E2 <- E3 <- E4 <- E5 <- numeric(2*L) # empty containers
-G1 <- G2 <- G3 <- G4 <- G5 <- numeric(2*L) # empty containers
+J1 <- J2 <- J3 <- J4 <- J5 <- numeric(L2) # empty containers
+A1 <- A2 <- A3 <- A4 <- A5 <- numeric(L2) # empty containers
+C1 <- C2 <- C3 <- C4 <- C5 <- numeric(L2) # empty containers
+K1 <- K2 <- K3 <- K4 <- K5 <- numeric(L2) # empty containers
+N1 <- N2 <- N3 <- N4 <- N5 <- numeric(L2) # empty containers
+I1 <- I2 <- I3 <- I4 <- I5 <- numeric(L2) # empty containers
+F1 <- F2 <- F3 <- F4 <- F5 <- numeric(L2) # empty containers
+E1 <- E2 <- E3 <- E4 <- E5 <- numeric(L2) # empty containers
+G1 <- G2 <- G3 <- G4 <- G5 <- numeric(L2) # empty containers
 
 # perform jackknife resampling of d, U3, LVR, LVR_L, LVR_R, LMADR, LMADR_L, LMADR_R, LGMDR
-for (i in 1:L) { # for each JK zone
+for (i in 1:L2) { # for each JK zone, twice
   T0 <- T15 # create/restore duplicate
-  # double weights if JK code is 1 and zero weights if JK code is 0
-  T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 1),'HWt']
-  T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 0
+  if (i <= L) { # first half
+    # double weights if JK code is 1 and zero weights if JK code is 0
+    T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 1),'HWt']
+    T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 0
+  } else { # second half
+    # double weights if JK code is 0 and zero weights if JK code is 1
+    T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt'] <- 2*T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt']
+    T0[which(T0$JKZ == i-L & T0$JKR == 1),'HWt'] <- 0
+  }
   T0_F <- T0[which(T0$Sex == 1),] # female subset
   T0_M <- T0[which(T0$Sex == 2),] # male subset
+  
   J1[i] <- dfn(T0_M, T0_F, 'PV1') # PV1 reweighted d
   J2[i] <- dfn(T0_M, T0_F, 'PV2') # PV2
   J3[i] <- dfn(T0_M, T0_F, 'PV3') # PV3
@@ -2349,106 +1970,54 @@ for (i in 1:L) { # for each JK zone
   G3[i] <- LGMDRfn(T0_M, T0_F, 'PV3') # PV3
   G4[i] <- LGMDRfn(T0_M, T0_F, 'PV4') # PV4
   G5[i] <- LGMDRfn(T0_M, T0_F, 'PV5') # PV5
-  
-  T0 <- T15 # restore duplicate
-  # double weights if JK code is 0 and zero weights if JK code is 1
-  T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 0),'HWt']
-  T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 0
-  T0_F <- T0[which(T0$Sex == 1),] # female subset
-  T0_M <- T0[which(T0$Sex == 2),] # male subset
-  J1[i+L] <- dfn(T0_M, T0_F, 'PV1') # PV1 reweighted d
-  J2[i+L] <- dfn(T0_M, T0_F, 'PV2') # PV2
-  J3[i+L] <- dfn(T0_M, T0_F, 'PV3') # PV3
-  J4[i+L] <- dfn(T0_M, T0_F, 'PV4') # PV4
-  J5[i+L] <- dfn(T0_M, T0_F, 'PV5') # PV5
-  A1[i+L] <- U3fn(T0_M, T0_F, 'PV1') # PV1 reweighted U3
-  A2[i+L] <- U3fn(T0_M, T0_F, 'PV2') # PV2
-  A3[i+L] <- U3fn(T0_M, T0_F, 'PV3') # PV3
-  A4[i+L] <- U3fn(T0_M, T0_F, 'PV4') # PV4
-  A5[i+L] <- U3fn(T0_M, T0_F, 'PV5') # PV5
-  C1[i+L] <- LVRfn(T0_M, T0_F, 'PV1') # PV1 reweighted LVR
-  C2[i+L] <- LVRfn(T0_M, T0_F, 'PV2') # PV2
-  C3[i+L] <- LVRfn(T0_M, T0_F, 'PV3') # PV3
-  C4[i+L] <- LVRfn(T0_M, T0_F, 'PV4') # PV4
-  C5[i+L] <- LVRfn(T0_M, T0_F, 'PV5') # PV5
-  K1[i+L] <- LVR_Tfn(T0_M, T0_F, 'PV1', 'L') # PV1 reweighted LVR_L
-  K2[i+L] <- LVR_Tfn(T0_M, T0_F, 'PV2', 'L') # PV2
-  K3[i+L] <- LVR_Tfn(T0_M, T0_F, 'PV3', 'L') # PV3
-  K4[i+L] <- LVR_Tfn(T0_M, T0_F, 'PV4', 'L') # PV4
-  K5[i+L] <- LVR_Tfn(T0_M, T0_F, 'PV5', 'L') # PV5
-  N1[i+L] <- LVR_Tfn(T0_M, T0_F, 'PV1', 'R') # PV1 reweighted LVR_R
-  N2[i+L] <- LVR_Tfn(T0_M, T0_F, 'PV2', 'R') # PV2
-  N3[i+L] <- LVR_Tfn(T0_M, T0_F, 'PV3', 'R') # PV3
-  N4[i+L] <- LVR_Tfn(T0_M, T0_F, 'PV4', 'R') # PV4
-  N5[i+L] <- LVR_Tfn(T0_M, T0_F, 'PV5', 'R') # PV5
-  I1[i+L] <- LMADRfn(T0_M, T0_F, 'PV1') # PV1 reweighted LMADR
-  I2[i+L] <- LMADRfn(T0_M, T0_F, 'PV2') # PV2
-  I3[i+L] <- LMADRfn(T0_M, T0_F, 'PV3') # PV3
-  I4[i+L] <- LMADRfn(T0_M, T0_F, 'PV4') # PV4
-  I5[i+L] <- LMADRfn(T0_M, T0_F, 'PV5') # PV5
-  F1[i+L] <- LMADR_Tfn(T0_M, T0_F, 'PV1', 'L') # PV1 reweighted LMADR_L
-  F2[i+L] <- LMADR_Tfn(T0_M, T0_F, 'PV2', 'L') # PV2
-  F3[i+L] <- LMADR_Tfn(T0_M, T0_F, 'PV3', 'L') # PV3
-  F4[i+L] <- LMADR_Tfn(T0_M, T0_F, 'PV4', 'L') # PV4
-  F5[i+L] <- LMADR_Tfn(T0_M, T0_F, 'PV5', 'L') # PV5
-  E1[i+L] <- LMADR_Tfn(T0_M, T0_F, 'PV1', 'R') # PV1 reweighted LMADR_R
-  E2[i+L] <- LMADR_Tfn(T0_M, T0_F, 'PV2', 'R') # PV2
-  E3[i+L] <- LMADR_Tfn(T0_M, T0_F, 'PV3', 'R') # PV3
-  E4[i+L] <- LMADR_Tfn(T0_M, T0_F, 'PV4', 'R') # PV4
-  E5[i+L] <- LMADR_Tfn(T0_M, T0_F, 'PV5', 'R') # PV5
-  G1[i+L] <- LGMDRfn(T0_M, T0_F, 'PV1') # PV1 reweighted LGMDR
-  G2[i+L] <- LGMDRfn(T0_M, T0_F, 'PV2') # PV2
-  G3[i+L] <- LGMDRfn(T0_M, T0_F, 'PV3') # PV3
-  G4[i+L] <- LGMDRfn(T0_M, T0_F, 'PV4') # PV4
-  G5[i+L] <- LGMDRfn(T0_M, T0_F, 'PV5') # PV5
 }
 
 # jackknife sampling variance
-JSV_d <- mean(c(sum((J1-d1)^2), # d
-                sum((J2-d2)^2),
-                sum((J3-d3)^2),
-                sum((J4-d4)^2),
-                sum((J5-d5)^2)))/2
-JSV_U3 <- mean(c(sum((A1-U3_1)^2), # U3
-                 sum((A2-U3_2)^2),
-                 sum((A3-U3_3)^2),
-                 sum((A4-U3_4)^2),
-                 sum((A5-U3_5)^2)))/2
-JSV_LVR <- mean(c(sum((C1-LVR1)^2), # LVR
-                  sum((C2-LVR2)^2),
-                  sum((C3-LVR3)^2),
-                  sum((C4-LVR4)^2),
-                  sum((C5-LVR5)^2)))/2
-JSV_LVR_L <- mean(c(sum((K1-LVR_L1)^2), # LVR_L
-                    sum((K2-LVR_L2)^2),
-                    sum((K3-LVR_L3)^2),
-                    sum((K4-LVR_L4)^2),
-                    sum((K5-LVR_L5)^2)))/2
-JSV_LVR_R <- mean(c(sum((N1-LVR_R1)^2), # LVR_R
-                    sum((N2-LVR_R2)^2),
-                    sum((N3-LVR_R3)^2),
-                    sum((N4-LVR_R4)^2),
-                    sum((N5-LVR_R5)^2)))/2
-JSV_LMADR <- mean(c(sum((I1-LMADR1)^2), # LMADR
-                    sum((I2-LMADR2)^2),
-                    sum((I3-LMADR3)^2),
-                    sum((I4-LMADR4)^2),
-                    sum((I5-LMADR5)^2)))/2
-JSV_LMADR_L <- mean(c(sum((F1-LMADR_L1)^2), # LMADR_L
-                      sum((F2-LMADR_L2)^2),
-                      sum((F3-LMADR_L3)^2),
-                      sum((F4-LMADR_L4)^2),
-                      sum((F5-LMADR_L5)^2)))/2
-JSV_LMADR_R <- mean(c(sum((E1-LMADR_R1)^2), # LMADR_R
-                      sum((E2-LMADR_R2)^2),
-                      sum((E3-LMADR_R3)^2),
-                      sum((E4-LMADR_R4)^2),
-                      sum((E5-LMADR_R5)^2)))/2
-JSV_LGMDR <- mean(c(sum((G1-LGMDR1)^2), # LGMDR
-                    sum((G2-LGMDR2)^2),
-                    sum((G3-LGMDR3)^2),
-                    sum((G4-LGMDR4)^2),
-                    sum((G5-LGMDR5)^2)))/2
+JSV_d <- mean(c(sum((J1-ds[1])^2), # d
+                sum((J2-ds[2])^2),
+                sum((J3-ds[3])^2),
+                sum((J4-ds[4])^2),
+                sum((J5-ds[5])^2)))/2
+JSV_U3 <- mean(c(sum((A1-U3s[1])^2), # U3
+                 sum((A2-U3s[2])^2),
+                 sum((A3-U3s[3])^2),
+                 sum((A4-U3s[4])^2),
+                 sum((A5-U3s[5])^2)))/2
+JSV_LVR <- mean(c(sum((C1-LVRs[1])^2), # LVR
+                  sum((C2-LVRs[2])^2),
+                  sum((C3-LVRs[3])^2),
+                  sum((C4-LVRs[4])^2),
+                  sum((C5-LVRs[5])^2)))/2
+JSV_LVR_L <- mean(c(sum((K1-LVR_Ls[1])^2), # LVR_L
+                    sum((K2-LVR_Ls[2])^2),
+                    sum((K3-LVR_Ls[3])^2),
+                    sum((K4-LVR_Ls[4])^2),
+                    sum((K5-LVR_Ls[5])^2)))/2
+JSV_LVR_R <- mean(c(sum((N1-LVR_Rs[1])^2), # LVR_R
+                    sum((N2-LVR_Rs[2])^2),
+                    sum((N3-LVR_Rs[3])^2),
+                    sum((N4-LVR_Rs[4])^2),
+                    sum((N5-LVR_Rs[5])^2)))/2
+JSV_LMADR <- mean(c(sum((I1-LMADRs[1])^2), # LMADR
+                    sum((I2-LMADRs[2])^2),
+                    sum((I3-LMADRs[3])^2),
+                    sum((I4-LMADRs[4])^2),
+                    sum((I5-LMADRs[5])^2)))/2
+JSV_LMADR_L <- mean(c(sum((F1-LMADR_Ls[1])^2), # LMADR_L
+                      sum((F2-LMADR_Ls[2])^2),
+                      sum((F3-LMADR_Ls[3])^2),
+                      sum((F4-LMADR_Ls[4])^2),
+                      sum((F5-LMADR_Ls[5])^2)))/2
+JSV_LMADR_R <- mean(c(sum((E1-LMADR_Rs[1])^2), # LMADR_R
+                      sum((E2-LMADR_Rs[2])^2),
+                      sum((E3-LMADR_Rs[3])^2),
+                      sum((E4-LMADR_Rs[4])^2),
+                      sum((E5-LMADR_Rs[5])^2)))/2
+JSV_LGMDR <- mean(c(sum((G1-LGMDRs[1])^2), # LGMDR
+                    sum((G2-LGMDRs[2])^2),
+                    sum((G3-LGMDRs[3])^2),
+                    sum((G4-LGMDRs[4])^2),
+                    sum((G5-LGMDRs[5])^2)))/2
 
 # imputation variance
 IV_d <- .3*sum((ds-d)^2) # d
@@ -2494,43 +2063,38 @@ SE_LGMDR <- sqrt(TV_LGMDR) # standard error of LGMDR
 
 #### SEs: Probability of superiority ####
 
-J1 <- J2 <- J3 <- J4 <- J5 <- numeric(2*L) # empty containers
+J1 <- J2 <- J3 <- J4 <- J5 <- numeric(L2) # empty containers
 
 # perform jackknife resampling of PSs
-for (i in 1:L) { # for each JK zone
+for (i in 1:L2) { # for each JK zone
   T0 <- T15 # create/restore duplicate
-  # double weights if JK code is 1 and zero weights if JK code is 0
-  T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 1),'HWt']
-  T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 0
+  if (i <= L) { # first half
+    # double weights if JK code is 1 and zero weights if JK code is 0
+    T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 1),'HWt']
+    T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 0
+  } else { # second half
+    # double weights if JK code is 0 and zero weights if JK code is 1
+    T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt'] <- 2*T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt']
+    T0[which(T0$JKZ == i-L & T0$JKR == 1),'HWt'] <- 0
+  }
   T0_F <- T0[which(T0$Sex == 1),] # female subset
   T0_M <- T0[which(T0$Sex == 2),] # male subset
+  
   J1[i] <- PSfn(T0_M, T0_F, 'PV1') # PV1 reweighted PS
   J2[i] <- PSfn(T0_M, T0_F, 'PV2') # PV2
   J3[i] <- PSfn(T0_M, T0_F, 'PV3') # PV3
   J4[i] <- PSfn(T0_M, T0_F, 'PV4') # PV4
   J5[i] <- PSfn(T0_M, T0_F, 'PV5') # PV5
   
-  T0 <- T15 # restore duplicate
-  # double weights if JK code is 0 and zero weights if JK code is 1
-  T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 0),'HWt']
-  T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 0
-  T0_F <- T0[which(T0$Sex == 1),] # female subset
-  T0_M <- T0[which(T0$Sex == 2),] # male subset
-  J1[i+L] <- PSfn(T0_M, T0_F, 'PV1') # PV1 reweighted PS
-  J2[i+L] <- PSfn(T0_M, T0_F, 'PV2') # PV2
-  J3[i+L] <- PSfn(T0_M, T0_F, 'PV3') # PV3
-  J4[i+L] <- PSfn(T0_M, T0_F, 'PV4') # PV4
-  J5[i+L] <- PSfn(T0_M, T0_F, 'PV5') # PV5
-  
-  print(paste0(i, '/', L, ' at ', Sys.time()), quote = F) # print updates
+  print(paste0(i, '/', L2, ' at ', Sys.time()), quote = F) # print updates
 }
 
 # jackknife sampling variance
-JSV_PS <- mean(c(sum((J1-PS1)^2),
-                 sum((J2-PS2)^2),
-                 sum((J3-PS3)^2),
-                 sum((J4-PS4)^2),
-                 sum((J5-PS5)^2)))/2
+JSV_PS <- mean(c(sum((J1-PSs[1])^2),
+                 sum((J2-PSs[2])^2),
+                 sum((J3-PSs[3])^2),
+                 sum((J4-PSs[4])^2),
+                 sum((J5-PSs[5])^2)))/2
 
 # imputation variance
 IV_PS <- .3*sum((PSs-PS)^2)
