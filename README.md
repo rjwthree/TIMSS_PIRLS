@@ -32,7 +32,7 @@ All functions used for analysis are user-defined, for a few reasons:
 (3) User-defined functions are entirely transparent and explicit, which is particularly good when different packages produce slightly different results due to differing methods.
 
 ## Effect Sizes
-*Effect sizes with an asterisk do not exist elsewhere; they were adapted from other statistics.
+*Effect sizes with an asterisk are novel; they were adapted from other statistics.
 
 Means and Medians - Means and medians of total group, females, and males, as well as male-female mean and median differences.
 
