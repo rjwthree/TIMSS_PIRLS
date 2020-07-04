@@ -58,7 +58,7 @@ Mean Absolute Deviation Ratio (MADR) - The male-female ratio of mean absolute de
 
 Left MADR and Right MADR* - The MADR divided into the left and right tails. That is, the mean absolute deviation from the median among the subset of scores below or above the median, respectively.
 
-Gini's Mean Difference Ratio (GMDR) - Imagine randomly selecting two students and finding the absolute difference between their scores; GMD gives the expected value of this interval. The GMDR is the male-female ratio of this distance.
+Gini's Mean Difference Ratio (GMDR) - Imagine randomly selecting two students and finding the distance between their scores. GMD gives the expected value of this interval: the mean absolute difference. The GMDR is the male-female ratio.
 
 The next section adjusts the scores linearly for age and recalculates all the effect sizes from Cohen's d down.
 
