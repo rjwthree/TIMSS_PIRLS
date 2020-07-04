@@ -1553,7 +1553,7 @@ for (i in 1:L) { # for each JK zone, twice
   W5[i] <- LU3Rfn(T0_M, T0_F, .95, 'PV5') # PV5
 }
 
-# jackknife sampling variance
+# total variance = sampling variance + imputation variance
 TV_05U <- mean(c(sum((B1-LU3R05s[1])^2), # 5th LU3R
                  sum((B2-LU3R05s[2])^2),
                  sum((B3-LU3R05s[3])^2),
@@ -1764,7 +1764,7 @@ for (i in 1:L) { # for each JK zone, twice
   G5[i] <- LGMDRfn(T0_M, T0_F, 'PV5') # PV5
 }
 
-# jackknife sampling variance
+# total variance = sampling variance + imputation variance
 TV_d <- mean(c(sum((J1-ds[1])^2), # d
                sum((J2-ds[2])^2),
                sum((J3-ds[3])^2),
