@@ -96,9 +96,6 @@ names(T15) <- c('Student', 'Sex', 'Age', 'HWt', 'JKZ', 'JKR', 'Low',
 for (i in names(T15)) {attributes(T15[[i]])$label <- NULL} # delete column labels
 T15 <- data.frame(zap_labels(T15)) # remove all labels and convert to dataframe
 
-L <- length(unique(T15$JKZ)) # number of jackknife zones
-L2 <- 2*L
-
 Size <- nrow(T15) # sample size
 T15$HWt <- Size/sum(T15$HWt)*T15$HWt # equalize sample size and sum of HWt
 
@@ -107,6 +104,12 @@ T15_M <- T15[which(T15$Sex == 2),] # male subset
 
 FSize <- nrow(T15_F) # female sample size
 MSize <- nrow(T15_M) # male sample size
+
+L <- length(unique(T15$JKZ)) # number of jackknife zones
+L1 <- rep(1:L, times = 2) # vector to select jackknife zones
+L2 <- c(rep(1, times = L), rep(0, times = L)) # vector to select jackknife replicate codes
+L3 <- rev(L2) # vector to select jackknife replicate codes
+L <- 2*L # double L for later use
 
 
 
@@ -1013,25 +1016,18 @@ GMDR_A <- exp(LGMDR_A)
 
 #### SEs: Means and Medians ####
 
-J1 <- J2 <- J3 <- J4 <- J5 <- numeric(L2) # empty containers
-A1 <- A2 <- A3 <- A4 <- A5 <- numeric(L2) # empty containers
-C1 <- C2 <- C3 <- C4 <- C5 <- numeric(L2) # empty containers
-K1 <- K2 <- K3 <- K4 <- K5 <- numeric(L2) # empty containers
-N1 <- N2 <- N3 <- N4 <- N5 <- numeric(L2) # empty containers
-F1 <- F2 <- F3 <- F4 <- F5 <- numeric(L2) # empty containers
+J1 <- J2 <- J3 <- J4 <- J5 <- numeric(L) # empty containers
+A1 <- A2 <- A3 <- A4 <- A5 <- numeric(L) # empty containers
+C1 <- C2 <- C3 <- C4 <- C5 <- numeric(L) # empty containers
+K1 <- K2 <- K3 <- K4 <- K5 <- numeric(L) # empty containers
+N1 <- N2 <- N3 <- N4 <- N5 <- numeric(L) # empty containers
+F1 <- F2 <- F3 <- F4 <- F5 <- numeric(L) # empty containers
 
 # perform jackknife resampling of means and medians
-for (i in 1:L2) { # for each JK zone, twice
+for (i in 1:L) { # for each JK zone, twice
   T0 <- T15 # create/restore duplicate
-  if (i <= L) { # first half
-    # double weights if JK code is 1 and zero weights if JK code is 0
-    T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 1),'HWt']
-    T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 0
-  } else { # second half
-    # double weights if JK code is 0 and zero weights if JK code is 1
-    T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt'] <- 2*T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt']
-    T0[which(T0$JKZ == i-L & T0$JKR == 1),'HWt'] <- 0
-  }
+  T0[which(T0$JKZ == L1[i] & T0$JKR == L2[i]),'HWt'] <- 2*T0[which(T0$JKZ == L1[i] & T0$JKR == L2[i]),'HWt']
+  T0[which(T0$JKZ == L1[i] & T0$JKR == L3[i]),'HWt'] <- 0 # reweight according to JK replicate code
   T0_F <- T0[which(T0$Sex == 1),] # female subset
   T0_M <- T0[which(T0$Sex == 2),] # male subset
   
@@ -1067,121 +1063,88 @@ for (i in 1:L2) { # for each JK zone, twice
   F5[i] <- wt.qnt(T0_M$PV5, T0_M$HWt, .5) # PV5
 }
 
-# jackknife sampling variance
-JSV_MnT <- mean(c(sum((J1-Mns[1])^2), # mean (total)
-                  sum((J2-Mns[2])^2),
-                  sum((J3-Mns[3])^2),
-                  sum((J4-Mns[4])^2),
-                  sum((J5-Mns[5])^2)))/2
-JSV_MdT <- mean(c(sum((A1-Mds[1])^2), # median (total)
-                  sum((A2-Mds[2])^2),
-                  sum((A3-Mds[3])^2),
-                  sum((A4-Mds[4])^2),
-                  sum((A5-Mds[5])^2)))/2
-JSV_MnF <- mean(c(sum((C1-Mns_F[1])^2), # mean (females)
-                  sum((C2-Mns_F[2])^2),
-                  sum((C3-Mns_F[3])^2),
-                  sum((C4-Mns_F[4])^2),
-                  sum((C5-Mns_F[5])^2)))/2
-JSV_MdF <- mean(c(sum((K1-Mds_F[1])^2), # median (females)
-                  sum((K2-Mds_F[2])^2),
-                  sum((K3-Mds_F[3])^2),
-                  sum((K4-Mds_F[4])^2),
-                  sum((K5-Mds_F[5])^2)))/2
-JSV_MnM <- mean(c(sum((N1-Mns_M[1])^2), # mean (males)
-                  sum((N2-Mns_M[2])^2),
-                  sum((N3-Mns_M[3])^2),
-                  sum((N4-Mns_M[4])^2),
-                  sum((N5-Mns_M[5])^2)))/2
-JSV_MdM <- mean(c(sum((F1-Mds_M[1])^2), # median (males)
-                  sum((F2-Mds_M[2])^2),
-                  sum((F3-Mds_M[3])^2),
-                  sum((F4-Mds_M[4])^2),
-                  sum((F5-Mds_M[5])^2)))/2
-JSV_MnDf <- mean(c(sum((N1-C1-MnDfs[1])^2), # mean difference
-                   sum((N2-C2-MnDfs[2])^2),
-                   sum((N3-C3-MnDfs[3])^2),
-                   sum((N4-C4-MnDfs[4])^2),
-                   sum((N5-C5-MnDfs[5])^2)))/2
-JSV_MdDf <- mean(c(sum((F1-K1-MdDfs[1])^2), # median difference
-                   sum((F2-K2-MdDfs[2])^2),
-                   sum((F3-K3-MdDfs[3])^2),
-                   sum((F4-K4-MdDfs[4])^2),
-                   sum((F5-K5-MdDfs[5])^2)))/2
+# total variance = sampling variance + imputation variance
+TV_MnT <- mean(c(sum((J1-Mns[1])^2), # mean (total)
+                 sum((J2-Mns[2])^2),
+                 sum((J3-Mns[3])^2),
+                 sum((J4-Mns[4])^2),
+                 sum((J5-Mns[5])^2)))/2 + .3*sum((Mns-Mn)^2)
+TV_MdT <- mean(c(sum((A1-Mds[1])^2), # median (total)
+                 sum((A2-Mds[2])^2),
+                 sum((A3-Mds[3])^2),
+                 sum((A4-Mds[4])^2),
+                 sum((A5-Mds[5])^2)))/2 + .3*sum((Mds-Md)^2)
+TV_MnF <- mean(c(sum((C1-Mns_F[1])^2), # mean (females)
+                 sum((C2-Mns_F[2])^2),
+                 sum((C3-Mns_F[3])^2),
+                 sum((C4-Mns_F[4])^2),
+                 sum((C5-Mns_F[5])^2)))/2 + .3*sum((Mns_F-Mn_F)^2)
+TV_MdF <- mean(c(sum((K1-Mds_F[1])^2), # median (females)
+                 sum((K2-Mds_F[2])^2),
+                 sum((K3-Mds_F[3])^2),
+                 sum((K4-Mds_F[4])^2),
+                 sum((K5-Mds_F[5])^2)))/2 + .3*sum((Mds_F-Md_F)^2)
+TV_MnM <- mean(c(sum((N1-Mns_M[1])^2), # mean (males)
+                 sum((N2-Mns_M[2])^2),
+                 sum((N3-Mns_M[3])^2),
+                 sum((N4-Mns_M[4])^2),
+                 sum((N5-Mns_M[5])^2)))/2 + .3*sum((Mns_M-Mn_M)^2)
+TV_MdM <- mean(c(sum((F1-Mds_M[1])^2), # median (males)
+                 sum((F2-Mds_M[2])^2),
+                 sum((F3-Mds_M[3])^2),
+                 sum((F4-Mds_M[4])^2),
+                 sum((F5-Mds_M[5])^2)))/2 + .3*sum((Mds_M-Md_M)^2)
+TV_MnDf <- mean(c(sum((N1-C1-MnDfs[1])^2), # mean difference
+                  sum((N2-C2-MnDfs[2])^2),
+                  sum((N3-C3-MnDfs[3])^2),
+                  sum((N4-C4-MnDfs[4])^2),
+                  sum((N5-C5-MnDfs[5])^2)))/2 + .3*sum((MnDfs-MnDf)^2)
+TV_MdDf <- mean(c(sum((F1-K1-MdDfs[1])^2), # median difference
+                  sum((F2-K2-MdDfs[2])^2),
+                  sum((F3-K3-MdDfs[3])^2),
+                  sum((F4-K4-MdDfs[4])^2),
+                  sum((F5-K5-MdDfs[5])^2)))/2 + .3*sum((MdDfs-MdDf)^2)
 
-# imputation variance
-IV_MnT <- .3*sum((Mns-Mn)^2) # mean (total)
-IV_MdT <- .3*sum((Mds-Md)^2) # median (total)
-IV_MnF <- .3*sum((Mns_F-Mn_F)^2) # mean (females)
-IV_MdF <- .3*sum((Mds_F-Md_F)^2) # median (females)
-IV_MnM <- .3*sum((Mns_M-Mn_M)^2) # mean (males)
-IV_MdM <- .3*sum((Mds_M-Md_M)^2) # median (males)
-IV_MnDf <- .3*sum((MnDfs-MnDf)^2) # mean difference
-IV_MdDf <- .3*sum((MdDfs-MdDf)^2) # median difference
-
-
-# total variance = jackknife + imputation
-TV_MnT <- JSV_MnT + IV_MnT # total variance of mean (total)
-SE_MnT <- sqrt(TV_MnT) # standard error of mean (total)
-
-TV_MdT <- JSV_MdT + IV_MdT # total variance of median (total)
-SE_MdT <- sqrt(TV_MdT) # standard error of median (total)
-
-TV_MnF <- JSV_MnF + IV_MnF # total variance of mean (females)
-SE_MnF <- sqrt(TV_MnF) # standard error of mean (females)
-
-TV_MdF <- JSV_MdF + IV_MdF # total variance of median (females)
-SE_MdF <- sqrt(TV_MdF) # standard error of median (females)
-
-TV_MnM <- JSV_MnM + IV_MnM # total variance of mean (males)
-SE_MnM <- sqrt(TV_MnM) # standard error of mean (males)
-
-TV_MdM <- JSV_MdM + IV_MdM # total variance of median (males)
-SE_MdM <- sqrt(TV_MdM) # standard error of median (males)
-
-TV_MnDf <- JSV_MnDf + IV_MnDf # total variance of mean difference
-SE_MnDf <- sqrt(TV_MnDf) # standard error of mean difference
-
-TV_MdDf <- JSV_MdDf + IV_MdDf # total variance of median difference
-SE_MdDf <- sqrt(TV_MdDf) # standard error of median difference
+# standard errors
+SE_MnT <- sqrt(TV_MnT) # mean (total)
+SE_MdT <- sqrt(TV_MdT) # median (total)
+SE_MnF <- sqrt(TV_MnF) # mean (females)
+SE_MdF <- sqrt(TV_MdF) # median (females)
+SE_MnM <- sqrt(TV_MnM) # mean (males)
+SE_MdM <- sqrt(TV_MdM) # median (males)
+SE_MnDf <- sqrt(TV_MnDf) # mean difference
+SE_MdDf <- sqrt(TV_MdDf) # median difference
 
 
 
 #### SEs: LTPRs and LTPR tail-center differences ####
 
-A1 <- A2 <- A3 <- A4 <- A5 <- numeric(L2) # empty containers
-B1 <- B2 <- B3 <- B4 <- B5 <- numeric(L2) # empty containers
-C1 <- C2 <- C3 <- C4 <- C5 <- numeric(L2) # empty containers
-E1 <- E2 <- E3 <- E4 <- E5 <- numeric(L2) # empty containers
-F1 <- F2 <- F3 <- F4 <- F5 <- numeric(L2) # empty containers
-G1 <- G2 <- G3 <- G4 <- G5 <- numeric(L2) # empty containers
-H1 <- H2 <- H3 <- H4 <- H5 <- numeric(L2) # empty containers
-I1 <- I2 <- I3 <- I4 <- I5 <- numeric(L2) # empty containers
-J1 <- J2 <- J3 <- J4 <- J5 <- numeric(L2) # empty containers
-K1 <- K2 <- K3 <- K4 <- K5 <- numeric(L2) # empty containers
-M1 <- M2 <- M3 <- M4 <- M5 <- numeric(L2) # empty containers
-N1 <- N2 <- N3 <- N4 <- N5 <- numeric(L2) # empty containers
-O1 <- O2 <- O3 <- O4 <- O5 <- numeric(L2) # empty containers
-P1 <- P2 <- P3 <- P4 <- P5 <- numeric(L2) # empty containers
-Q1 <- Q2 <- Q3 <- Q4 <- Q5 <- numeric(L2) # empty containers
-R1 <- R2 <- R3 <- R4 <- R5 <- numeric(L2) # empty containers
-S1 <- S2 <- S3 <- S4 <- S5 <- numeric(L2) # empty containers
-T1 <- T2 <- T3 <- T4 <- T5 <- numeric(L2) # empty containers
-V1 <- V2 <- V3 <- V4 <- V5 <- numeric(L2) # empty containers
-W1 <- W2 <- W3 <- W4 <- W5 <- numeric(L2) # empty containers
+A1 <- A2 <- A3 <- A4 <- A5 <- numeric(L) # empty containers
+B1 <- B2 <- B3 <- B4 <- B5 <- numeric(L) # empty containers
+C1 <- C2 <- C3 <- C4 <- C5 <- numeric(L) # empty containers
+E1 <- E2 <- E3 <- E4 <- E5 <- numeric(L) # empty containers
+F1 <- F2 <- F3 <- F4 <- F5 <- numeric(L) # empty containers
+G1 <- G2 <- G3 <- G4 <- G5 <- numeric(L) # empty containers
+H1 <- H2 <- H3 <- H4 <- H5 <- numeric(L) # empty containers
+I1 <- I2 <- I3 <- I4 <- I5 <- numeric(L) # empty containers
+J1 <- J2 <- J3 <- J4 <- J5 <- numeric(L) # empty containers
+K1 <- K2 <- K3 <- K4 <- K5 <- numeric(L) # empty containers
+M1 <- M2 <- M3 <- M4 <- M5 <- numeric(L) # empty containers
+N1 <- N2 <- N3 <- N4 <- N5 <- numeric(L) # empty containers
+O1 <- O2 <- O3 <- O4 <- O5 <- numeric(L) # empty containers
+P1 <- P2 <- P3 <- P4 <- P5 <- numeric(L) # empty containers
+Q1 <- Q2 <- Q3 <- Q4 <- Q5 <- numeric(L) # empty containers
+R1 <- R2 <- R3 <- R4 <- R5 <- numeric(L) # empty containers
+S1 <- S2 <- S3 <- S4 <- S5 <- numeric(L) # empty containers
+T1 <- T2 <- T3 <- T4 <- T5 <- numeric(L) # empty containers
+V1 <- V2 <- V3 <- V4 <- V5 <- numeric(L) # empty containers
+W1 <- W2 <- W3 <- W4 <- W5 <- numeric(L) # empty containers
 
 # perform jackknife resampling of LTPRs
-for (i in 1:L2) { # for each JK zone, twice
+for (i in 1:L) { # for each JK zone, twice
   T0 <- T15 # create/restore duplicate
-  if (i <= L) { # first half
-    # double weights if JK code is 1 and zero weights if JK code is 0
-    T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 1),'HWt']
-    T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 0
-  } else { # second half
-    # double weights if JK code is 0 and zero weights if JK code is 1
-    T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt'] <- 2*T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt']
-    T0[which(T0$JKZ == i-L & T0$JKR == 1),'HWt'] <- 0
-  }
+  T0[which(T0$JKZ == L1[i] & T0$JKR == L2[i]),'HWt'] <- 2*T0[which(T0$JKZ == L1[i] & T0$JKR == L2[i]),'HWt']
+  T0[which(T0$JKZ == L1[i] & T0$JKR == L3[i]),'HWt'] <- 0 # reweight according to JK replicate code
   T0_F <- T0[which(T0$Sex == 1),] # female subset
   T0_M <- T0[which(T0$Sex == 2),] # male subset
   
@@ -1286,303 +1249,210 @@ for (i in 1:L2) { # for each JK zone, twice
   W4[i] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV4, T0$HWt, .95), 'PV4') # PV4
   W5[i] <- LTPRfn(T0_M, T0_F, wt.qnt(T0$PV5, T0$HWt, .95), 'PV5') # PV5
   
-  if (i %% 10 == 0) {print(paste0(i, '/', L2, ' at ', Sys.time()), quote = F)} # print updates
+  if (i %% 10 == 0) {print(paste0(i, '/', L, ' at ', Sys.time()), quote = F)} # print updates
 }
 
-# jackknife sampling variance
-JSV_Mn <- mean(c(sum((A1-LTPRMns[1])^2), # mean LTPR
-                 sum((A2-LTPRMns[2])^2),
-                 sum((A3-LTPRMns[3])^2),
-                 sum((A4-LTPRMns[4])^2),
-                 sum((A5-LTPRMns[5])^2)))/2
-JSV_05 <- mean(c(sum((B1-LTPR05s[1])^2), # 5th LTPR
+# total variance = sampling variance + imputation variance
+TV_Mn <- mean(c(sum((A1-LTPRMns[1])^2), # mean LTPR
+                sum((A2-LTPRMns[2])^2),
+                sum((A3-LTPRMns[3])^2),
+                sum((A4-LTPRMns[4])^2),
+                sum((A5-LTPRMns[5])^2)))/2 + .3*sum((LTPRMns-LTPRMn)^2)
+TV_05T <- mean(c(sum((B1-LTPR05s[1])^2), # 5th LTPR
                  sum((B2-LTPR05s[2])^2),
                  sum((B3-LTPR05s[3])^2),
                  sum((B4-LTPR05s[4])^2),
-                 sum((B5-LTPR05s[5])^2)))/2
-JSV_10 <- mean(c(sum((C1-LTPR10s[1])^2), # 10th LTPR
+                 sum((B5-LTPR05s[5])^2)))/2 + .3*sum((LTPR05s-LTPR05)^2)
+TV_10T <- mean(c(sum((C1-LTPR10s[1])^2), # 10th LTPR
                  sum((C2-LTPR10s[2])^2),
                  sum((C3-LTPR10s[3])^2),
                  sum((C4-LTPR10s[4])^2),
-                 sum((C5-LTPR10s[5])^2)))/2
-JSV_15 <- mean(c(sum((E1-LTPR15s[1])^2), # 15th LTPR
+                 sum((C5-LTPR10s[5])^2)))/2 + .3*sum((LTPR10s-LTPR10)^2)
+TV_15T <- mean(c(sum((E1-LTPR15s[1])^2), # 15th LTPR
                  sum((E2-LTPR15s[2])^2),
                  sum((E3-LTPR15s[3])^2),
                  sum((E4-LTPR15s[4])^2),
-                 sum((E5-LTPR15s[5])^2)))/2
-JSV_20 <- mean(c(sum((F1-LTPR20s[1])^2), # 20th LTPR
+                 sum((E5-LTPR15s[5])^2)))/2 + .3*sum((LTPR15s-LTPR15)^2)
+TV_20T <- mean(c(sum((F1-LTPR20s[1])^2), # 20th LTPR
                  sum((F2-LTPR20s[2])^2),
                  sum((F3-LTPR20s[3])^2),
                  sum((F4-LTPR20s[4])^2),
-                 sum((F5-LTPR20s[5])^2)))/2
-JSV_25 <- mean(c(sum((G1-LTPR25s[1])^2), # 25th LTPR
+                 sum((F5-LTPR20s[5])^2)))/2 + .3*sum((LTPR20s-LTPR20)^2)
+TV_25T <- mean(c(sum((G1-LTPR25s[1])^2), # 25th LTPR
                  sum((G2-LTPR25s[2])^2),
                  sum((G3-LTPR25s[3])^2),
                  sum((G4-LTPR25s[4])^2),
-                 sum((G5-LTPR25s[5])^2)))/2
-JSV_30 <- mean(c(sum((H1-LTPR30s[1])^2), # 30th LTPR
+                 sum((G5-LTPR25s[5])^2)))/2 + .3*sum((LTPR25s-LTPR25)^2)
+TV_30T <- mean(c(sum((H1-LTPR30s[1])^2), # 30th LTPR
                  sum((H2-LTPR30s[2])^2),
                  sum((H3-LTPR30s[3])^2),
                  sum((H4-LTPR30s[4])^2),
-                 sum((H5-LTPR30s[5])^2)))/2
-JSV_35 <- mean(c(sum((I1-LTPR35s[1])^2), # 35th LTPR
+                 sum((H5-LTPR30s[5])^2)))/2 + .3*sum((LTPR30s-LTPR30)^2)
+TV_35T <- mean(c(sum((I1-LTPR35s[1])^2), # 35th LTPR
                  sum((I2-LTPR35s[2])^2),
                  sum((I3-LTPR35s[3])^2),
                  sum((I4-LTPR35s[4])^2),
-                 sum((I5-LTPR35s[5])^2)))/2
-JSV_40 <- mean(c(sum((J1-LTPR40s[1])^2), # 40th LTPR
+                 sum((I5-LTPR35s[5])^2)))/2 + .3*sum((LTPR35s-LTPR35)^2)
+TV_40T <- mean(c(sum((J1-LTPR40s[1])^2), # 40th LTPR
                  sum((J2-LTPR40s[2])^2),
                  sum((J3-LTPR40s[3])^2),
                  sum((J4-LTPR40s[4])^2),
-                 sum((J5-LTPR40s[5])^2)))/2
-JSV_45 <- mean(c(sum((K1-LTPR45s[1])^2), # 45th LTPR
+                 sum((J5-LTPR40s[5])^2)))/2 + .3*sum((LTPR40s-LTPR40)^2)
+TV_45T <- mean(c(sum((K1-LTPR45s[1])^2), # 45th LTPR
                  sum((K2-LTPR45s[2])^2),
                  sum((K3-LTPR45s[3])^2),
                  sum((K4-LTPR45s[4])^2),
-                 sum((K5-LTPR45s[5])^2)))/2
-JSV_50 <- mean(c(sum((M1-LTPR50s[1])^2), # 50th LTPR
+                 sum((K5-LTPR45s[5])^2)))/2 + .3*sum((LTPR45s-LTPR45)^2)
+TV_50T <- mean(c(sum((M1-LTPR50s[1])^2), # 50th LTPR
                  sum((M2-LTPR50s[2])^2),
                  sum((M3-LTPR50s[3])^2),
                  sum((M4-LTPR50s[4])^2),
-                 sum((M5-LTPR50s[5])^2)))/2
-JSV_55 <- mean(c(sum((N1-LTPR55s[1])^2), # 55th LTPR
+                 sum((M5-LTPR50s[5])^2)))/2 + .3*sum((LTPR50s-LTPR50)^2)
+TV_55T <- mean(c(sum((N1-LTPR55s[1])^2), # 55th LTPR
                  sum((N2-LTPR55s[2])^2),
                  sum((N3-LTPR55s[3])^2),
                  sum((N4-LTPR55s[4])^2),
-                 sum((N5-LTPR55s[5])^2)))/2
-JSV_60 <- mean(c(sum((O1-LTPR60s[1])^2), # 60th LTPR
+                 sum((N5-LTPR55s[5])^2)))/2 + .3*sum((LTPR55s-LTPR55)^2)
+TV_60T <- mean(c(sum((O1-LTPR60s[1])^2), # 60th LTPR
                  sum((O2-LTPR60s[2])^2),
                  sum((O3-LTPR60s[3])^2),
                  sum((O4-LTPR60s[4])^2),
-                 sum((O5-LTPR60s[5])^2)))/2
-JSV_65 <- mean(c(sum((P1-LTPR65s[1])^2), # 65th LTPR
+                 sum((O5-LTPR60s[5])^2)))/2 + .3*sum((LTPR60s-LTPR60)^2)
+TV_65T <- mean(c(sum((P1-LTPR65s[1])^2), # 65th LTPR
                  sum((P2-LTPR65s[2])^2),
                  sum((P3-LTPR65s[3])^2),
                  sum((P4-LTPR65s[4])^2),
-                 sum((P5-LTPR65s[5])^2)))/2
-JSV_70 <- mean(c(sum((Q1-LTPR70s[1])^2), # 70th LTPR
+                 sum((P5-LTPR65s[5])^2)))/2 + .3*sum((LTPR65s-LTPR65)^2)
+TV_70T <- mean(c(sum((Q1-LTPR70s[1])^2), # 70th LTPR
                  sum((Q2-LTPR70s[2])^2),
                  sum((Q3-LTPR70s[3])^2),
                  sum((Q4-LTPR70s[4])^2),
-                 sum((Q5-LTPR70s[5])^2)))/2
-JSV_75 <- mean(c(sum((R1-LTPR75s[1])^2), # 75th LTPR
+                 sum((Q5-LTPR70s[5])^2)))/2 + .3*sum((LTPR70s-LTPR70)^2)
+TV_75T <- mean(c(sum((R1-LTPR75s[1])^2), # 75th LTPR
                  sum((R2-LTPR75s[2])^2),
                  sum((R3-LTPR75s[3])^2),
                  sum((R4-LTPR75s[4])^2),
-                 sum((R5-LTPR75s[5])^2)))/2
-JSV_80 <- mean(c(sum((S1-LTPR80s[1])^2), # 80th LTPR
+                 sum((R5-LTPR75s[5])^2)))/2 + .3*sum((LTPR75s-LTPR75)^2)
+TV_80T <- mean(c(sum((S1-LTPR80s[1])^2), # 80th LTPR
                  sum((S2-LTPR80s[2])^2),
                  sum((S3-LTPR80s[3])^2),
                  sum((S4-LTPR80s[4])^2),
-                 sum((S5-LTPR80s[5])^2)))/2
-JSV_85 <- mean(c(sum((T1-LTPR85s[1])^2), # 85th LTPR
+                 sum((S5-LTPR80s[5])^2)))/2 + .3*sum((LTPR80s-LTPR80)^2)
+TV_85T <- mean(c(sum((T1-LTPR85s[1])^2), # 85th LTPR
                  sum((T2-LTPR85s[2])^2),
                  sum((T3-LTPR85s[3])^2),
                  sum((T4-LTPR85s[4])^2),
-                 sum((T5-LTPR85s[5])^2)))/2
-JSV_90 <- mean(c(sum((V1-LTPR90s[1])^2), # 90th LTPR
+                 sum((T5-LTPR85s[5])^2)))/2 + .3*sum((LTPR85s-LTPR85)^2)
+TV_90T <- mean(c(sum((V1-LTPR90s[1])^2), # 90th LTPR
                  sum((V2-LTPR90s[2])^2),
                  sum((V3-LTPR90s[3])^2),
                  sum((V4-LTPR90s[4])^2),
-                 sum((V5-LTPR90s[5])^2)))/2
-JSV_95 <- mean(c(sum((W1-LTPR95s[1])^2), # 95th LTPR
+                 sum((V5-LTPR90s[5])^2)))/2 + .3*sum((LTPR90s-LTPR90)^2)
+TV_95T <- mean(c(sum((W1-LTPR95s[1])^2), # 95th LTPR
                  sum((W2-LTPR95s[2])^2),
                  sum((W3-LTPR95s[3])^2),
                  sum((W4-LTPR95s[4])^2),
-                 sum((W5-LTPR95s[5])^2)))/2
-JSV_Md95T <- mean(c(sum((W1-M1-Md95Ts[1])^2), # Md95T
-                    sum((W2-M2-Md95Ts[2])^2),
-                    sum((W3-M3-Md95Ts[3])^2),
-                    sum((W4-M4-Md95Ts[4])^2),
-                    sum((W5-M5-Md95Ts[5])^2)))/2
-JSV_Md90T <- mean(c(sum((V1-M1-Md90Ts[1])^2), # Md90T
-                    sum((V2-M2-Md90Ts[2])^2),
-                    sum((V3-M3-Md90Ts[3])^2),
-                    sum((V4-M4-Md90Ts[4])^2),
-                    sum((V5-M5-Md90Ts[5])^2)))/2
-JSV_Md10T <- mean(c(sum((M1-C1-Md10Ts[1])^2), # Md10T
-                    sum((M2-C2-Md10Ts[2])^2),
-                    sum((M3-C3-Md10Ts[3])^2),
-                    sum((M4-C4-Md10Ts[4])^2),
-                    sum((M5-C5-Md10Ts[5])^2)))/2
-JSV_Md05T <- mean(c(sum((M1-B1-Md05Ts[1])^2), # Md05T
-                    sum((M2-B2-Md05Ts[2])^2),
-                    sum((M3-B3-Md05Ts[3])^2),
-                    sum((M4-B4-Md05Ts[4])^2),
-                    sum((M5-B5-Md05Ts[5])^2)))/2
-JSV_Mn95T <- mean(c(sum((W1-A1-Mn95Ts[1])^2), # Mn95T
-                    sum((W2-A2-Mn95Ts[2])^2),
-                    sum((W3-A3-Mn95Ts[3])^2),
-                    sum((W4-A4-Mn95Ts[4])^2),
-                    sum((W5-A5-Mn95Ts[5])^2)))/2
-JSV_Mn90T <- mean(c(sum((V1-A1-Mn90Ts[1])^2), # Mn90T
-                    sum((V2-A2-Mn90Ts[2])^2),
-                    sum((V3-A3-Mn90Ts[3])^2),
-                    sum((V4-A4-Mn90Ts[4])^2),
-                    sum((V5-A5-Mn90Ts[5])^2)))/2
-JSV_Mn10T <- mean(c(sum((A1-C1-Mn10Ts[1])^2), # Mn10T
-                    sum((A2-C2-Mn10Ts[2])^2),
-                    sum((A3-C3-Mn10Ts[3])^2),
-                    sum((A4-C4-Mn10Ts[4])^2),
-                    sum((A5-C5-Mn10Ts[5])^2)))/2
-JSV_Mn05T <- mean(c(sum((A1-B1-Mn05Ts[1])^2), # Mn05T
-                    sum((A2-B2-Mn05Ts[2])^2),
-                    sum((A3-B3-Mn05Ts[3])^2),
-                    sum((A4-B4-Mn05Ts[4])^2),
-                    sum((A5-B5-Mn05Ts[5])^2)))/2
+                 sum((W5-LTPR95s[5])^2)))/2 + .3*sum((LTPR95s-LTPR95)^2)
+TV_Md95T <- mean(c(sum((W1-M1-Md95Ts[1])^2), # Md95T
+                   sum((W2-M2-Md95Ts[2])^2),
+                   sum((W3-M3-Md95Ts[3])^2),
+                   sum((W4-M4-Md95Ts[4])^2),
+                   sum((W5-M5-Md95Ts[5])^2)))/2 + .3*sum((Md95Ts-Md95T)^2)
+TV_Md90T <- mean(c(sum((V1-M1-Md90Ts[1])^2), # Md90T
+                   sum((V2-M2-Md90Ts[2])^2),
+                   sum((V3-M3-Md90Ts[3])^2),
+                   sum((V4-M4-Md90Ts[4])^2),
+                   sum((V5-M5-Md90Ts[5])^2)))/2 + .3*sum((Md90Ts-Md90T)^2)
+TV_Md10T <- mean(c(sum((M1-C1-Md10Ts[1])^2), # Md10T
+                   sum((M2-C2-Md10Ts[2])^2),
+                   sum((M3-C3-Md10Ts[3])^2),
+                   sum((M4-C4-Md10Ts[4])^2),
+                   sum((M5-C5-Md10Ts[5])^2)))/2 + .3*sum((Md10Ts-Md10T)^2)
+TV_Md05T <- mean(c(sum((M1-B1-Md05Ts[1])^2), # Md05T
+                   sum((M2-B2-Md05Ts[2])^2),
+                   sum((M3-B3-Md05Ts[3])^2),
+                   sum((M4-B4-Md05Ts[4])^2),
+                   sum((M5-B5-Md05Ts[5])^2)))/2 + .3*sum((Md05Ts-Md05T)^2)
+TV_Mn95T <- mean(c(sum((W1-A1-Mn95Ts[1])^2), # Mn95T
+                   sum((W2-A2-Mn95Ts[2])^2),
+                   sum((W3-A3-Mn95Ts[3])^2),
+                   sum((W4-A4-Mn95Ts[4])^2),
+                   sum((W5-A5-Mn95Ts[5])^2)))/2 + .3*sum((Mn95Ts-Mn95T)^2)
+TV_Mn90T <- mean(c(sum((V1-A1-Mn90Ts[1])^2), # Mn90T
+                   sum((V2-A2-Mn90Ts[2])^2),
+                   sum((V3-A3-Mn90Ts[3])^2),
+                   sum((V4-A4-Mn90Ts[4])^2),
+                   sum((V5-A5-Mn90Ts[5])^2)))/2 + .3*sum((Mn90Ts-Mn90T)^2)
+TV_Mn10T <- mean(c(sum((A1-C1-Mn10Ts[1])^2), # Mn10T
+                   sum((A2-C2-Mn10Ts[2])^2),
+                   sum((A3-C3-Mn10Ts[3])^2),
+                   sum((A4-C4-Mn10Ts[4])^2),
+                   sum((A5-C5-Mn10Ts[5])^2)))/2 + .3*sum((Mn10Ts-Mn10T)^2)
+TV_Mn05T <- mean(c(sum((A1-B1-Mn05Ts[1])^2), # Mn05T
+                   sum((A2-B2-Mn05Ts[2])^2),
+                   sum((A3-B3-Mn05Ts[3])^2),
+                   sum((A4-B4-Mn05Ts[4])^2),
+                   sum((A5-B5-Mn05Ts[5])^2)))/2 + .3*sum((Mn05Ts-Mn05T)^2)
 
-# imputation variance
-IV_Mn <- .3*sum((LTPRMns-LTPRMn)^2) # mean LTPR
-IV_05 <- .3*sum((LTPR05s-LTPR05)^2) # 5th LTPR
-IV_10 <- .3*sum((LTPR10s-LTPR10)^2) # 10th LTPR
-IV_15 <- .3*sum((LTPR15s-LTPR15)^2) # 15th LTPR
-IV_20 <- .3*sum((LTPR20s-LTPR20)^2) # 20th LTPR
-IV_25 <- .3*sum((LTPR25s-LTPR25)^2) # 25th LTPR
-IV_30 <- .3*sum((LTPR30s-LTPR30)^2) # 30th LTPR
-IV_35 <- .3*sum((LTPR35s-LTPR35)^2) # 35th LTPR
-IV_40 <- .3*sum((LTPR40s-LTPR40)^2) # 40th LTPR
-IV_45 <- .3*sum((LTPR45s-LTPR45)^2) # 45th LTPR
-IV_50 <- .3*sum((LTPR50s-LTPR50)^2) # 50th LTPR
-IV_55 <- .3*sum((LTPR55s-LTPR55)^2) # 55th LTPR
-IV_60 <- .3*sum((LTPR60s-LTPR60)^2) # 60th LTPR
-IV_65 <- .3*sum((LTPR65s-LTPR65)^2) # 65th LTPR
-IV_70 <- .3*sum((LTPR70s-LTPR70)^2) # 70th LTPR
-IV_75 <- .3*sum((LTPR75s-LTPR75)^2) # 75th LTPR
-IV_80 <- .3*sum((LTPR80s-LTPR80)^2) # 80th LTPR
-IV_85 <- .3*sum((LTPR85s-LTPR85)^2) # 85th LTPR
-IV_90 <- .3*sum((LTPR90s-LTPR90)^2) # 90th LTPR
-IV_95 <- .3*sum((LTPR95s-LTPR95)^2) # 95th LTPR
-IV_Md95T <- .3*sum((Md95Ts-Md95T)^2) # Md95T
-IV_Md90T <- .3*sum((Md90Ts-Md90T)^2) # Md90T
-IV_Md10T <- .3*sum((Md10Ts-Md10T)^2) # Md10T
-IV_Md05T <- .3*sum((Md05Ts-Md05T)^2) # Md05T
-IV_Mn95T <- .3*sum((Mn95Ts-Mn95T)^2) # Mn95T
-IV_Mn90T <- .3*sum((Mn90Ts-Mn90T)^2) # Mn90T
-IV_Mn10T <- .3*sum((Mn10Ts-Mn10T)^2) # Mn10T
-IV_Mn05T <- .3*sum((Mn05Ts-Mn05T)^2) # Mn05T
-
-
-# total variance = jackknife + imputation
-TV_Mn <- JSV_Mn + IV_Mn # total variance of mean LTPR
-SE_Mn <- sqrt(TV_Mn) # standard error of mean LTPR
-
-TV_05T <- JSV_05 + IV_05 # total variance of 5th percentile LTPR
-SE_05T <- sqrt(TV_05T) # standard error of 5th percentile LTPR
-
-TV_10T <- JSV_10 + IV_10 # total variance of 10th percentile LTPR
-SE_10T <- sqrt(TV_10T) # standard error of 10th percentile LTPR
-
-TV_15T <- JSV_15 + IV_15 # total variance of 15th percentile LTPR
-SE_15T <- sqrt(TV_15T) # standard error of 15th percentile LTPR
-
-TV_20T <- JSV_20 + IV_20 # total variance of 20th percentile LTPR
-SE_20T <- sqrt(TV_20T) # standard error of 20th percentile LTPR
-
-TV_25T <- JSV_25 + IV_25 # total variance of 25th percentile LTPR
-SE_25T <- sqrt(TV_25T) # standard error of 25th percentile LTPR
-
-TV_30T <- JSV_30 + IV_30 # total variance of 30th percentile LTPR
-SE_30T <- sqrt(TV_30T) # standard error of 30th percentile LTPR
-
-TV_35T <- JSV_35 + IV_35 # total variance of 35th percentile LTPR
-SE_35T <- sqrt(TV_35T) # standard error of 35th percentile LTPR
-
-TV_40T <- JSV_40 + IV_40 # total variance of 40th percentile LTPR
-SE_40T <- sqrt(TV_40T) # standard error of 40th percentile LTPR
-
-TV_45T <- JSV_45 + IV_45 # total variance of 45th percentile LTPR
-SE_45T <- sqrt(TV_45T) # standard error of 45th percentile LTPR
-
-TV_50T <- JSV_50 + IV_50 # total variance of 50th percentile LTPR
-SE_50T <- sqrt(TV_50T) # standard error of 50th percentile LTPR
-
-TV_55T <- JSV_55 + IV_55 # total variance of 55th percentile LTPR
-SE_55T <- sqrt(TV_55T) # standard error of 55th percentile LTPR
-
-TV_60T <- JSV_60 + IV_60 # total variance of 60th percentile LTPR
-SE_60T <- sqrt(TV_60T) # standard error of 60th percentile LTPR
-
-TV_65T <- JSV_65 + IV_65 # total variance of 65th percentile LTPR
-SE_65T <- sqrt(TV_65T) # standard error of 65th percentile LTPR
-
-TV_70T <- JSV_70 + IV_70 # total variance of 70th percentile LTPR
-SE_70T <- sqrt(TV_70T) # standard error of 70th percentile LTPR
-
-TV_75T <- JSV_75 + IV_75 # total variance of 75th percentile LTPR
-SE_75T <- sqrt(TV_75T) # standard error of 75th percentile LTPR
-
-TV_80T <- JSV_80 + IV_80 # total variance of 80th percentile LTPR
-SE_80T <- sqrt(TV_80T) # standard error of 80th percentile LTPR
-
-TV_85T <- JSV_85 + IV_85 # total variance of 85th percentile LTPR
-SE_85T <- sqrt(TV_85T) # standard error of 85th percentile LTPR
-
-TV_90T <- JSV_90 + IV_90 # total variance of 90th percentile LTPR
-SE_90T <- sqrt(TV_90T) # standard error of 90th percentile LTPR
-
-TV_95T <- JSV_95 + IV_95 # total variance of 95th percentile LTPR
-SE_95T <- sqrt(TV_95T) # standard error of 95th percentile LTPR
-
-TV_Md95T <- JSV_Md95T + IV_Md95T # total variance of Md95T
-SE_Md95T <- sqrt(TV_Md95T) # standard error of Md95T
-
-TV_Md90T <- JSV_Md90T + IV_Md90T # total variance of Md90T
-SE_Md90T <- sqrt(TV_Md90T) # standard error of Md90T
-
-TV_Md10T <- JSV_Md10T + IV_Md10T # total variance of Md10T
-SE_Md10T <- sqrt(TV_Md10T) # standard error of Md10T
-
-TV_Md05T <- JSV_Md05T + IV_Md05T # total variance of Md05T
-SE_Md05T <- sqrt(TV_Md05T) # standard error of Md05T
-
-TV_Mn95T <- JSV_Mn95T + IV_Mn95T # total variance of Mn95T
-SE_Mn95T <- sqrt(TV_Mn95T) # standard error of Mn95T
-
-TV_Mn90T <- JSV_Mn90T + IV_Mn90T # total variance of Mn90T
-SE_Mn90T <- sqrt(TV_Mn90T) # standard error of Mn90T
-
-TV_Mn10T <- JSV_Mn10T + IV_Mn10T # total variance of Mn10T
-SE_Mn10T <- sqrt(TV_Mn10T) # standard error of Mn10T
-
-TV_Mn05T <- JSV_Mn05T + IV_Mn05T # total variance of Mn05T
-SE_Mn05T <- sqrt(TV_Mn05T) # standard error of Mn05T
+# standard errors
+SE_Mn <- sqrt(TV_Mn) # mean LTPR
+SE_05T <- sqrt(TV_05T) # 5th LTPR
+SE_10T <- sqrt(TV_10T) # 10th LTPR
+SE_15T <- sqrt(TV_15T) # 15th LTPR
+SE_20T <- sqrt(TV_20T) # 20th LTPR
+SE_25T <- sqrt(TV_25T) # 25th LTPR
+SE_30T <- sqrt(TV_30T) # 30th LTPR
+SE_35T <- sqrt(TV_35T) # 35th LTPR
+SE_40T <- sqrt(TV_40T) # 40th LTPR
+SE_45T <- sqrt(TV_45T) # 45th LTPR
+SE_50T <- sqrt(TV_50T) # 50th LTPR
+SE_55T <- sqrt(TV_55T) # 55th LTPR
+SE_60T <- sqrt(TV_60T) # 60th LTPR
+SE_65T <- sqrt(TV_65T) # 65th LTPR
+SE_70T <- sqrt(TV_70T) # 70th LTPR
+SE_75T <- sqrt(TV_75T) # 75th LTPR
+SE_80T <- sqrt(TV_80T) # 80th LTPR
+SE_85T <- sqrt(TV_85T) # 85th LTPR
+SE_90T <- sqrt(TV_90T) # 90th LTPR
+SE_95T <- sqrt(TV_95T) # 95th LTPR
+SE_Md95T <- sqrt(TV_Md95T) # Md95T
+SE_Md90T <- sqrt(TV_Md90T) # Md90T
+SE_Md10T <- sqrt(TV_Md10T) # Md10T
+SE_Md05T <- sqrt(TV_Md05T) # Md05T
+SE_Mn95T <- sqrt(TV_Mn95T) # Mn95T
+SE_Mn90T <- sqrt(TV_Mn90T) # Mn90T
+SE_Mn10T <- sqrt(TV_Mn10T) # Mn10T
+SE_Mn05T <- sqrt(TV_Mn05T) # Mn05T
 
 
 
 #### SEs: LU3Rs and LU3R tail-center differences ####
 
-B1 <- B2 <- B3 <- B4 <- B5 <- numeric(L2) # empty containers
-C1 <- C2 <- C3 <- C4 <- C5 <- numeric(L2) # empty containers
-E1 <- E2 <- E3 <- E4 <- E5 <- numeric(L2) # empty containers
-F1 <- F2 <- F3 <- F4 <- F5 <- numeric(L2) # empty containers
-G1 <- G2 <- G3 <- G4 <- G5 <- numeric(L2) # empty containers
-H1 <- H2 <- H3 <- H4 <- H5 <- numeric(L2) # empty containers
-I1 <- I2 <- I3 <- I4 <- I5 <- numeric(L2) # empty containers
-J1 <- J2 <- J3 <- J4 <- J5 <- numeric(L2) # empty containers
-K1 <- K2 <- K3 <- K4 <- K5 <- numeric(L2) # empty containers
-M1 <- M2 <- M3 <- M4 <- M5 <- numeric(L2) # empty containers
-N1 <- N2 <- N3 <- N4 <- N5 <- numeric(L2) # empty containers
-O1 <- O2 <- O3 <- O4 <- O5 <- numeric(L2) # empty containers
-P1 <- P2 <- P3 <- P4 <- P5 <- numeric(L2) # empty containers
-Q1 <- Q2 <- Q3 <- Q4 <- Q5 <- numeric(L2) # empty containers
-R1 <- R2 <- R3 <- R4 <- R5 <- numeric(L2) # empty containers
-S1 <- S2 <- S3 <- S4 <- S5 <- numeric(L2) # empty containers
-T1 <- T2 <- T3 <- T4 <- T5 <- numeric(L2) # empty containers
-V1 <- V2 <- V3 <- V4 <- V5 <- numeric(L2) # empty containers
-W1 <- W2 <- W3 <- W4 <- W5 <- numeric(L2) # empty containers
+B1 <- B2 <- B3 <- B4 <- B5 <- numeric(L) # empty containers
+C1 <- C2 <- C3 <- C4 <- C5 <- numeric(L) # empty containers
+E1 <- E2 <- E3 <- E4 <- E5 <- numeric(L) # empty containers
+F1 <- F2 <- F3 <- F4 <- F5 <- numeric(L) # empty containers
+G1 <- G2 <- G3 <- G4 <- G5 <- numeric(L) # empty containers
+H1 <- H2 <- H3 <- H4 <- H5 <- numeric(L) # empty containers
+I1 <- I2 <- I3 <- I4 <- I5 <- numeric(L) # empty containers
+J1 <- J2 <- J3 <- J4 <- J5 <- numeric(L) # empty containers
+K1 <- K2 <- K3 <- K4 <- K5 <- numeric(L) # empty containers
+M1 <- M2 <- M3 <- M4 <- M5 <- numeric(L) # empty containers
+N1 <- N2 <- N3 <- N4 <- N5 <- numeric(L) # empty containers
+O1 <- O2 <- O3 <- O4 <- O5 <- numeric(L) # empty containers
+P1 <- P2 <- P3 <- P4 <- P5 <- numeric(L) # empty containers
+Q1 <- Q2 <- Q3 <- Q4 <- Q5 <- numeric(L) # empty containers
+R1 <- R2 <- R3 <- R4 <- R5 <- numeric(L) # empty containers
+S1 <- S2 <- S3 <- S4 <- S5 <- numeric(L) # empty containers
+T1 <- T2 <- T3 <- T4 <- T5 <- numeric(L) # empty containers
+V1 <- V2 <- V3 <- V4 <- V5 <- numeric(L) # empty containers
+W1 <- W2 <- W3 <- W4 <- W5 <- numeric(L) # empty containers
 
 # perform jackknife resampling of LU3Rs
-for (i in 1:L2) { # for each JK zone, twice
+for (i in 1:L) { # for each JK zone, twice
   T0 <- T15 # create/restore duplicate
-  if (i <= L) { # first half
-    # double weights if JK code is 1 and zero weights if JK code is 0
-    T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 1),'HWt']
-    T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 0
-  } else { # second half
-    # double weights if JK code is 0 and zero weights if JK code is 1
-    T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt'] <- 2*T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt']
-    T0[which(T0$JKZ == i-L & T0$JKR == 1),'HWt'] <- 0
-  }
+  T0[which(T0$JKZ == L1[i] & T0$JKR == L2[i]),'HWt'] <- 2*T0[which(T0$JKZ == L1[i] & T0$JKR == L2[i]),'HWt']
+  T0[which(T0$JKZ == L1[i] & T0$JKR == L3[i]),'HWt'] <- 0 # reweight according to JK replicate code
   T0_F <- T0[which(T0$Sex == 1),] # female subset
   T0_M <- T0[which(T0$Sex == 2),] # male subset
   
@@ -1684,244 +1554,166 @@ for (i in 1:L2) { # for each JK zone, twice
 }
 
 # jackknife sampling variance
-JSV_05 <- mean(c(sum((B1-LU3R05s[1])^2), # 5th LU3R
+TV_05U <- mean(c(sum((B1-LU3R05s[1])^2), # 5th LU3R
                  sum((B2-LU3R05s[2])^2),
                  sum((B3-LU3R05s[3])^2),
                  sum((B4-LU3R05s[4])^2),
-                 sum((B5-LU3R05s[5])^2)))/2
-JSV_10 <- mean(c(sum((C1-LU3R10s[1])^2), # 10th LU3R
+                 sum((B5-LU3R05s[5])^2)))/2 + .3*sum((LU3R05s-LU3R05)^2)
+TV_10U <- mean(c(sum((C1-LU3R10s[1])^2), # 10th LU3R
                  sum((C2-LU3R10s[2])^2),
                  sum((C3-LU3R10s[3])^2),
                  sum((C4-LU3R10s[4])^2),
-                 sum((C5-LU3R10s[5])^2)))/2
-JSV_15 <- mean(c(sum((E1-LU3R15s[1])^2), # 15th LU3R
+                 sum((C5-LU3R10s[5])^2)))/2 + .3*sum((LU3R10s-LU3R10)^2)
+TV_15U <- mean(c(sum((E1-LU3R15s[1])^2), # 15th LU3R
                  sum((E2-LU3R15s[2])^2),
                  sum((E3-LU3R15s[3])^2),
                  sum((E4-LU3R15s[4])^2),
-                 sum((E5-LU3R15s[5])^2)))/2
-JSV_20 <- mean(c(sum((F1-LU3R20s[1])^2), # 20th LU3R
+                 sum((E5-LU3R15s[5])^2)))/2 + .3*sum((LU3R15s-LU3R15)^2)
+TV_20U <- mean(c(sum((F1-LU3R20s[1])^2), # 20th LU3R
                  sum((F2-LU3R20s[2])^2),
                  sum((F3-LU3R20s[3])^2),
                  sum((F4-LU3R20s[4])^2),
-                 sum((F5-LU3R20s[5])^2)))/2
-JSV_25 <- mean(c(sum((G1-LU3R25s[1])^2), # 25th LU3R
+                 sum((F5-LU3R20s[5])^2)))/2 + .3*sum((LU3R20s-LU3R20)^2)
+TV_25U <- mean(c(sum((G1-LU3R25s[1])^2), # 25th LU3R
                  sum((G2-LU3R25s[2])^2),
                  sum((G3-LU3R25s[3])^2),
                  sum((G4-LU3R25s[4])^2),
-                 sum((G5-LU3R25s[5])^2)))/2
-JSV_30 <- mean(c(sum((H1-LU3R30s[1])^2), # 30th LU3R
+                 sum((G5-LU3R25s[5])^2)))/2 + .3*sum((LU3R25s-LU3R25)^2)
+TV_30U <- mean(c(sum((H1-LU3R30s[1])^2), # 30th LU3R
                  sum((H2-LU3R30s[2])^2),
                  sum((H3-LU3R30s[3])^2),
                  sum((H4-LU3R30s[4])^2),
-                 sum((H5-LU3R30s[5])^2)))/2
-JSV_35 <- mean(c(sum((I1-LU3R35s[1])^2), # 35th LU3R
+                 sum((H5-LU3R30s[5])^2)))/2 + .3*sum((LU3R30s-LU3R30)^2)
+TV_35U <- mean(c(sum((I1-LU3R35s[1])^2), # 35th LU3R
                  sum((I2-LU3R35s[2])^2),
                  sum((I3-LU3R35s[3])^2),
                  sum((I4-LU3R35s[4])^2),
-                 sum((I5-LU3R35s[5])^2)))/2
-JSV_40 <- mean(c(sum((J1-LU3R40s[1])^2), # 40th LU3R
+                 sum((I5-LU3R35s[5])^2)))/2 + .3*sum((LU3R35s-LU3R35)^2)
+TV_40U <- mean(c(sum((J1-LU3R40s[1])^2), # 40th LU3R
                  sum((J2-LU3R40s[2])^2),
                  sum((J3-LU3R40s[3])^2),
                  sum((J4-LU3R40s[4])^2),
-                 sum((J5-LU3R40s[5])^2)))/2
-JSV_45 <- mean(c(sum((K1-LU3R45s[1])^2), # 45th LU3R
+                 sum((J5-LU3R40s[5])^2)))/2 + .3*sum((LU3R40s-LU3R40)^2)
+TV_45U <- mean(c(sum((K1-LU3R45s[1])^2), # 45th LU3R
                  sum((K2-LU3R45s[2])^2),
                  sum((K3-LU3R45s[3])^2),
                  sum((K4-LU3R45s[4])^2),
-                 sum((K5-LU3R45s[5])^2)))/2
-JSV_50 <- mean(c(sum((M1-LU3R50s[1])^2), # 50th LU3R
+                 sum((K5-LU3R45s[5])^2)))/2 + .3*sum((LU3R45s-LU3R45)^2)
+TV_50U <- mean(c(sum((M1-LU3R50s[1])^2), # 50th LU3R
                  sum((M2-LU3R50s[2])^2),
                  sum((M3-LU3R50s[3])^2),
                  sum((M4-LU3R50s[4])^2),
-                 sum((M5-LU3R50s[5])^2)))/2
-JSV_55 <- mean(c(sum((N1-LU3R55s[1])^2), # 55th LU3R
+                 sum((M5-LU3R50s[5])^2)))/2 + .3*sum((LU3R50s-LU3R50)^2)
+TV_55U <- mean(c(sum((N1-LU3R55s[1])^2), # 55th LU3R
                  sum((N2-LU3R55s[2])^2),
                  sum((N3-LU3R55s[3])^2),
                  sum((N4-LU3R55s[4])^2),
-                 sum((N5-LU3R55s[5])^2)))/2
-JSV_60 <- mean(c(sum((O1-LU3R60s[1])^2), # 60th LU3R
+                 sum((N5-LU3R55s[5])^2)))/2 + .3*sum((LU3R55s-LU3R55)^2)
+TV_60U <- mean(c(sum((O1-LU3R60s[1])^2), # 60th LU3R
                  sum((O2-LU3R60s[2])^2),
                  sum((O3-LU3R60s[3])^2),
                  sum((O4-LU3R60s[4])^2),
-                 sum((O5-LU3R60s[5])^2)))/2
-JSV_65 <- mean(c(sum((P1-LU3R65s[1])^2), # 65th LU3R
+                 sum((O5-LU3R60s[5])^2)))/2 + .3*sum((LU3R60s-LU3R60)^2)
+TV_65U <- mean(c(sum((P1-LU3R65s[1])^2), # 65th LU3R
                  sum((P2-LU3R65s[2])^2),
                  sum((P3-LU3R65s[3])^2),
                  sum((P4-LU3R65s[4])^2),
-                 sum((P5-LU3R65s[5])^2)))/2
-JSV_70 <- mean(c(sum((Q1-LU3R70s[1])^2), # 70th LU3R
+                 sum((P5-LU3R65s[5])^2)))/2 + .3*sum((LU3R65s-LU3R65)^2)
+TV_70U <- mean(c(sum((Q1-LU3R70s[1])^2), # 70th LU3R
                  sum((Q2-LU3R70s[2])^2),
                  sum((Q3-LU3R70s[3])^2),
                  sum((Q4-LU3R70s[4])^2),
-                 sum((Q5-LU3R70s[5])^2)))/2
-JSV_75 <- mean(c(sum((R1-LU3R75s[1])^2), # 75th LU3R
+                 sum((Q5-LU3R70s[5])^2)))/2 + .3*sum((LU3R70s-LU3R70)^2)
+TV_75U <- mean(c(sum((R1-LU3R75s[1])^2), # 75th LU3R
                  sum((R2-LU3R75s[2])^2),
                  sum((R3-LU3R75s[3])^2),
                  sum((R4-LU3R75s[4])^2),
-                 sum((R5-LU3R75s[5])^2)))/2
-JSV_80 <- mean(c(sum((S1-LU3R80s[1])^2), # 80th LU3R
+                 sum((R5-LU3R75s[5])^2)))/2 + .3*sum((LU3R75s-LU3R75)^2)
+TV_80U <- mean(c(sum((S1-LU3R80s[1])^2), # 80th LU3R
                  sum((S2-LU3R80s[2])^2),
                  sum((S3-LU3R80s[3])^2),
                  sum((S4-LU3R80s[4])^2),
-                 sum((S5-LU3R80s[5])^2)))/2
-JSV_85 <- mean(c(sum((T1-LU3R85s[1])^2), # 85th LU3R
+                 sum((S5-LU3R80s[5])^2)))/2 + .3*sum((LU3R80s-LU3R80)^2)
+TV_85U <- mean(c(sum((T1-LU3R85s[1])^2), # 85th LU3R
                  sum((T2-LU3R85s[2])^2),
                  sum((T3-LU3R85s[3])^2),
                  sum((T4-LU3R85s[4])^2),
-                 sum((T5-LU3R85s[5])^2)))/2
-JSV_90 <- mean(c(sum((V1-LU3R90s[1])^2), # 90th LU3R
+                 sum((T5-LU3R85s[5])^2)))/2 + .3*sum((LU3R85s-LU3R85)^2)
+TV_90U <- mean(c(sum((V1-LU3R90s[1])^2), # 90th LU3R
                  sum((V2-LU3R90s[2])^2),
                  sum((V3-LU3R90s[3])^2),
                  sum((V4-LU3R90s[4])^2),
-                 sum((V5-LU3R90s[5])^2)))/2
-JSV_95 <- mean(c(sum((W1-LU3R95s[1])^2), # 95th LU3R
+                 sum((V5-LU3R90s[5])^2)))/2 + .3*sum((LU3R90s-LU3R90)^2)
+TV_95U <- mean(c(sum((W1-LU3R95s[1])^2), # 95th LU3R
                  sum((W2-LU3R95s[2])^2),
                  sum((W3-LU3R95s[3])^2),
                  sum((W4-LU3R95s[4])^2),
-                 sum((W5-LU3R95s[5])^2)))/2
-JSV_Md95U <- mean(c(sum((W1-M1-Md95Us[1])^2), # Md95U
-                    sum((W2-M2-Md95Us[2])^2),
-                    sum((W3-M3-Md95Us[3])^2),
-                    sum((W4-M4-Md95Us[4])^2),
-                    sum((W5-M5-Md95Us[5])^2)))/2
-JSV_Md90U <- mean(c(sum((V1-M1-Md90Us[1])^2), # Md90U
-                    sum((V2-M2-Md90Us[2])^2),
-                    sum((V3-M3-Md90Us[3])^2),
-                    sum((V4-M4-Md90Us[4])^2),
-                    sum((V5-M5-Md90Us[5])^2)))/2
-JSV_Md10U <- mean(c(sum((M1-C1-Md10Us[1])^2), # Md10U
-                    sum((M2-C2-Md10Us[2])^2),
-                    sum((M3-C3-Md10Us[3])^2),
-                    sum((M4-C4-Md10Us[4])^2),
-                    sum((M5-C5-Md10Us[5])^2)))/2
-JSV_Md05U <- mean(c(sum((M1-B1-Md05Us[1])^2), # Md05U
-                    sum((M2-B2-Md05Us[2])^2),
-                    sum((M3-B3-Md05Us[3])^2),
-                    sum((M4-B4-Md05Us[4])^2),
-                    sum((M5-B5-Md05Us[5])^2)))/2
+                 sum((W5-LU3R95s[5])^2)))/2 + .3*sum((LU3R95s-LU3R95)^2)
+TV_Md95U <- mean(c(sum((W1-M1-Md95Us[1])^2), # Md95U
+                   sum((W2-M2-Md95Us[2])^2),
+                   sum((W3-M3-Md95Us[3])^2),
+                   sum((W4-M4-Md95Us[4])^2),
+                   sum((W5-M5-Md95Us[5])^2)))/2 + .3*sum((Md95Us-Md95U)^2)
+TV_Md90U <- mean(c(sum((V1-M1-Md90Us[1])^2), # Md90U
+                   sum((V2-M2-Md90Us[2])^2),
+                   sum((V3-M3-Md90Us[3])^2),
+                   sum((V4-M4-Md90Us[4])^2),
+                   sum((V5-M5-Md90Us[5])^2)))/2 + .3*sum((Md90Us-Md90U)^2)
+TV_Md10U <- mean(c(sum((M1-C1-Md10Us[1])^2), # Md10U
+                   sum((M2-C2-Md10Us[2])^2),
+                   sum((M3-C3-Md10Us[3])^2),
+                   sum((M4-C4-Md10Us[4])^2),
+                   sum((M5-C5-Md10Us[5])^2)))/2 + .3*sum((Md10Us-Md10U)^2)
+TV_Md05U <- mean(c(sum((M1-B1-Md05Us[1])^2), # Md05U
+                   sum((M2-B2-Md05Us[2])^2),
+                   sum((M3-B3-Md05Us[3])^2),
+                   sum((M4-B4-Md05Us[4])^2),
+                   sum((M5-B5-Md05Us[5])^2)))/2 + .3*sum((Md05Us-Md05U)^2)
 
-# imputation variance
-IV_05 <- .3*sum((LU3R05s-LU3R05)^2) # 5th LU3R
-IV_10 <- .3*sum((LU3R10s-LU3R10)^2) # 10th LU3R
-IV_15 <- .3*sum((LU3R15s-LU3R15)^2) # 15th LU3R
-IV_20 <- .3*sum((LU3R20s-LU3R20)^2) # 20th LU3R
-IV_25 <- .3*sum((LU3R25s-LU3R25)^2) # 25th LU3R
-IV_30 <- .3*sum((LU3R30s-LU3R30)^2) # 30th LU3R
-IV_35 <- .3*sum((LU3R35s-LU3R35)^2) # 35th LU3R
-IV_40 <- .3*sum((LU3R40s-LU3R40)^2) # 40th LU3R
-IV_45 <- .3*sum((LU3R45s-LU3R45)^2) # 45th LU3R
-IV_50 <- .3*sum((LU3R50s-LU3R50)^2) # 50th LU3R
-IV_55 <- .3*sum((LU3R55s-LU3R55)^2) # 55th LU3R
-IV_60 <- .3*sum((LU3R60s-LU3R60)^2) # 60th LU3R
-IV_65 <- .3*sum((LU3R65s-LU3R65)^2) # 65th LU3R
-IV_70 <- .3*sum((LU3R70s-LU3R70)^2) # 70th LU3R
-IV_75 <- .3*sum((LU3R75s-LU3R75)^2) # 75th LU3R
-IV_80 <- .3*sum((LU3R80s-LU3R80)^2) # 80th LU3R
-IV_85 <- .3*sum((LU3R85s-LU3R85)^2) # 85th LU3R
-IV_90 <- .3*sum((LU3R90s-LU3R90)^2) # 90th LU3R
-IV_95 <- .3*sum((LU3R95s-LU3R95)^2) # 95th LU3R
-IV_Md95U <- .3*sum((Md95Us-Md95U)^2) # Md95U
-IV_Md90U <- .3*sum((Md90Us-Md90U)^2) # Md90U
-IV_Md10U <- .3*sum((Md10Us-Md10U)^2) # Md10U
-IV_Md05U <- .3*sum((Md05Us-Md05U)^2) # Md05U
-
-
-# total variance = jackknife + imputation
-TV_05U <- JSV_05 + IV_05 # total variance of 5th percentile LU3R
-SE_05U <- sqrt(TV_05U) # standard error of 5th percentile LU3R
-
-TV_10U <- JSV_10 + IV_10 # total variance of 10th percentile LU3R
-SE_10U <- sqrt(TV_10U) # standard error of 10th percentile LU3R
-
-TV_15U <- JSV_15 + IV_15 # total variance of 15th percentile LU3R
-SE_15U <- sqrt(TV_15U) # standard error of 15th percentile LU3R
-
-TV_20U <- JSV_20 + IV_20 # total variance of 20th percentile LU3R
-SE_20U <- sqrt(TV_20U) # standard error of 20th percentile LU3R
-
-TV_25U <- JSV_25 + IV_25 # total variance of 25th percentile LU3R
-SE_25U <- sqrt(TV_25U) # standard error of 25th percentile LU3R
-
-TV_30U <- JSV_30 + IV_30 # total variance of 30th percentile LU3R
-SE_30U <- sqrt(TV_30U) # standard error of 30th percentile LU3R
-
-TV_35U <- JSV_35 + IV_35 # total variance of 35th percentile LU3R
-SE_35U <- sqrt(TV_35U) # standard error of 35th percentile LU3R
-
-TV_40U <- JSV_40 + IV_40 # total variance of 40th percentile LU3R
-SE_40U <- sqrt(TV_40U) # standard error of 40th percentile LU3R
-
-TV_45U <- JSV_45 + IV_45 # total variance of 45th percentile LU3R
-SE_45U <- sqrt(TV_45U) # standard error of 45th percentile LU3R
-
-TV_50U <- JSV_50 + IV_50 # total variance of 50th percentile LU3R
-SE_50U <- sqrt(TV_50U) # standard error of 50th percentile LU3R
-
-TV_55U <- JSV_55 + IV_55 # total variance of 55th percentile LU3R
-SE_55U <- sqrt(TV_55U) # standard error of 55th percentile LU3R
-
-TV_60U <- JSV_60 + IV_60 # total variance of 60th percentile LU3R
-SE_60U <- sqrt(TV_60U) # standard error of 60th percentile LU3R
-
-TV_65U <- JSV_65 + IV_65 # total variance of 65th percentile LU3R
-SE_65U <- sqrt(TV_65U) # standard error of 65th percentile LU3R
-
-TV_70U <- JSV_70 + IV_70 # total variance of 70th percentile LU3R
-SE_70U <- sqrt(TV_70U) # standard error of 70th percentile LU3R
-
-TV_75U <- JSV_75 + IV_75 # total variance of 75th percentile LU3R
-SE_75U <- sqrt(TV_75U) # standard error of 75th percentile LU3R
-
-TV_80U <- JSV_80 + IV_80 # total variance of 80th percentile LU3R
-SE_80U <- sqrt(TV_80U) # standard error of 80th percentile LU3R
-
-TV_85U <- JSV_85 + IV_85 # total variance of 85th percentile LU3R
-SE_85U <- sqrt(TV_85U) # standard error of 85th percentile LU3R
-
-TV_90U <- JSV_90 + IV_90 # total variance of 90th percentile LU3R
-SE_90U <- sqrt(TV_90U) # standard error of 90th percentile LU3R
-
-TV_95U <- JSV_95 + IV_95 # total variance of 95th percentile LU3R
-SE_95U <- sqrt(TV_95U) # standard error of 95th percentile LU3R
-
-TV_Md95U <- JSV_Md95U + IV_Md95U # total variance of Md95U
-SE_Md95U <- sqrt(TV_Md95U) # standard error of Md95U
-
-TV_Md90U <- JSV_Md90U + IV_Md90U # total variance of Md90U
-SE_Md90U <- sqrt(TV_Md90U) # standard error of Md90U
-
-TV_Md10U <- JSV_Md10U + IV_Md10U # total variance of Md10U
-SE_Md10U <- sqrt(TV_Md10U) # standard error of Md10U
-
-TV_Md05U <- JSV_Md05U + IV_Md05U # total variance of Md05U
-SE_Md05U <- sqrt(TV_Md05U) # standard error of Md05U
+# standard errors
+SE_05U <- sqrt(TV_05U) # 5th LU3R
+SE_10U <- sqrt(TV_10U) # 10th LU3R
+SE_15U <- sqrt(TV_15U) # 15th LU3R
+SE_20U <- sqrt(TV_20U) # 20th LU3R
+SE_25U <- sqrt(TV_25U) # 25th LU3R
+SE_30U <- sqrt(TV_30U) # 30th LU3R
+SE_35U <- sqrt(TV_35U) # 35th LU3R
+SE_40U <- sqrt(TV_40U) # 40th LU3R
+SE_45U <- sqrt(TV_45U) # 45th LU3R
+SE_50U <- sqrt(TV_50U) # 50th LU3R
+SE_55U <- sqrt(TV_55U) # 55th LU3R
+SE_60U <- sqrt(TV_60U) # 60th LU3R
+SE_65U <- sqrt(TV_65U) # 65th LU3R
+SE_70U <- sqrt(TV_70U) # 70th LU3R
+SE_75U <- sqrt(TV_75U) # 75th LU3R
+SE_80U <- sqrt(TV_80U) # 80th LU3R
+SE_85U <- sqrt(TV_85U) # 85th LU3R
+SE_90U <- sqrt(TV_90U) # 90th LU3R
+SE_95U <- sqrt(TV_95U) # 95th LU3R
+SE_Md95U <- sqrt(TV_Md95U) # Md95U
+SE_Md90U <- sqrt(TV_Md90U) # Md90U
+SE_Md10U <- sqrt(TV_Md10U) # Md10U
+SE_Md05U <- sqrt(TV_Md05U) # Md05U
 
 
 
 #### SEs: d, U3, LVR, LVR_L, LVR_R, LMADR, LMADR_L, LMADR_R, LGMDR ####
 
-J1 <- J2 <- J3 <- J4 <- J5 <- numeric(L2) # empty containers
-A1 <- A2 <- A3 <- A4 <- A5 <- numeric(L2) # empty containers
-C1 <- C2 <- C3 <- C4 <- C5 <- numeric(L2) # empty containers
-K1 <- K2 <- K3 <- K4 <- K5 <- numeric(L2) # empty containers
-N1 <- N2 <- N3 <- N4 <- N5 <- numeric(L2) # empty containers
-I1 <- I2 <- I3 <- I4 <- I5 <- numeric(L2) # empty containers
-F1 <- F2 <- F3 <- F4 <- F5 <- numeric(L2) # empty containers
-E1 <- E2 <- E3 <- E4 <- E5 <- numeric(L2) # empty containers
-G1 <- G2 <- G3 <- G4 <- G5 <- numeric(L2) # empty containers
+J1 <- J2 <- J3 <- J4 <- J5 <- numeric(L) # empty containers
+A1 <- A2 <- A3 <- A4 <- A5 <- numeric(L) # empty containers
+C1 <- C2 <- C3 <- C4 <- C5 <- numeric(L) # empty containers
+K1 <- K2 <- K3 <- K4 <- K5 <- numeric(L) # empty containers
+N1 <- N2 <- N3 <- N4 <- N5 <- numeric(L) # empty containers
+I1 <- I2 <- I3 <- I4 <- I5 <- numeric(L) # empty containers
+F1 <- F2 <- F3 <- F4 <- F5 <- numeric(L) # empty containers
+E1 <- E2 <- E3 <- E4 <- E5 <- numeric(L) # empty containers
+G1 <- G2 <- G3 <- G4 <- G5 <- numeric(L) # empty containers
 
 # perform jackknife resampling of d, U3, LVR, LVR_L, LVR_R, LMADR, LMADR_L, LMADR_R, LGMDR
-for (i in 1:L2) { # for each JK zone, twice
+for (i in 1:L) { # for each JK zone, twice
   T0 <- T15 # create/restore duplicate
-  if (i <= L) { # first half
-    # double weights if JK code is 1 and zero weights if JK code is 0
-    T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 1),'HWt']
-    T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 0
-  } else { # second half
-    # double weights if JK code is 0 and zero weights if JK code is 1
-    T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt'] <- 2*T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt']
-    T0[which(T0$JKZ == i-L & T0$JKR == 1),'HWt'] <- 0
-  }
+  T0[which(T0$JKZ == L1[i] & T0$JKR == L2[i]),'HWt'] <- 2*T0[which(T0$JKZ == L1[i] & T0$JKR == L2[i]),'HWt']
+  T0[which(T0$JKZ == L1[i] & T0$JKR == L3[i]),'HWt'] <- 0 # reweight according to JK replicate code
   T0_F <- T0[which(T0$Sex == 1),] # female subset
   T0_M <- T0[which(T0$Sex == 2),] # male subset
   
@@ -1973,110 +1765,74 @@ for (i in 1:L2) { # for each JK zone, twice
 }
 
 # jackknife sampling variance
-JSV_d <- mean(c(sum((J1-ds[1])^2), # d
-                sum((J2-ds[2])^2),
-                sum((J3-ds[3])^2),
-                sum((J4-ds[4])^2),
-                sum((J5-ds[5])^2)))/2
-JSV_U3 <- mean(c(sum((A1-U3s[1])^2), # U3
-                 sum((A2-U3s[2])^2),
-                 sum((A3-U3s[3])^2),
-                 sum((A4-U3s[4])^2),
-                 sum((A5-U3s[5])^2)))/2
-JSV_LVR <- mean(c(sum((C1-LVRs[1])^2), # LVR
-                  sum((C2-LVRs[2])^2),
-                  sum((C3-LVRs[3])^2),
-                  sum((C4-LVRs[4])^2),
-                  sum((C5-LVRs[5])^2)))/2
-JSV_LVR_L <- mean(c(sum((K1-LVR_Ls[1])^2), # LVR_L
-                    sum((K2-LVR_Ls[2])^2),
-                    sum((K3-LVR_Ls[3])^2),
-                    sum((K4-LVR_Ls[4])^2),
-                    sum((K5-LVR_Ls[5])^2)))/2
-JSV_LVR_R <- mean(c(sum((N1-LVR_Rs[1])^2), # LVR_R
-                    sum((N2-LVR_Rs[2])^2),
-                    sum((N3-LVR_Rs[3])^2),
-                    sum((N4-LVR_Rs[4])^2),
-                    sum((N5-LVR_Rs[5])^2)))/2
-JSV_LMADR <- mean(c(sum((I1-LMADRs[1])^2), # LMADR
-                    sum((I2-LMADRs[2])^2),
-                    sum((I3-LMADRs[3])^2),
-                    sum((I4-LMADRs[4])^2),
-                    sum((I5-LMADRs[5])^2)))/2
-JSV_LMADR_L <- mean(c(sum((F1-LMADR_Ls[1])^2), # LMADR_L
-                      sum((F2-LMADR_Ls[2])^2),
-                      sum((F3-LMADR_Ls[3])^2),
-                      sum((F4-LMADR_Ls[4])^2),
-                      sum((F5-LMADR_Ls[5])^2)))/2
-JSV_LMADR_R <- mean(c(sum((E1-LMADR_Rs[1])^2), # LMADR_R
-                      sum((E2-LMADR_Rs[2])^2),
-                      sum((E3-LMADR_Rs[3])^2),
-                      sum((E4-LMADR_Rs[4])^2),
-                      sum((E5-LMADR_Rs[5])^2)))/2
-JSV_LGMDR <- mean(c(sum((G1-LGMDRs[1])^2), # LGMDR
-                    sum((G2-LGMDRs[2])^2),
-                    sum((G3-LGMDRs[3])^2),
-                    sum((G4-LGMDRs[4])^2),
-                    sum((G5-LGMDRs[5])^2)))/2
+TV_d <- mean(c(sum((J1-ds[1])^2), # d
+               sum((J2-ds[2])^2),
+               sum((J3-ds[3])^2),
+               sum((J4-ds[4])^2),
+               sum((J5-ds[5])^2)))/2 + .3*sum((ds-d)^2)
+TV_U3 <- mean(c(sum((A1-U3s[1])^2), # U3
+                sum((A2-U3s[2])^2),
+                sum((A3-U3s[3])^2),
+                sum((A4-U3s[4])^2),
+                sum((A5-U3s[5])^2)))/2 + .3*sum((U3s-U3)^2)
+TV_LVR <- mean(c(sum((C1-LVRs[1])^2), # LVR
+                 sum((C2-LVRs[2])^2),
+                 sum((C3-LVRs[3])^2),
+                 sum((C4-LVRs[4])^2),
+                 sum((C5-LVRs[5])^2)))/2 + .3*sum((LVRs-LVR)^2)
+TV_LVR_L <- mean(c(sum((K1-LVR_Ls[1])^2), # LVR_L
+                   sum((K2-LVR_Ls[2])^2),
+                   sum((K3-LVR_Ls[3])^2),
+                   sum((K4-LVR_Ls[4])^2),
+                   sum((K5-LVR_Ls[5])^2)))/2 + .3*sum((LVR_Ls-LVR_L)^2)
+TV_LVR_R <- mean(c(sum((N1-LVR_Rs[1])^2), # LVR_R
+                   sum((N2-LVR_Rs[2])^2),
+                   sum((N3-LVR_Rs[3])^2),
+                   sum((N4-LVR_Rs[4])^2),
+                   sum((N5-LVR_Rs[5])^2)))/2 + .3*sum((LVR_Rs-LVR_R)^2)
+TV_LMADR <- mean(c(sum((I1-LMADRs[1])^2), # LMADR
+                   sum((I2-LMADRs[2])^2),
+                   sum((I3-LMADRs[3])^2),
+                   sum((I4-LMADRs[4])^2),
+                   sum((I5-LMADRs[5])^2)))/2 + .3*sum((LMADRs-LMADR)^2)
+TV_LMADR_L <- mean(c(sum((F1-LMADR_Ls[1])^2), # LMADR_L
+                     sum((F2-LMADR_Ls[2])^2),
+                     sum((F3-LMADR_Ls[3])^2),
+                     sum((F4-LMADR_Ls[4])^2),
+                     sum((F5-LMADR_Ls[5])^2)))/2 + .3*sum((LMADR_Ls-LMADR_L)^2)
+TV_LMADR_R <- mean(c(sum((E1-LMADR_Rs[1])^2), # LMADR_R
+                     sum((E2-LMADR_Rs[2])^2),
+                     sum((E3-LMADR_Rs[3])^2),
+                     sum((E4-LMADR_Rs[4])^2),
+                     sum((E5-LMADR_Rs[5])^2)))/2 + .3*sum((LMADR_Rs-LMADR_R)^2)
+TV_LGMDR <- mean(c(sum((G1-LGMDRs[1])^2), # LGMDR
+                   sum((G2-LGMDRs[2])^2),
+                   sum((G3-LGMDRs[3])^2),
+                   sum((G4-LGMDRs[4])^2),
+                   sum((G5-LGMDRs[5])^2)))/2 + .3*sum((LGMDRs-LGMDR)^2)
 
-# imputation variance
-IV_d <- .3*sum((ds-d)^2) # d
-IV_U3 <- .3*sum((U3s-U3)^2) # U3
-IV_LVR <- .3*sum((LVRs-LVR)^2) # LVR
-IV_LVR_L <- .3*sum((LVR_Ls-LVR_L)^2) # LVR_L
-IV_LVR_R <- .3*sum((LVR_Rs-LVR_R)^2) # LVR_R
-IV_LMADR <- .3*sum((LMADRs-LMADR)^2) # LMADR
-IV_LMADR_L <- .3*sum((LMADR_Ls-LMADR_L)^2) # LMADR_L
-IV_LMADR_R <- .3*sum((LMADR_Rs-LMADR_R)^2) # LMADR_R
-IV_LGMDR <- .3*sum((LGMDRs-LGMDR)^2) # LGMDR
-
-
-# total variance = jackknife + imputation
-TV_d <- JSV_d + IV_d # total variance of d
-SE_d <- sqrt(TV_d) # standard error of d
-
-TV_U3 <- JSV_U3 + IV_U3 # total variance of U3
-SE_U3 <- sqrt(TV_U3) # standard error of U3
-
-TV_LVR <- JSV_LVR + IV_LVR # total variance of LVR
-SE_LVR <- sqrt(TV_LVR) # standard error of LVR
-
-TV_LVR_L <- JSV_LVR_L + IV_LVR_L # total variance of LVR_L
-SE_LVR_L <- sqrt(TV_LVR_L) # standard error of LVR_L
-
-TV_LVR_R <- JSV_LVR_R + IV_LVR_R # total variance of LVR_R
-SE_LVR_R <- sqrt(TV_LVR_R) # standard error of LVR_R
-
-TV_LMADR <- JSV_LMADR + IV_LMADR # total variance of LMADR
-SE_LMADR <- sqrt(TV_LMADR) # standard error of LMADR
-
-TV_LMADR_L <- JSV_LMADR_L + IV_LMADR_L # total variance of LMADR_L
-SE_LMADR_L <- sqrt(TV_LMADR_L) # standard error of LMADR_L
-
-TV_LMADR_R <- JSV_LMADR_R + IV_LMADR_R # total variance of LMADR_R
-SE_LMADR_R <- sqrt(TV_LMADR_R) # standard error of LMADR_R
-
-TV_LGMDR <- JSV_LGMDR + IV_LGMDR # total variance of LGMDR
-SE_LGMDR <- sqrt(TV_LGMDR) # standard error of LGMDR
+# standard errors
+SE_d <- sqrt(TV_d) # d
+SE_U3 <- sqrt(TV_U3) # U3
+SE_LVR <- sqrt(TV_LVR) # LVR
+SE_LVR_L <- sqrt(TV_LVR_L) # LVR_L
+SE_LVR_R <- sqrt(TV_LVR_R) # LVR_R
+SE_LMADR <- sqrt(TV_LMADR) # LMADR
+SE_LMADR_L <- sqrt(TV_LMADR_L) # LMADR_L
+SE_LMADR_R <- sqrt(TV_LMADR_R) # LMADR_R
+SE_LGMDR <- sqrt(TV_LGMDR) # LGMDR
 
 
 
 #### SEs: Probability of superiority ####
 
-J1 <- J2 <- J3 <- J4 <- J5 <- numeric(L2) # empty containers
+J1 <- J2 <- J3 <- J4 <- J5 <- numeric(L) # empty containers
 
 # perform jackknife resampling of PSs
-for (i in 1:L2) { # for each JK zone
+for (i in 1:L) { # for each JK zone
   T0 <- T15 # create/restore duplicate
-  if (i <= L) { # first half
-    # double weights if JK code is 1 and zero weights if JK code is 0
-    T0[which(T0$JKZ == i & T0$JKR == 1),'HWt'] <- 2*T0[which(T0$JKZ == i & T0$JKR == 1),'HWt']
-    T0[which(T0$JKZ == i & T0$JKR == 0),'HWt'] <- 0
-  } else { # second half
-    # double weights if JK code is 0 and zero weights if JK code is 1
-    T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt'] <- 2*T0[which(T0$JKZ == i-L & T0$JKR == 0),'HWt']
-    T0[which(T0$JKZ == i-L & T0$JKR == 1),'HWt'] <- 0
-  }
+  T0[which(T0$JKZ == L1[i] & T0$JKR == L2[i]),'HWt'] <- 2*T0[which(T0$JKZ == L1[i] & T0$JKR == L2[i]),'HWt']
+  T0[which(T0$JKZ == L1[i] & T0$JKR == L3[i]),'HWt'] <- 0 # reweight according to JK replicate code
   T0_F <- T0[which(T0$Sex == 1),] # female subset
   T0_M <- T0[which(T0$Sex == 2),] # male subset
   
@@ -2086,23 +1842,19 @@ for (i in 1:L2) { # for each JK zone
   J4[i] <- PSfn(T0_M, T0_F, 'PV4') # PV4
   J5[i] <- PSfn(T0_M, T0_F, 'PV5') # PV5
   
-  print(paste0(i, '/', L2, ' at ', Sys.time()), quote = F) # print updates
+  if (i %% 10 == 0) {print(paste0(i, '/', L, ' at ', Sys.time()), quote = F)} # print updates
 }
 
-# jackknife sampling variance
-JSV_PS <- mean(c(sum((J1-PSs[1])^2),
-                 sum((J2-PSs[2])^2),
-                 sum((J3-PSs[3])^2),
-                 sum((J4-PSs[4])^2),
-                 sum((J5-PSs[5])^2)))/2
+# total variance = sampling variance + imputation variance
+TV_PS <- mean(c(sum((J1-PSs[1])^2),
+                sum((J2-PSs[2])^2),
+                sum((J3-PSs[3])^2),
+                sum((J4-PSs[4])^2),
+                sum((J5-PSs[5])^2)))/2 + .3*sum((PSs-PS)^2)
 
-# imputation variance
-IV_PS <- .3*sum((PSs-PS)^2)
+# standard error
+SE_PS <- sqrt(TV_PS)
 
-
-# total variance = jackknife + imputation
-TV_PS <- JSV_PS + IV_PS # total variance of PS
-SE_PS <- sqrt(TV_PS) # standard error of PS
 
 
 
