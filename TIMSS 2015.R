@@ -227,6 +227,7 @@ dfn <- function(d1, d2, v) {
 # raw mean difference divided by quadratic mean of standard deviations
 
 
+# U3
 U3fn <- function(d1, d2, v) {
   q <- wt.qnt(x = d2[,v], w = d2$HWt, q = .5)
   tango <- d1[which(d1[,v] >= max(d1[,v][which(d1[,v] < q)])),]
@@ -250,6 +251,7 @@ U3fn <- function(d1, d2, v) {
 # this gives the precise share of male weight above the female median
 
 
+# Probability of superiority (PS)
 PSfn <- function(d1, d2, v) {
   D1 <- d1[order(d1[,v]),]
   
