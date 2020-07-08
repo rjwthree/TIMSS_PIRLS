@@ -8,7 +8,7 @@
 #### Table of Contents ####
 
 # [1] Read and Format Data
-# dataframes and variables needed throughout the script
+# objects needed throughout the script
 
 # [2] Weighted Functions
 # functions needed throughout the script, with descriptions
@@ -39,7 +39,7 @@
 # imputation variance
 # total variance and standard error
 # for all of the following
-# Means of total group, females, males and mean difference
+# Means and medians of total group, females, males, as well as mean and median differences
 # LTPRs and LTPR tail-center differences**
 # LU3Rs and LU3R tail-center differences*
 # d, U3, LVR, LVR_L, LVR_R, LMADR, LMADR_L, LMADR_R, LGMDR
@@ -178,25 +178,20 @@ wt.qnt <- function(x, w, q) {
 
 # log-transformed tail proportion ratio (LTPR)
 LTPRfn <- function(d1, d2, q, v) {
-  tango1 <- d1[which(d1[,v] >= max(d1[,v][which(d1[,v] < q)])),]
-  tango2 <- d2[which(d2[,v] >= max(d2[,v][which(d2[,v] < q)])),]
-  mango1 <- tango1[order(tango1[,v]),]
-  mango2 <- tango2[order(tango2[,v]),]
+  tango1 <- d1[order(d1[,v], decreasing = T),]
+  tango2 <- d2[order(d2[,v], decreasing = T),]
   
-  if (mango1[1,v] == mango1[2,v]) {
-    excess <- nrow(mango1[which(mango1[,v] == mango1[1,v]),])-1
-    mango1 <- mango1[-c(1:excess),]
-  }
-  if (mango2[1,v] == mango2[2,v]) {
-    excess <- nrow(mango2[which(mango2[,v] == mango2[1,v]),])-1
-    mango2 <- mango2[-c(1:excess),]
-  }
+  s1 <- nrow(tango1[which(tango1[,v] > q),])
+  s2 <- nrow(tango2[which(tango2[,v] > q),])
   
-  slice1 <- (mango1[2,v]-q)/(mango1[2,v]-mango1[1,v])*mango1[2,'HWt']
-  slice2 <- (mango2[2,v]-q)/(mango2[2,v]-mango2[1,v])*mango2[2,'HWt']
+  mango1 <- tango1[1:(s1+1),]
+  mango2 <- tango2[1:(s2+1),]
   
-  return(log((sum(mango1[-c(1:2),'HWt'])+slice1)/sum(d1$HWt)/
-               ((sum(mango2[-c(1:2),'HWt'])+slice2)/sum(d2$HWt))))
+  slice1 <- (mango1[s1,v]-q)/(mango1[s1,v]-mango1[s1+1,v])*mango1[s1,'HWt']
+  slice2 <- (mango2[s2,v]-q)/(mango2[s2,v]-mango2[s2+1,v])*mango2[s2,'HWt']
+  
+  return(log((sum(mango1[1:(s1-1),'HWt'])+slice1)/sum(d1$HWt)/
+               ((sum(mango2[1:(s2-1),'HWt'])+slice2)/sum(d2$HWt))))
 }
 # M/F ratio of weight above a threshold q divided by the subgroup weight (see U3 description)
 # log-transform the ratio to produce unbiased means
@@ -205,14 +200,11 @@ LTPRfn <- function(d1, d2, q, v) {
 # log-transformed U3 ratio (LU3R)
 LU3Rfn <- function(d1, d2, q, v) {
   k <- wt.qnt(x = d2[,v], w = d2$HWt, q = q)
-  tango <- d1[which(d1[,v] >= max(d1[,v][which(d1[,v] < k)])),]
-  mango <- tango[order(tango[,v]),]
-  if (mango[1,v] == mango[2,v]) {
-    excess <- nrow(mango[which(mango[,v] == mango[1,v]),])-1
-    mango <- mango[-c(1:excess),]
-  }
-  slice <- (mango[2,v]-k)/(mango[2,v]-mango[1,v])*mango[2,'HWt']
-  return(log((sum(mango[-c(1:2),'HWt'])+slice)/sum(d1$HWt)/(1-q)))
+  tango <- d1[order(d1[,v], decreasing = T),]
+  s <- nrow(tango[which(tango[,v] > k),])
+  mango <- tango[1:(s+1),]
+  slice <- (mango[s,v]-k)/(mango[s,v]-mango[s+1,v])*mango[s,'HWt']
+  return(log((sum(mango[1:(s-1),'HWt'])+slice)/sum(d1$HWt)/(1-q)))
 }
 # share of male weight above a female subgroup quantile (see U3 description)
 # divided by the natural share of female weight above that quantile (1-q)
@@ -230,22 +222,18 @@ dfn <- function(d1, d2, v) {
 # U3
 U3fn <- function(d1, d2, v) {
   q <- wt.qnt(x = d2[,v], w = d2$HWt, q = .5)
-  tango <- d1[which(d1[,v] >= max(d1[,v][which(d1[,v] < q)])),]
-  mango <- tango[order(tango[,v]),]
-  if (mango[1,v] == mango[2,v]) {
-    excess <- nrow(mango[which(mango[,v] == mango[1,v]),])-1
-    mango <- mango[-c(1:excess),]
-  }
-  slice <- (mango[2,v]-q)/(mango[2,v]-mango[1,v])*mango[2,'HWt']
-  return((sum(mango[-c(1:2),'HWt'])+slice)/sum(d1$HWt))
+  tango <- d1[order(d1[,v], decreasing = T),]
+  s <- nrow(tango[which(tango[,v] > q),])
+  mango <- tango[1:(s+1),]
+  slice <- (mango[s,v]-q)/(mango[s,v]-mango[s+1,v])*mango[s,'HWt']
+  return((sum(mango[1:(s-1),'HWt'])+slice)/sum(d1$HWt))
 }
 # compute female median (q)
-# store the male subset with scores higher than q,
-# plus the row with the score immediately below q (tango)
-# sort tango in ascending order (mango)
-# discard excess in the rare case that more than one student has the score immediately below q
-# divide the distance between the score immediately above q and q
-# by the distance between the score immediately above q and the score immediately below q
+# sort males in order of descending scores (tango)
+# store the number of males with scores higher than q (s)
+# subset males with scores higher than q and one with the score immediately below q (mango)
+# divide the distance between the score immediately above q and q by the
+# distance between the score immediately above q and the score immediately below q
 # then multiply this proportion by the weight associated with the score above q (slice)
 # add slice to all weight above the score immediately above q, then divide by total male weight
 # this gives the precise share of male weight above the female median
@@ -742,7 +730,7 @@ U3R95 <- exp(LU3R95) # 95th
 
 
 
-### U3R tail-center differences
+### LU3R tail-center differences
 
 Md95Us <- LU3R95s-LU3R50s # 95th percentile and median
 Md90Us <- LU3R90s-LU3R50s # 90th percentile and median
