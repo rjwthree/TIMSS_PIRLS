@@ -46,7 +46,7 @@ Standard Deviation Ratio (SDR) - The ratio of male SD to female SD.
 
 Left SDR and Right SDR* - The SDR divided into the left and right tails. That is, the square root of the mean squared deviation from the mean among the subset of scores below or above the mean, respectively.
 
-Median Absolute Deviation Ratio (MADR) - The male-female ratio of median absolute deviation from the median.
+Median Absolute Deviation Ratio (MADR) - The male-female ratio of median absolute deviation (MAD) from the median.
 
 Left MADR and Right MADR* - The MADR divided into the left and right tails. That is, the median absolute deviation from the median among the subset of scores below or above the median, respectively.
 
