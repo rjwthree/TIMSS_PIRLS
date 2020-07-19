@@ -58,9 +58,9 @@ U3 Ratios (U3Rs)* - The proportion of males below (left tail) or above (right ta
 
 Median-aligned U3 Ratios (MU3Rs)* - U3Rs calculated after aligning the male and female medians, for each percentile. Illustrates variability differences in each tail. The LU3R at the 50th percentile is 1 by definition. A U shape (values >1 around the median) indicates higher variability among males, and an upside-down U shape (values <1 around the median) indicates higher variability among females.
 
-Standardized Quantile Differences (SQDs)* - raw male-female differences at each percentile, as a percentage of mean MAD (standardized with a robust measure of scale).
+Standardized Quantile Differences (SQDs)* - raw male-female differences at each percentile, as a percentage of mean of male and female MADs. An increasing trend from left to right indicates higher male variability; a decreasing trend indicates higher female variability. The purpose of dividing by MAD is to standardize the quantile differences with a robust measure of scale.
 
-The next section adjusts the scores linearly for age and recalculates all the effect sizes from Cohen's d down.
+The next section adjusts the scores linearly for age and recalculates all the effect sizes from Cohen's d to GMDR.
 
 ## Standard Errors and Confidence Intervals
 Computing standard errors is the most computationally intensive procedure. The jackknife resampling section, in combination with the five sets of plausible values, means that each effect size must be recalculated 750 times. The sampling variance and imputation variance are then calculated according to formulas described by 'Methods and Procedures in TIMSS 2015'. The sum of sampling and imputation variance is the total variance, and its square root is the standard error. The standard errors are then converted to 95% confidence intervals through typical methods, and the lower and upper bounds of these confidence intervals are recorded.
