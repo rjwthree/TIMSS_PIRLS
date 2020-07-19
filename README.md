@@ -36,29 +36,29 @@ All functions used for analysis are user-defined, for a few reasons:
 
 Means and Medians - Means and medians of total group, females, and males, as well as male-female mean and median differences.
 
-Tail Proportion Ratios (TPRs) - The proportion of males above a threshold divided by the proportion of females above that threshold. The thresholds are defined by the total group: the mean and every 5th percentile from 5 to 95.
-
-LTPR Tail-Center Differences* - Differences between log-transformed TPRs (LTPRs) are used to express changes in sex differences throughout the distribution. In the right tail, the differences are between LTPRs at the 95th percentile and median, 90th percentile and median, 95th percentile and mean, 90th percentile and mean. In the left tail, the differences are between LTPRs at the median and 10th percentile, median and 5th percentile, mean and 10th percentile, mean and 5th percentile.
-
-U3 Ratios (U3Rs)* - The proportion of males above a threshold defined by the female subgroup, divided by the natural proportion of females above that threshold (e.g., 75% above the 25th percentile). The thresholds are every 5th percentile from 5 to 95. Adapted from Cohen's U3.
-
-LU3R Tail-Center Differences* - Differences between log-transformed U3Rs (LU3Rs) are used to express changes in sex differences throughout the distribution. In the right tail, the differences are between LU3Rs at the 95th percentile and median and at the 90th percentile and median. In the left tail, the differences are between LU3Rs at the median and 10th percentile and at the median and 5th percentile.
-
 Cohen's d - This is a very common effect size and it is implemented as usual: the raw mean difference divided by the quadratic mean of standard deviations.
 
 U3* - The proportion of males above the female median. Adapted from the canonical Cohen's U3, which is incorrectly based on the mean rather than the median.
 
 Probability of Superiority (PS) - The probability that a random male will have a higher score than a random female.
 
-Variance Ratio (VR) - The male-female variance ratio.
+Standard Deviation Ratio (SDR) - The ratio of male SD to female SD.
 
-Left VR and Right VR* - The VR divided into the left and right tails. That is, the mean squared deviation from the mean among the subset of scores below or above the mean, respectively.
+Left SDR and Right SDR* - The SDR divided into the left and right tails. That is, the square root of the mean squared deviation from the mean among the subset of scores below or above the mean, respectively.
 
-Mean Absolute Deviation Ratio (MADR) - The male-female ratio of mean absolute deviation from the median.
+Median Absolute Deviation Ratio (MADR) - The male-female ratio of median absolute deviation from the median.
 
-Left MADR and Right MADR* - The MADR divided into the left and right tails. That is, the mean absolute deviation from the median among the subset of scores below or above the median, respectively.
+Left MADR and Right MADR* - The MADR divided into the left and right tails. That is, the median absolute deviation from the median among the subset of scores below or above the median, respectively.
 
 Gini's Mean Difference Ratio (GMDR) - Imagine randomly selecting two students and finding the distance between their scores. GMD gives the expected value of this interval: the mean absolute difference. The GMDR is the male-female ratio.
+
+Tail Proportion Ratios (TPRs) - The proportion of males below (left tail) or above (right tail) a threshold divided by the proportion of females below or above that threshold. The thresholds are defined by the total group. The left tail TPRs are below the 5th and 10th percentiles, and the right tail TPRs are above the 90th and 95th percentiles.
+
+U3 Ratios (U3Rs)* - The proportion of males below (left tail) or above (right tail) a threshold defined by the female subgroup, divided by the natural proportion of females below or above that threshold (e.g., 10% above the 90th percentile). The left tail U3Rs are below the 5th and 10th percentiles, and the right tail U3Rs are above the 90th and 95th percentiles. Adapted from U3 (see above).
+
+Median-aligned U3 Ratios (MU3Rs)* - U3Rs calculated after aligning the male and female medians, for each percentile. Illustrates variability differences in each tail. The LU3R at the 50th percentile is 1 by definition. A U shape (values >1 around the median) indicates higher variability among males, and an upside-down U shape (values <1 around the median) indicates higher variability among females.
+
+Standardized Quantile Differences (SQDs)* - raw male-female differences at each percentile, as a percentage of mean MAD (standardized with a robust measure of scale).
 
 The next section adjusts the scores linearly for age and recalculates all the effect sizes from Cohen's d down.
 
