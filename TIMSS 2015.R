@@ -4,6 +4,7 @@
 ###########################################################################
 ###########################################################################
 
+
 #### Outline ####
 
 # [1] Read and Format Data
@@ -111,7 +112,7 @@ wt.qnt <- function(x, w, q) {
         break
       }
     }
-    return(V-(wt-k)/R*(V-S))
+    if (V == S | V == a[i]) {wt.qalt(x, w, q)} else {return(V-(wt-k)/R*(V-S))}
   } else if (q > .5 & q < 1) {
     wt <- sum(w)
     descend <- order(x, decreasing = T)
@@ -127,13 +128,49 @@ wt.qnt <- function(x, w, q) {
         break
       }
     }
-    return(V+(k-wt)/R*(S-V))
+    if (V == S | V == a[i+1]) {wt.qalt(x, w, q)} else {return(V+(k-wt)/R*(S-V))}
   } else if (q == 0) {return(min(x))}
 }
 # sort the scores and weights in ascending order of scores
 # add weights until the fraction of total weight exceeds q
+# divert to alternate function wt.qalt if needed
 # perform linear interpolation between the closest scores (S and V)
 # for efficiency, reverse the process if q exceeds .5
+
+
+# alternate quantile function
+wt.qalt <- function(x, w, q) {
+  d <- data.frame(x, w)
+  W <- data.frame(table(d$x))
+  X <- W[W$Freq > 1,]
+  Y <- as.numeric(as.character(X$Var1))
+  Z <- numeric(length(Y))
+  for (i in 1:length(Y)) {Z[i] <- sum(d[d$x == Y[i],'w'])}
+  d <- d[! d$x %in% Y,]
+  d <- rbind(d, data.frame(x = Y, w = Z))
+  
+  k <- sum(d$w)*q
+  wt <- 0
+  ascend <- order(d$x)
+  a <- d$x[ascend]
+  b <- d$w[ascend]
+  for (i in 1:length(a)) {
+    if (wt < k) {
+      wt <- wt + b[i]
+    } else {
+      R <- b[i-1]
+      S <- a[i-2]
+      V <- a[i-1]
+      break
+    }
+  }
+  return(V-(wt-k)/R*(V-S))
+}
+# sum the weights of students with identical scores before calculating
+# this is a less efficient function that remedies the slight distortion
+# caused in rare cases by the score V being one of multiple equal scores
+# other quantile functions using linear interpolation would produce a different result
+# if, e.g., one simply duplicated all values and weights, which should not happen
 
 
 # Cohen's d
@@ -189,7 +226,7 @@ PSfn <- function(d1, d2, v) {
 
 
 # log-transformed standard deviation ratio (LSDR)
-LSDRfn <- function(d1, d2, v) {log(sqrt(wt.var(d1[,v], d1$HWt)/wt.var(d2[,v], d2$HWt)))}
+LSDRfn <- function(d1, d2, v) {log(sqrt(wt.var(d1[,v], d1$HWt) / wt.var(d2[,v], d2$HWt)))}
 # M/F ratio of standard deviation
 # log-transform the ratio for linear scale
 
@@ -212,8 +249,8 @@ LSDR_Tfn <- function(d1, d2, v, t) {
 # subset the males and females below (t = 'L') or above (t = 'R') the subgroup mean
 # compute sqrt of the M/F ratio of mean squared deviation from the mean in the tail
 # log-transform the ratio for linear scale
-# Bessel's correction not applicable because in this case the sample mean's deviation
-# from the population mean causes random not systematic error
+# Bessel's correction not applicable because in this case the sample mean's
+# deviation from the population mean causes random not systematic error
 
 
 # log-transformed median absolute deviation ratio (LMADR)
@@ -270,7 +307,21 @@ LGMDRfn <- function(d1, d2, v) {
 # multiply by two times the mean for the mean absolute difference (but the twos cancel)
 # this produces the ratio of mean abs diff between students selected randomly with replacement
 # log-transform the ratio for linear scale
-# standardized quantile difference
+
+
+# log-transformed U3 ratio (LU3R)
+LU3Rfn <- function(d1, d2, q, v) {
+  k <- wt.qnt(d2[,v], d2$HWt, q)
+  tango <- d1[order(d1[,v], decreasing = T),]
+  s <- nrow(tango[which(tango[,v] > k),])
+  mango <- tango[1:(s+1),]
+  slice <- (mango[s,v]-k)/(mango[s,v]-mango[s+1,v]) * mango[s,'HWt']
+  m <- (sum(mango[1:(s-1),'HWt'])+slice) / sum(d1$HWt)
+  if (q < .5) {return(log((1-m)/q))} else {return(log(m/(1-q)))}
+}
+# share of male weight above a female subgroup quantile (see U3 description)
+# divided by the natural share of female weight (q in left tail, 1-q in right tail)
+# log-transform the ratio for linear scale
 
 
 # log-transformed tail proportion ratio (LTPR)
@@ -293,49 +344,6 @@ LTPRfn <- function(d1, d2, q, v) {
 }
 # compute proportions of male and female weight above a threshold q (see U3 description)
 # if left tail, find the TPR below the threshold; if right tail, above the threshold 
-# log-transform the ratio for linear scale
-
-
-# log-transformed median-aligned TPR (LMTPR)
-LMTPRfn <- function(d1, d2, q, v) {
-  d1$HWt <- sum(d2$HWt)/sum(d1$HWt)*d1$HWt
-  d1[,v] <- wt.qnt(d2[,v], d2$HWt, .5) - wt.qnt(d1[,v], d1$HWt, .5) + d1[,v]
-  d <- rbind(d1, d2)
-  t <- wt.qnt(d[,v], d$HWt, q)
-  
-  tango1 <- d1[order(d1[,v], decreasing = T),]
-  tango2 <- d2[order(d2[,v], decreasing = T),]
-  
-  s1 <- nrow(tango1[which(tango1[,v] > t),])
-  s2 <- nrow(tango2[which(tango2[,v] > t),])
-  
-  mango1 <- tango1[1:(s1+1),]
-  mango2 <- tango2[1:(s2+1),]
-  
-  slice1 <- (mango1[s1,v]-t)/(mango1[s1,v]-mango1[s1+1,v]) * mango1[s1,'HWt']
-  slice2 <- (mango2[s2,v]-t)/(mango2[s2,v]-mango2[s2+1,v]) * mango2[s2,'HWt']
-  
-  m <- (sum(mango1[1:(s1-1),'HWt'])+slice1) / sum(d1$HWt)
-  f <- (sum(mango2[1:(s2-1),'HWt'])+slice2) / sum(d2$HWt)
-  if (q < .5) {return(log((1-m)/(1-f)))} else {return(log(m/f))}
-}
-# move the male median to the female median (arbitrary method of alignment)
-# compute the selected threshold's location (t) in the combined distribution (d)
-# compute the LMTPR (see LTPR description)
-
-
-# log-transformed U3 ratio (LU3R)
-LU3Rfn <- function(d1, d2, q, v) {
-  k <- wt.qnt(d2[,v], d2$HWt, q)
-  tango <- d1[order(d1[,v], decreasing = T),]
-  s <- nrow(tango[which(tango[,v] > k),])
-  mango <- tango[1:(s+1),]
-  slice <- (mango[s,v]-k)/(mango[s,v]-mango[s+1,v]) * mango[s,'HWt']
-  m <- (sum(mango[1:(s-1),'HWt'])+slice) / sum(d1$HWt)
-  if (q < .5) {return(log((1-m)/q))} else {return(log(m/(1-q)))}
-}
-# share of male weight above a female subgroup quantile (see U3 description)
-# divided by the natural share of female weight (q in left tail, 1-q in right tail)
 # log-transform the ratio for linear scale
 
 
@@ -422,31 +430,29 @@ for (i in 1:4) { # for percentiles 5, 10, 90, 95
 
 
 
-### Median-aligned U3Rs and TPRs (MU3Rs and MTPRs), Standardized Quantile Differences (SQDs)
+### Median-aligned U3 Ratios (MU3Rs) and Standardized Quantile Differences (SQDs)
 
-LMU3Rs <- LMTPRs <- SQDs <- numeric(495) # empty containers
-LMU3R <- LMTPR <- SQD <- numeric(99) # empty containers
+LMU3Rs <- SQDs <- numeric(495) # empty containers
+LMU3R <- SQD <- numeric(99) # empty containers
 
 for (i in 1:99) { # for each percentile
   for (s in 1:5) { # for each PV
     PV <- paste0('PV',s)
     LMU3Rs[s+(i-1)*5] <- LMU3Rfn(T15_M, T15_F, i/100, PV) # LMU3Rs
-    LMTPRs[s+(i-1)*5] <- LMTPRfn(T15_M, T15_F, i/100, PV) # LMTPRs
     SQDs[s+(i-1)*5] <- SQDfn(T15_M, T15_F, i/100, PV) # SQDs
   }
   LMU3R[i] <- mean(LMU3Rs[(5*i-4):(5*i)]) # LMU3R for each percentile
-  LMTPR[i] <- mean(LMTPRs[(5*i-4):(5*i)]) # LMTPR for each percentile
   SQD[i] <- mean(SQDs[(5*i-4):(5*i)]) # SQD for each percentile
 }
 
-# SQD tail-center differences (SQDTCs): Med-5, Med-10, 90-Med, 95-Med
+# SQD tail-center shifts (SQDTCs): Med-5, Med-10, 90-Med, 95-Med
 Qs <- c(SQDs[246:250]-SQDs[21:25], SQDs[246:250]-SQDs[46:50],
         SQDs[446:450]-SQDs[246:250], SQDs[471:475]-SQDs[246:250])
 Q <- c(SQD[50]-SQD[5], SQD[50]-SQD[10], SQD[90]-SQD[50], SQD[95]-SQD[50])
 
-# ratios for standard errors: all LU3Rs and LTPRs, LMU3Rs and LMTPRs at 5, 10, 90, 95
-Rs <- c(Rs, LMU3Rs[c(21:25, 46:50, 446:450, 471:475)], LMTPRs[c(21:25, 46:50, 446:450, 471:475)])
-R <- c(R, LMU3R[c(5, 10, 90, 95)], LMTPR[c(5, 10, 90, 95)])
+# ratios for standard errors: all LU3Rs and LTPRs, LMU3Rs at 5, 10, 90, 95
+Rs <- c(Rs, LMU3Rs[c(21:25, 46:50, 446:450, 471:475)])
+R <- c(R, LMU3R[c(5, 10, 90, 95)])
 
 
 
@@ -515,25 +521,25 @@ L2 <- c(rep(1, times = L), rep(0, times = L)) # vector to select jackknife repli
 L3 <- rev(L2) # vector to select jackknife replicate codes
 L <- 2*L # double L for subsequent use
 
-S <- c(.05, .1, .5, .9, .95) # quantiles for SQDTCs
+Y <- c(.05, .1, .5, .9, .95) # quantiles for SQDTCs
 
 # empty containers
 MJ <- numeric(30*L)
 EJ <- numeric(50*L)
 QJ <- numeric(25*L)
-RJ <- numeric(80*L)
+RJ <- numeric(60*L)
 Msum <- numeric(40)
 Esum <- numeric(50)
 Qsum <- numeric(20)
-Rsum <- numeric(80)
+Rsum <- numeric(60)
 TVM <- numeric(8)
 TVE <- numeric(10)
 TVQ <- numeric(4)
-TVR <- numeric(16)
+TVR <- numeric(12)
 MCI <- numeric(16)
 ECI <- numeric(20)
 QCI <- numeric(8)
-RCI <- numeric(32)
+RCI <- numeric(24)
 
 # perform jackknife resampling
 for (i in 1:L) { # for each JK zone, twice
@@ -564,13 +570,12 @@ for (i in 1:L) { # for each JK zone, twice
     EJ[i+(s+39)*L] <- LMADR_Tfn(T0_M, T0_F, PV, 'R') # reweighted LMADR_Rs
     EJ[i+(s+44)*L] <- LGMDRfn(T0_M, T0_F, PV) # reweighted LGMDRs
     
-    for (c in 1:5) {QJ[i+(s+5*c-6)*L] <- SQDfn(T0_M, T0_F, S[c], PV)} # reweighted SQDs
+    for (c in 1:5) {QJ[i+(s+5*c-6)*L] <- SQDfn(T0_M, T0_F, Y[c], PV)} # reweighted SQDs
     
     for (c in 1:4) {
-      RJ[i+(s+5*c-6)*L] <- LU3Rfn(T15_M, T15_F, P[c], PV) # reweighted LU3Rs
-      RJ[i+(s+5*c+14)*L] <- LTPRfn(T15_M, T15_F, wt.qnt(T15[,PV], T15$HWt, P[c]), PV) # reweighted LTPRs
-      RJ[i+(s+5*c+34)*L] <- LMU3Rfn(T15_M, T15_F, P[c], PV) # reweighted LMU3Rs
-      RJ[i+(s+5*c+54)*L] <- LMTPRfn(T15_M, T15_F, P[c], PV) # reweighted LMTPRs
+      RJ[i+(s+5*c-6)*L] <- LU3Rfn(T0_M, T0_F, P[c], PV) # reweighted LU3Rs
+      RJ[i+(s+5*c+14)*L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0[,PV], T0$HWt, P[c]), PV) # reweighted LTPRs
+      RJ[i+(s+5*c+34)*L] <- LMU3Rfn(T0_M, T0_F, P[c], PV) # reweighted LMU3Rs
     }
   }
   print(paste0(i, '/', L, ' at ', Sys.time()), quote = F) # print updates
@@ -584,7 +589,7 @@ QJ <- c(QJ[(10*L+1):(15*L)]-QJ[1:(5*L)], QJ[(10*L+1):(15*L)]-QJ[(5*L+1):(10*L)],
 CI95 <- qnorm(.975) # ratio of 95% CIs to SEs
 
 # total variance = sampling variance + imputation variance
-for (i in 1:16) { # for each effect size, up to the appropriate i
+for (i in 1:12) { # for each effect size, up to the appropriate i
   for (s in 1:5) { # for each PV
     if (i < 9) {Msum[s+(i-1)*5] <- sum((MJ[((s+5*i-6)*L+1):((s+(i-1)*5)*L)]-Ms[s+(i-1)*5])^2)}
     if (i < 11) {Esum[s+(i-1)*5] <- sum((EJ[((s+5*i-6)*L+1):((s+(i-1)*5)*L)]-Es[s+(i-1)*5])^2)}
@@ -605,7 +610,7 @@ for (i in 1:16) { # for each effect size, up to the appropriate i
     TVQ[i] <- mean(Qsum[(5*i-4):(5*i)])/2 + .3*sum((Qs[(5*i-4):(5*i)]-Q[i])^2)
     QCI[2*i-1] <- Q[i]-sqrt(TVQ[i])*CI95
     QCI[2*i] <- Q[i]+sqrt(TVQ[i])*CI95
-  }            # total variance and 95% CI bounds of U3Rs and TPRs
+  }            # total variance and 95% CI bounds of U3Rs, TPRs, MU3Rs
   TVR[i] <- mean(Rsum[(5*i-4):(5*i)])/2 + .3*sum((Rs[(5*i-4):(5*i)]-R[i])^2)
   RCI[2*i-1] <- R[i]-sqrt(TVR[i])*CI95
   RCI[2*i] <- R[i]+sqrt(TVR[i])*CI95
@@ -622,47 +627,46 @@ WtRatio <- sum(T15_M$HWt)/sum(T15_F$HWt) # M/F weight ratio
 
 Low <- sum(T15[which(T15$Low == 1),'HWt'])/sum(T15$HWt)*100 # percent too low for estimation
 
-LMU3Rnm <- LMTPRnm <- SQDnm <- numeric(99)
-for (i in 1:99) { # compressed names for LMU3Rs, LMTPRs, SQDs
+LMU3Rnm <- SQDnm <- numeric(99)
+for (i in 1:99) { # compressed names for LMU3Rs and SQDs
   LMU3Rnm[i] <- paste0('LMU3R',i)
-  LMTPRnm[i] <- paste0('LMTPR',i)
   SQDnm[i] <- paste0('SQD',i)
 }
 
 # summary table
 Names <- c('Country', 'CNT', 'Grade', 'Size', 'FSize', 'MSize', 'M/F Wt Ratio', 'Low %',
-           'Mean', 'Median', 'F Mean', 'F Median', 'M Mean', 'M Median', 'Mean Diff', 'Med Diff', 
+           'Mean', 'Median', 'F Mean', 'F Median', 'M Mean', 'M Median', 'Mean Diff', 'Median Diff', 
            'd', 'U3', 'PS', 'SDR', 'SDR_L', 'SDR_R', 'MADR', 'MADR_L', 'MADR_R', 'GMDR',
-           'U3R05', 'U3R10', 'U3R90', 'U3R95', 'TPR05', 'TPR10', 'TPR90', 'TPR95',
-           'SQDTC05', 'SQDTC10', 'SQDTC90', 'SQDTC95', LMU3Rnm, LMTPRnm, SQDnm,
-           'Mean Low', 'Mean Upp', 'Median Low', 'Median Upp', 'F Mean Low', 'F Mean Upp', 'F Median Low',
+           'U3R05', 'U3R10', 'U3R90', 'U3R95', 'TPR05', 'TPR10', 'TPR90', 'TPR95', 'MU3R05', 'MU3R10',
+           'MU3R90', 'MU3R95', 'SQDTC05', 'SQDTC10', 'SQDTC90', 'SQDTC95', LMU3Rnm, SQDnm, 'Mean Low',
+           'Mean Upp', 'Median Low', 'Median Upp', 'F Mean Low', 'F Mean Upp', 'F Median Low',
            'F Median Upp', 'M Mean Low', 'M Mean Upp', 'M Median Low', 'M Median Upp', 'Mean Diff Low',
            'Mean Diff Upp', 'Med Diff Low', 'Med Diff Upp', 'd Low', 'd Upp', 'U3 Low', 'U3 Upp',
            'PS Low', 'PS Upp', 'SDR Low', 'SDR Upp', 'SDR_L Low', 'SDR_L Upp', 'SDR_R Low', 'SDR_R Upp',
            'MADR Low', 'MADR Upp', 'MADR_L Low', 'MADR_L Upp', 'MADR_R Low', 'MADR_R Upp', 'GMDR Low',
            'GMDR Upp', 'SQDTC05 Low', 'SQDTC05 Upp', 'SQDTC10 Low', 'SQDTC10 Upp', 'SQDTC90 Low',
-           'SQDTC90 Upp', 'SQDTC95 Low', 'SQDTC95 Upp', 'U3R05 Low', 'U3R05 Upp', 'U3R10 Low',
-           'U3R10 Upp', 'U3R90 Low', 'U3R90 Upp', 'U3R95 Low', 'U3R95 Upp', 'TPR05 Low', 'TPR05 Upp',
-           'TPR10 Low', 'TPR10 Upp', 'TPR90 Low', 'TPR90 Upp', 'TPR95 Low', 'TPR95 Upp', 'MU3R05 Low',
-           'MU3R05 Upp', 'MU3R10 Low', 'MU3R10 Upp', 'MU3R90 Low', 'MU3R90 Upp', 'MU3R95 Low',
-           'MU3R95 Upp', 'MTPR05 Low', 'MTPR05 Upp', 'MTPR10 Low', 'MTPR10 Upp', 'MTPR90 Low',
-           'MTPR90 Upp', 'MTPR95 Low', 'MTPR95 Upp', 'LSDR', 'LSDR_L', 'LSDR_R', 'LMADR', 'LMADR_L',
-           'LMADR_R', 'LGMDR', 'LU3R05', 'LU3R10', 'LU3R90', 'LU3R95', 'LTPR05', 'LTPR10', 'LTPR90',
-           'LTPR95', 'd TV', 'U3 TV', 'PS TV', 'LSDR TV', 'LSDR_L TV', 'LSDR_R TV', 'LMADR TV',
-           'LMADR_L TV', 'LMADR_R TV', 'LGMDR TV', 'SQDTC05 TV', 'SQDTC10 TV', 'SQDTC90 TV', 'SQDTC95 TV',
-           'LU3R05 TV', 'LU3R10 TV', 'LU3R90 TV', 'LU3R95 TV', 'LTPR05 TV', 'LTPR10 TV', 'LTPR90 TV',
-           'LTPR95 TV', 'LMU3R05 TV', 'LMU3R10 TV', 'LMU3R90 TV', 'LMU3R95 TV', 'LMTPR05 TV', 'LMTPR10 TV',
-           'LMTPR90 TV', 'LMTPR95 TV', 'Age U3', 'Age MADR', 'd A', 'U3 A', 'PS A', 'SDR A', 'SDR_L A',
-           'SDR_R A', 'MADR A', 'MADR_L A', 'MADR_R A', 'GMDR A')
+           'SQDTC90 Upp', 'SQDTC95 Low', 'SQDTC95 Upp', 'U3R05 Low', 'U3R05 Upp', 'U3R10 Low', 'U3R10 Upp',
+           'U3R90 Low', 'U3R90 Upp', 'U3R95 Low', 'U3R95 Upp', 'TPR05 Low', 'TPR05 Upp', 'TPR10 Low',
+           'TPR10 Upp', 'TPR90 Low', 'TPR90 Upp', 'TPR95 Low', 'TPR95 Upp', 'MU3R05 Low', 'MU3R05 Upp',
+           'MU3R10 Low', 'MU3R10 Upp', 'MU3R90 Low', 'MU3R90 Upp', 'MU3R95 Low', 'MU3R95 Upp', 'LSDR',
+           'LSDR_L', 'LSDR_R', 'LMADR', 'LMADR_L', 'LMADR_R', 'LGMDR', 'LU3R05', 'LU3R10', 'LU3R90',
+           'LU3R95', 'LTPR05', 'LTPR10', 'LTPR90', 'LTPR95', 'd TV', 'U3 TV', 'PS TV', 'LSDR TV',
+           'LSDR_L TV', 'LSDR_R TV', 'LMADR TV', 'LMADR_L TV', 'LMADR_R TV', 'LGMDR TV', 'SQDTC05 TV',
+           'SQDTC10 TV', 'SQDTC90 TV', 'SQDTC95 TV', 'LU3R05 TV', 'LU3R10 TV', 'LU3R90 TV', 'LU3R95 TV',
+           'LTPR05 TV', 'LTPR10 TV', 'LTPR90 TV', 'LTPR95 TV', 'LMU3R05 TV', 'LMU3R10 TV', 'LMU3R90 TV',
+           'LMU3R95 TV', 'Age U3', 'Age MADR', 'd A', 'U3 A', 'PS A', 'SDR A', 'SDR_L A', 'SDR_R A',
+           'MADR A', 'MADR_L A', 'MADR_R A', 'GMDR A')
 
-Variables <- c(Country, CNT, Grade, Size, FSize, MSize, WtRatio, Low, M, E[1:3], exp(c(E[4:10], R[1:8])), Q,
-               LMU3R, LMTPR, SQD, MCI, ECI[1:6], exp(ECI[7:20]), QCI, exp(RCI), E[4:10], R[1:8], TVE, TVQ,
-               TVR, AgeU3, AgeMADR, EA[1:3], exp(EA[4:10]))
+Variables <- c(Country, CNT, Grade, Size, FSize, MSize, WtRatio, Low, M, E[1:3], exp(c(E[4:10], R)), Q,
+               LMU3R, SQD, MCI, ECI[1:6], exp(ECI[7:20]), QCI, exp(RCI), E[4:10], R[1:8], TVE, TVQ, TVR,
+               AgeU3, AgeMADR, EA[1:3], exp(EA[4:10]))
 
 Output <- format(data.frame(Names, Variables), scientific = F) # put everything in this
 
 # select file name manually, store as a csv
 write.csv(x = Output, file = 'TIMSS output/2015 4/Countries/AUS.csv')
+
+
 
 
 
