@@ -326,23 +326,26 @@ LU3Rfn <- function(d1, d2, q, v) {
 
 # log-transformed tail proportion ratio (LTPR)
 LTPRfn <- function(d1, d2, q, v) {
+  d <- rbind(d1, d2)
+  k <- wt.qnt(d[,v], d$HWt, q)
+  
   tango1 <- d1[order(d1[,v], decreasing = T),]
   tango2 <- d2[order(d2[,v], decreasing = T),]
   
-  s1 <- nrow(tango1[which(tango1[,v] > q),])
-  s2 <- nrow(tango2[which(tango2[,v] > q),])
+  s1 <- nrow(tango1[which(tango1[,v] > k),])
+  s2 <- nrow(tango2[which(tango2[,v] > k),])
   
   mango1 <- tango1[1:(s1+1),]
   mango2 <- tango2[1:(s2+1),]
   
-  slice1 <- (mango1[s1,v]-q)/(mango1[s1,v]-mango1[s1+1,v]) * mango1[s1,'HWt']
-  slice2 <- (mango2[s2,v]-q)/(mango2[s2,v]-mango2[s2+1,v]) * mango2[s2,'HWt']
+  slice1 <- (mango1[s1,v]-k)/(mango1[s1,v]-mango1[s1+1,v]) * mango1[s1,'HWt']
+  slice2 <- (mango2[s2,v]-k)/(mango2[s2,v]-mango2[s2+1,v]) * mango2[s2,'HWt']
   
   m <- (sum(mango1[1:(s1-1),'HWt'])+slice1) / sum(d1$HWt)
   f <- (sum(mango2[1:(s2-1),'HWt'])+slice2) / sum(d2$HWt)
   if (q < .5) {return(log((1-m)/(1-f)))} else {return(log(m/f))}
 }
-# compute proportions of male and female weight above a threshold q (see U3 description)
+# compute proportions of male and female weight above a threshold k (see U3 description)
 # if left tail, find the TPR below the threshold; if right tail, above the threshold 
 # log-transform the ratio for linear scale
 
@@ -422,7 +425,7 @@ for (i in 1:4) { # for percentiles 5, 10, 90, 95
   for (s in 1:5) { # for each PV
     PV <- paste0('PV',s)
     Rs[s+(i-1)*5] <- LU3Rfn(T15_M, T15_F, P[i], PV) # LU3Rs
-    Rs[s+(i+3)*5] <- LTPRfn(T15_M, T15_F, wt.qnt(T15[,PV], T15$HWt, P[i]), PV) # LTPRs
+    Rs[s+(i+3)*5] <- LTPRfn(T15_M, T15_F, P[i], PV) # LTPRs
   }
   R[i] <- mean(Rs[(5*i-4):(5*i)]) # LU3R for each percentile
   R[i+4] <- mean(Rs[(5*i+16):(5*i+20)]) # LTPR for each percentile
@@ -574,7 +577,7 @@ for (i in 1:L) { # for each JK zone, twice
     
     for (c in 1:4) {
       RJ[i+(s+5*c-6)*L] <- LU3Rfn(T0_M, T0_F, P[c], PV) # reweighted LU3Rs
-      RJ[i+(s+5*c+14)*L] <- LTPRfn(T0_M, T0_F, wt.qnt(T0[,PV], T0$HWt, P[c]), PV) # reweighted LTPRs
+      RJ[i+(s+5*c+14)*L] <- LTPRfn(T0_M, T0_F, P[c], PV) # reweighted LTPRs
       RJ[i+(s+5*c+34)*L] <- LMU3Rfn(T0_M, T0_F, P[c], PV) # reweighted LMU3Rs
     }
   }
@@ -665,8 +668,6 @@ Output <- format(data.frame(Names, Variables), scientific = F) # put everything 
 
 # select file name manually, store as a csv
 write.csv(x = Output, file = 'TIMSS output/2015 4/Countries/AUS.csv')
-
-
 
 
 
