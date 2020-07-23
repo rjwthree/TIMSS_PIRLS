@@ -468,17 +468,14 @@ A15 <- T15[!is.na(T15$Age),] # T15 with Age NAs (if any) excluded
 A15_F <- A15[which(A15$Sex == 1),] # female subset
 A15_M <- A15[which(A15$Sex == 2),] # male subset
 
-AgeU3 <- U3fn(d1 = A15_M, d2 = A15_F, v = 'Age') # sex differences in age
-AgeMADR <- exp(LMADRfn(d1 = A15_M, d2 = A15_F, v = 'Age'))
+AgeU3 <- U3fn(A15_M, A15_F, 'Age') # sex differences in age
+AgeMADR <- exp(LMADRfn(A15_M, A15_F, 'Age'))
 
-# control for the correlation between age and score
-Slope <- c(lm(formula = PV1 ~ Age, data = A15, weights = HWt)$coefficients[2], # PV1
-           lm(formula = PV2 ~ Age, data = A15, weights = HWt)$coefficients[2], # PV2
-           lm(formula = PV3 ~ Age, data = A15, weights = HWt)$coefficients[2], # PV3
-           lm(formula = PV4 ~ Age, data = A15, weights = HWt)$coefficients[2], # PV4
-           lm(formula = PV5 ~ Age, data = A15, weights = HWt)$coefficients[2]) # PV5
+Slope <- numeric(5) # control for the correlation between age and score
+S <- c(PV1 ~ Age, PV2 ~ Age, PV3 ~ Age, PV4 ~ Age, PV5 ~ Age)
+for (i in 1:5) {Slope[i] <- lm(formula = S[[i]], data = A15, weights = HWt)$coefficients[2]}
 
-AgeMn <- wt.mn(x = A15$Age, w = A15$HWt) # mean age
+AgeMn <- wt.mn(A15$Age, A15$HWt) # mean age
 
 # if there are Age NAs, replace with mean age so their nominally age-corrected scores do not change
 if (length(T15[is.na(T15$Age),'Age']) != 0) {T15[is.na(T15$Age),'Age'] <- AgeMn}
@@ -552,7 +549,7 @@ for (i in 1:L) { # for each JK zone, twice
   T0_F <- T0[which(T0$Sex == 1),] # female subset
   T0_M <- T0[which(T0$Sex == 2),] # male subset
   
-  for (s in 1:5) {
+  for (s in 1:5) { # for each PV
     PV <- paste0('PV',s)
     
     MJ[i+(s-1)*L] <- wt.mn(T0[,PV], T0$HWt) # reweighted means (total)
