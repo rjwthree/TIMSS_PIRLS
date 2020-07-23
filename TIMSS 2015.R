@@ -664,7 +664,7 @@ Variables <- c(Country, CNT, Grade, Size, FSize, MSize, WtRatio, Low, M, E[1:3],
 Output <- format(data.frame(Names, Variables), scientific = F) # put everything in this
 
 # select file name manually, store as a csv
-write.csv(x = Output, file = 'TIMSS output/2015 4/Countries/AUS.csv')
+write.csv(x = Output, file = paste0('TIMSS output/2015 ', Grade, '/Countries/', CNT, '.csv'))
 
 
 
