@@ -23,6 +23,7 @@
 # write dataframe with all needed variables
 
 # ratios are log-transformed to place them on a linear scale
+# log-transformed ratios are signified by an 'L' preceding the acronym
 
 
 
@@ -96,81 +97,103 @@ wt.var <- function(x, w) {
 # quantile
 wt.qnt <- function(x, w, q) {
   k <- sum(w)*q
+  i <- wt <- 0
   if (q > 0 & q <= .5) {
-    wt <- 0
     ascend <- order(x)
     a <- x[ascend]
     b <- w[ascend]
     if (k <= b[1]) {return(min(x))}
-    for (i in 1:length(a)) {
-      if (wt < k) {
-        wt <- wt + b[i]
-      } else {
-        R <- b[i-1]
-        S <- a[i-2]
-        V <- a[i-1]
-        break
-      }
+    while (wt < k) {
+      i <- i + 1
+      wt <- wt + b[i]
     }
-    if (V == S | V == a[i]) {wt.qalt(x, w, q)} else {return(V-(wt-k)/R*(V-S))}
-  } else if (q > .5 & q < 1) {
-    wt <- sum(w)
+    if (i == length(a)) {
+      if (a[i] == a[i-1]) {i <- -1} else {return(a[i]-(wt-k)/b[i]*(a[i]-a[i-1]))}
+    } else if (a[i] == a[i-1] | a[i] == a[i+1]) {
+      i <- -1
+    } else {return(a[i]-(wt-k)/b[i]*(a[i]-a[i-1]))}
+  } else if (q > .5 & q < 1) { 
     descend <- order(x, decreasing = T)
     a <- x[descend]
     b <- w[descend]
-    for (i in 1:length(a)) {
-      if (wt > k) {
-        wt <- wt - b[i]
-      } else {
-        R <- b[i-1]
-        S <- a[i-1]
-        V <- a[i]
-        break
-      }
+    if (k <= b[length(b)]) {return(min(x))}
+    wt <- sum(w)
+    while (wt > k) {
+      i <- i + 1
+      wt <- wt - b[i]
     }
-    if (V == S | V == a[i+1]) {wt.qalt(x, w, q)} else {return(V+(k-wt)/R*(S-V))}
+    if (i+1 == length(a)) {
+      if (a[i+1] == a[i]) {i <- -1} else {return(a[i+1]+(k-wt)/b[i]*(a[i]-a[i+1]))}
+    } else if (a[i+1] == a[i] | a[i+1] == a[i+2]) {
+      i <- -1
+    } else {return(a[i+1]+(k-wt)/b[i]*(a[i]-a[i+1]))}
   } else if (q == 0) {return(min(x))}
-}
-# sort the scores and weights in ascending order of scores
-# add weights until the fraction of total weight exceeds q
-# divert to alternate function wt.qalt if needed
-# perform linear interpolation between the closest scores (S and V)
-# for efficiency, reverse the process if q exceeds .5
-
-
-# alternate quantile function
-wt.qalt <- function(x, w, q) {
-  d <- data.frame(x, w)
-  W <- data.frame(table(d$x))
-  X <- W[W$Freq > 1,]
-  Y <- as.numeric(as.character(X$Var1))
-  Z <- numeric(length(Y))
-  for (i in 1:length(Y)) {Z[i] <- sum(d[d$x == Y[i],'w'])}
-  d <- d[! d$x %in% Y,]
-  d <- rbind(d, data.frame(x = Y, w = Z))
   
-  k <- sum(d$w)*q
-  wt <- 0
-  ascend <- order(d$x)
-  a <- d$x[ascend]
-  b <- d$w[ascend]
-  for (i in 1:length(a)) {
-    if (wt < k) {
+  if (i < 0) {
+    d <- data.frame(x, w)
+    W <- data.frame(table(d$x))
+    X <- W[W$Freq > 1,]
+    Y <- as.numeric(as.character(X$Var1))
+    Z <- numeric(length(Y))
+    for (i in 1:length(Y)) {Z[i] <- sum(d[d$x == Y[i],'w'])}
+    d <- d[! d$x %in% Y,]
+    d <- rbind(d, data.frame(x = Y, w = Z))
+    
+    i <- wt <- 0
+    ascend <- order(d$x)
+    a <- d$x[ascend]
+    b <- d$w[ascend]
+    if (k <= b[1]) {return(min(x))}
+    while (wt < k) {
+      i <- i + 1
       wt <- wt + b[i]
-    } else {
-      R <- b[i-1]
-      S <- a[i-2]
-      V <- a[i-1]
-      break
     }
+    return(a[i]-(wt-k)/b[i]*(a[i]-a[i-1]))
   }
-  return(V-(wt-k)/R*(V-S))
 }
-# sum the weights of students with identical scores before calculating
-# this is a less efficient function that remedies the slight distortion
-# caused in rare cases by the score V being one of multiple equal scores
-# other quantile functions using linear interpolation would produce a different result
-# if, e.g., one simply duplicated all values and weights, which should not happen
+# sort the scores and weights in ascending order of scores (a and b)
+# add weights until the fraction of total weight exceeds q
+# perform linear interpolation between the closest scores
+# for efficiency, reverse the process if q exceeds .5
+# if needed, divert to an alternate algorithm by assigning -1 to i (impossible otherwise)
+# this sums the weights of students with identical scores before proceeding
+# it is a less efficient function that remedies the slight distortion which occurs in
+# rare cases when a[i] (if q <= .5) or a[i+1] (if q > .5) is one of multiple equal scores
+# other weighted quantile functions using linear interpolation would produce a different
+# result if, e.g., one simply duplicated all values and weights, which should not happen
+# edge cases are tested for and addressed; some of them are possible only because
+# of the adjustments made to test whether the alternate function is needed
+
+
+# empirical cumulative distribution function
+wt.ecdf <- function(x, w, p) {
+  ascend <- order(x)
+  a <- x[ascend]
+  b <- w[ascend]
+  n <- length(x)
+  z <- length(a[a <= p])
+  
+  if (z == 0) {
+    return(0)
+  } else if (z+1 == n) {
+    s <- (p-a[z]) / (a[z+1]-a[z]) * b[z+1]
+    return((s + sum(b[1:z])) / sum(b))
+  } else if (z == n) {return(1)}
+  
+  if (a[z+1] == a[z+2]) {
+    d <- data.frame(a, b)
+    wt <- sum(d[d$a == a[z+1],'b'])
+  } else {wt <- b[z+1]}
+  
+  s <- (p-a[z]) / (a[z+1]-a[z]) * wt
+  return((s + sum(b[1:z])) / sum(b))
+}
+# sort the scores and weights in ascending order of scores (a and b)
+# find the number of scores less than or equal to p (z); their weight is sum(b[1:z])
+# perform linear interpolation between the closest scores to find the additional weight (s)
+# the fraction of total weight gives the weighted quantile of p
+# the rare case in which two or more students with identical scores have
+# the score immediately above p is addressed by summing their weights
 
 
 # Cohen's d
@@ -181,23 +204,8 @@ dfn <- function(d1, d2, v) {
 
 
 # U3
-U3fn <- function(d1, d2, v) {
-  q <- wt.qnt(d2[,v], d2$HWt, .5)
-  tango <- d1[order(d1[,v], decreasing = T),]
-  s <- nrow(tango[which(tango[,v] > q),])
-  mango <- tango[1:(s+1),]
-  slice <- (mango[s,v]-q)/(mango[s,v]-mango[s+1,v]) * mango[s,'HWt']
-  return((sum(mango[1:(s-1),'HWt'])+slice) / sum(d1$HWt))
-}
-# compute female median (q)
-# sort males in order of descending scores (tango)
-# store the number of males with scores higher than q (s)
-# subset males with scores higher than q and one with the score immediately below q (mango)
-# divide the distance between the score immediately above q and q by the
-# distance between the score immediately above q and the score immediately below q
-# then multiply this proportion by the weight associated with the score above q (slice)
-# add slice to all weight above the score immediately above q, then divide by total male weight
-# this gives the precise share of male weight above the female median
+U3fn <- function(d1, d2, v) {1 - wt.ecdf(d1[,v], d1$HWt, wt.qnt(d2[,v], d2$HWt, .5))}
+# the precise share of male weight above the female median
 
 
 # probability of superiority (PS)
@@ -311,16 +319,11 @@ LGMDRfn <- function(d1, d2, v) {
 
 # log-transformed U3 ratio (LU3R)
 LU3Rfn <- function(d1, d2, q, v) {
-  k <- wt.qnt(d2[,v], d2$HWt, q)
-  tango <- d1[order(d1[,v], decreasing = T),]
-  s <- nrow(tango[which(tango[,v] > k),])
-  mango <- tango[1:(s+1),]
-  slice <- (mango[s,v]-k)/(mango[s,v]-mango[s+1,v]) * mango[s,'HWt']
-  m <- (sum(mango[1:(s-1),'HWt'])+slice) / sum(d1$HWt)
-  if (q < .5) {return(log((1-m)/q))} else {return(log(m/(1-q)))}
+  m <- wt.ecdf(d1[,v], d1$HWt, wt.qnt(d2[,v], d2$HWt, q))
+  if (q < .5) {return(log(m/q))} else {return(log((1-m)/(1-q)))}
 }
-# share of male weight above a female subgroup quantile (see U3 description)
-# divided by the natural share of female weight (q in left tail, 1-q in right tail)
+# share of male weight below a female subgroup quantile (m)
+# if left tail, find the ratio of weight share below the female quantile; if right tail, above it
 # log-transform the ratio for linear scale
 
 
@@ -328,38 +331,20 @@ LU3Rfn <- function(d1, d2, q, v) {
 LTPRfn <- function(d1, d2, q, v) {
   d <- rbind(d1, d2)
   k <- wt.qnt(d[,v], d$HWt, q)
-  
-  tango1 <- d1[order(d1[,v], decreasing = T),]
-  tango2 <- d2[order(d2[,v], decreasing = T),]
-  
-  s1 <- nrow(tango1[which(tango1[,v] > k),])
-  s2 <- nrow(tango2[which(tango2[,v] > k),])
-  
-  mango1 <- tango1[1:(s1+1),]
-  mango2 <- tango2[1:(s2+1),]
-  
-  slice1 <- (mango1[s1,v]-k)/(mango1[s1,v]-mango1[s1+1,v]) * mango1[s1,'HWt']
-  slice2 <- (mango2[s2,v]-k)/(mango2[s2,v]-mango2[s2+1,v]) * mango2[s2,'HWt']
-  
-  m <- (sum(mango1[1:(s1-1),'HWt'])+slice1) / sum(d1$HWt)
-  f <- (sum(mango2[1:(s2-1),'HWt'])+slice2) / sum(d2$HWt)
-  if (q < .5) {return(log((1-m)/(1-f)))} else {return(log(m/f))}
+  m <- wt.ecdf(d1[,v], d1$HWt, k)
+  f <- wt.ecdf(d2[,v], d2$HWt, k)
+  if (q < .5) {return(log(m/f))} else {return(log((1-m)/(1-f)))}
 }
-# compute proportions of male and female weight above a threshold k (see U3 description)
-# if left tail, find the TPR below the threshold; if right tail, above the threshold 
+# compute proportions of male and female weight below a threshold k (m and f)
+# if left tail, find the TPR below k; if right tail, above k 
 # log-transform the ratio for linear scale
 
 
 # log-transformed median-aligned U3 ratio (LMU3R)
 LMU3Rfn <- function(d1, d2, q, v) {
   d1[,v] <- wt.qnt(d2[,v], d2$HWt, .5) - wt.qnt(d1[,v], d1$HWt, .5) + d1[,v]
-  k <- wt.qnt(d2[,v], d2$HWt, q)
-  tango <- d1[order(d1[,v], decreasing = T),]
-  s <- nrow(tango[which(tango[,v] > k),])
-  mango <- tango[1:(s+1),]
-  slice <- (mango[s,v]-k)/(mango[s,v]-mango[s+1,v]) * mango[s,'HWt']
-  m <- (sum(mango[1:(s-1),'HWt'])+slice) / sum(d1$HWt)
-  if (q < .5) {return(log((1-m)/q))} else {return(log(m/(1-q)))}
+  m <- wt.ecdf(d1[,v], d1$HWt, wt.qnt(d2[,v], d2$HWt, q))
+  if (q < .5) {return(log(m/q))} else {return(log((1-m)/(1-q)))}
 }
 # move the male median to the female median (arbitrary method of alignment)
 # compute the LMU3R (see LU3R description)
