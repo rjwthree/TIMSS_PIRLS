@@ -157,12 +157,12 @@ wt.qnt <- function(x, w, q) {
 # for efficiency, reverse the process if q exceeds .5
 # if needed, divert to an alternate algorithm by assigning -1 to i (impossible otherwise)
 # this sums the weights of students with identical scores before proceeding
-# it is a less efficient function that remedies the slight distortion which occurs in
+# it is a less efficient algorithm that remedies the slight distortion which occurs in
 # rare cases when a[i] (if q <= .5) or a[i+1] (if q > .5) is one of multiple equal scores
 # other weighted quantile functions using linear interpolation would produce a different
 # result if, e.g., one simply duplicated all values and weights, which should not happen
-# edge cases are tested for and addressed; some of them are possible only because
-# of the adjustments made to test whether the alternate function is needed
+# edge cases are tested for and addressed; one of the tests is necessary only
+# because of the adjustments made to check whether the alternate algorithm is needed
 
 
 # empirical cumulative distribution function
