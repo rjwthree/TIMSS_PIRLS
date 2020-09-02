@@ -1,7 +1,7 @@
 # Sex Differences in TIMSS 2015 Math
-This script analyzes the most recently released data on 4th and 8th grade math exams from the Trends in International Mathematics and Science Study (TIMSS). It is administered every four years by the International Association for the Evaluation of Educational Achievement (IEA), which also administers the Progress in International Reading Literacy Study (PIRLS) every five years. https://timssandpirls.bc.edu/
+These scripts analyze the most recently released data on 4th and 8th grade math exams from the Trends in International Mathematics and Science Study (TIMSS), and 4th grade reading exams from the Progress in International Reading Literacy Study (PIRLS). TIMSS is administered every four years and PIRLS every five years by the International Association for the Evaluation of Educational Achievement (IEA). https://timssandpirls.bc.edu/
 
-The script proceeds as follows:
+The scripts proceed as follows:
 
 (1) Read and Format Data
 
@@ -63,6 +63,6 @@ Standardized Quantile Differences (SQDs)* - Raw male-female differences at each 
 The next section adjusts the scores linearly for age and recalculates the effect sizes from Cohen's d to GMDR.
 
 ## Standard Errors and Confidence Intervals
-Computing standard errors is the most computationally intensive procedure. The use of 75 jackknife zones, each subdivided into two groups — in combination with the five sets of plausible values — means that each effect size must be recalculated 750 times. The sampling variance and imputation variance are then calculated according to formulas described by 'Methods and Procedures in TIMSS 2015'. The sum of sampling and imputation variance is the total variance, and its square root is the standard error. The standard errors are then converted to 95% confidence intervals through typical methods, and the lower and upper bounds of these confidence intervals are recorded.
+Computing standard errors is the most computationally intensive procedure. The use of 75 jackknife zones, each subdivided into two groups — in combination with the five sets of plausible values — means that each effect size must be recalculated 750 times. The sampling variance and imputation variance are then calculated according to procedures described by 'Methods and Procedures in TIMSS 2015' and 'Methods and Procedures in PIRLS 2016'. The sum of sampling and imputation variance is the total variance, and its square root is the standard error. The standard errors are then converted to 95% confidence intervals through typical methods, and the lower and upper bounds of these confidence intervals are recorded.
 
 The results are then summarized in a dataframe called 'Output' and written to the appropriate directory.
