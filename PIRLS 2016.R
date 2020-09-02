@@ -73,7 +73,7 @@ MSize <- nrow(P16_M) # male sample size
 wt.mn <- function(x, w) {mean(x*(length(x)/sum(w)*w))}
 
 
-# varianc
+# variance
 wt.var <- function(x, w) {
   mn <- wt.mn(x, w)
   n <- length(x)
