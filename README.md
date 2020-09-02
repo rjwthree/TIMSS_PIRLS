@@ -1,4 +1,4 @@
-# Sex Differences in TIMSS 2015 Math
+# Sex Differences in TIMSS 2015 Math and PIRLS 2016 Reading
 These scripts analyze the most recently released data on 4th and 8th grade math exams from the Trends in International Mathematics and Science Study (TIMSS), and 4th grade reading exams from the Progress in International Reading Literacy Study (PIRLS). TIMSS is administered every four years and PIRLS every five years by the International Association for the Evaluation of Educational Achievement (IEA). https://timssandpirls.bc.edu/
 
 The scripts proceed as follows:
