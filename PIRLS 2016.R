@@ -339,6 +339,19 @@ LMU3Rfn <- function(d1, d2, q, v) {
 # compute the LMU3R (see LU3R description)
 
 
+# quantile difference (QD)
+QDfn <- function(d1, d2, q, v) {wt.qnt(d1[,v], d1$HWt, q) - wt.qnt(d2[,v], d2$HWt, q)}
+# raw quantile M-F difference
+
+
+# mean MAD (MMAD)
+MMADfn <- function(d1, d2, v) {
+  (wt.qnt(abs(d1[,v]-wt.qnt(d1[,v], d1$HWt, .5)), d1$HWt, .5) +
+     wt.qnt(abs(d2[,v]-wt.qnt(d2[,v], d2$HWt, .5)), d2$HWt, .5)) / 2
+}
+# mean of male and female MADs, computed once outside of loop for efficiency
+
+
 # standardized quantile difference (SQD)
 SQDfn <- function(d1, d2, q, v) {
   QD <- wt.qnt(d1[,v], d1$HWt, q) - wt.qnt(d2[,v], d2$HWt, q)
@@ -346,7 +359,7 @@ SQDfn <- function(d1, d2, q, v) {
   f <- wt.qnt(abs(d2[,v]-wt.qnt(d2[,v], d2$HWt, .5)), d2$HWt, .5)
   return(QD / ((m+f)/2) * 100)
 }
-# raw quantile M-F difference as a percentage of mean MAD
+# raw quantile M-F difference as a percentage of mean MAD: QDfn / MMADfn * 100
 
 
 
@@ -397,9 +410,8 @@ P <- c(.05, .1, .9, .95) # quantiles
 
 for (i in 1:4) { # for percentiles 5, 10, 90, 95
   for (s in 1:5) { # for each PV
-    PV <- paste0('PV',s)
-    Rs[s+(i-1)*5] <- LU3Rfn(P16_M, P16_F, P[i], PV) # LU3Rs
-    Rs[s+(i+3)*5] <- LTPRfn(P16_M, P16_F, P[i], PV) # LTPRs
+    Rs[s+(i-1)*5] <- LU3Rfn(P16_M, P16_F, P[i], paste0('PV',s)) # LU3Rs
+    Rs[s+(i+3)*5] <- LTPRfn(P16_M, P16_F, P[i], paste0('PV',s)) # LTPRs
   }
   R[i] <- mean(Rs[(5*i-4):(5*i)]) # LU3R for each percentile
   R[i+4] <- mean(Rs[(5*i+16):(5*i+20)]) # LTPR for each percentile
@@ -411,12 +423,14 @@ for (i in 1:4) { # for percentiles 5, 10, 90, 95
 
 LMU3Rs <- SQDs <- numeric(495) # empty containers
 LMU3R <- SQD <- numeric(99) # empty containers
+MMADs <- numeric(5) # empty container
+
+for (i in 1:5) {MMADs[i] <- MMADfn(P16_M, P16_F, paste0('PV',i))} # mean MADs
 
 for (i in 1:99) { # for each percentile
   for (s in 1:5) { # for each PV
-    PV <- paste0('PV',s)
-    LMU3Rs[s+(i-1)*5] <- LMU3Rfn(P16_M, P16_F, i/100, PV) # LMU3Rs
-    SQDs[s+(i-1)*5] <- SQDfn(P16_M, P16_F, i/100, PV) # SQDs
+    LMU3Rs[s+(i-1)*5] <- LMU3Rfn(P16_M, P16_F, i/100, paste0('PV',s)) # LMU3Rs
+    SQDs[s+(i-1)*5] <- QDfn(P16_M, P16_F, i/100, paste0('PV',s)) / MMADs[s] * 100 # SQDs
   }
   LMU3R[i] <- mean(LMU3Rs[(5*i-4):(5*i)]) # LMU3R for each percentile
   SQD[i] <- mean(SQDs[(5*i-4):(5*i)]) # SQD for each percentile
@@ -599,6 +613,8 @@ for (i in 1:12) { # for each effect size, up to the appropriate i
 
 WtRatio <- sum(P16_M$HWt)/sum(P16_F$HWt) # M/F weight ratio
 
+MMAD <- mean(MMADs) # mean MAD
+
 Low <- sum(P16[which(P16$Low == 1),'HWt'])/sum(P16$HWt)*100 # percent too low for estimation
 
 LMU3Rnm <- SQDnm <- numeric(99)
@@ -612,8 +628,8 @@ Names <- c('Country', 'CNT', 'Size', 'FSize', 'MSize', 'M/F Wt Ratio', 'Low %',
            'Mean', 'Median', 'F Mean', 'F Median', 'M Mean', 'M Median', 'Mean Diff', 'Median Diff', 
            'd', 'U3', 'PS', 'SDR', 'SDR_L', 'SDR_R', 'MADR', 'MADR_L', 'MADR_R', 'GMDR',
            'U3R05', 'U3R10', 'U3R90', 'U3R95', 'TPR05', 'TPR10', 'TPR90', 'TPR95', 'MU3R05', 'MU3R10',
-           'MU3R90', 'MU3R95', 'SQDTC05', 'SQDTC10', 'SQDTC90', 'SQDTC95', LMU3Rnm, SQDnm, 'Mean Low',
-           'Mean Upp', 'Median Low', 'Median Upp', 'F Mean Low', 'F Mean Upp', 'F Median Low',
+           'MU3R90', 'MU3R95', 'MMAD', 'SQDTC05', 'SQDTC10', 'SQDTC90', 'SQDTC95', LMU3Rnm, SQDnm,
+           'Mean Low', 'Mean Upp', 'Median Low', 'Median Upp', 'F Mean Low', 'F Mean Upp', 'F Median Low',
            'F Median Upp', 'M Mean Low', 'M Mean Upp', 'M Median Low', 'M Median Upp', 'Mean Diff Low',
            'Mean Diff Upp', 'Med Diff Low', 'Med Diff Upp', 'd Low', 'd Upp', 'U3 Low', 'U3 Upp',
            'PS Low', 'PS Upp', 'SDR Low', 'SDR Upp', 'SDR_L Low', 'SDR_L Upp', 'SDR_R Low', 'SDR_R Upp',
@@ -631,8 +647,8 @@ Names <- c('Country', 'CNT', 'Size', 'FSize', 'MSize', 'M/F Wt Ratio', 'Low %',
            'LMU3R95 TV', 'Age U3', 'Age MADR', 'd A', 'U3 A', 'PS A', 'SDR A', 'SDR_L A', 'SDR_R A',
            'MADR A', 'MADR_L A', 'MADR_R A', 'GMDR A')
 
-Variables <- c(Country, CNT, Size, FSize, MSize, WtRatio, Low, M, E[1:3], exp(c(E[4:10], R)), Q,
-               LMU3R, SQD, MCI, ECI[1:6], exp(ECI[7:20]), QCI, exp(RCI), E[4:10], R[1:8], TVE, TVQ, TVR,
+Variables <- c(Country, CNT, Size, FSize, MSize, WtRatio, Low, M, E[1:3], exp(c(E[4:10], R)), MMAD,
+               Q, LMU3R, SQD, MCI, ECI[1:6], exp(ECI[7:20]), QCI, exp(RCI), E[4:10], R[1:8], TVE, TVQ, TVR,
                AgeU3, AgeMADR, EA[1:3], exp(EA[4:10]))
 
 Output <- format(data.frame(Names, Variables), scientific = F) # put everything in this
