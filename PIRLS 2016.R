@@ -45,8 +45,6 @@ PIRLS16 <- read_spss('PIRLS/2016/P16_1/ASGAUSR4.sav') # read data
 P16 <- PIRLS16[c('IDSTUD', 'ITSEX', 'ASDAGE', 'HOUWGT', 'JKZONE', 'JKREP', 'ASDRLOWP',
                  'ASRREA01', 'ASRREA02', 'ASRREA03', 'ASRREA04', 'ASRREA05')]
 
-remove(PIRLS16) # remove unneeded file
-
 names(P16) <- c('Student', 'Sex', 'Age', 'HWt', 'JKZ', 'JKR', 'Low',
                 'PV1', 'PV2', 'PV3', 'PV4', 'PV5') # rename columns
 
