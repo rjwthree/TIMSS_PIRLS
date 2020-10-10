@@ -56,8 +56,6 @@ if (Grade == 4 | Grade == 5 | Grade == 'N') { # subset columns
                    'BSMMAT01', 'BSMMAT02', 'BSMMAT03', 'BSMMAT04', 'BSMMAT05')]
 }
 
-remove(TIMSS15) # remove unneeded file
-
 names(T15) <- c('Student', 'Sex', 'Age', 'HWt', 'JKZ', 'JKR', 'Low',
                 'PV1', 'PV2', 'PV3', 'PV4', 'PV5') # rename columns
 
