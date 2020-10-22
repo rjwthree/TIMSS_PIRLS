@@ -8,6 +8,7 @@
 #### Outline ####
 
 # [1] Read and Format Data
+# select country
 # objects needed throughout the script
 # [2] Weighted Functions
 # functions needed throughout the script, with descriptions
@@ -32,18 +33,122 @@
 ##### Read and Format Data #####
 ################################
 
-# in the selected file ASGAUSR4.sav, AUS is the country code for Australia
-# see pp. 52-54 of the "PIRLS 2016 User Guide for the International Database" for country codes
+#### Select Country ####
+
+# PIRLS Literacy (L) is an easier version of the standard PIRLS assessment (R)
+# ePIRLS (E) is a computer assessment; all polities that did ePIRLS also did PIRLS
+# Norway administered the standard assessment to 5th graders,
+# and tested a 4th grade benchmark sample of similar size
+
+
+# manually subset a test and a polity (benchmarks at the end)
+
+test <- 'R' # PIRLS (47 countries, 10 benchmarks)
+test <- 'E' # ePIRLS (14 countries, 2 benchmarks)
+test <- 'L' # PIRLS Literacy (5 countries, 1 benchmark)
+
+CNT <- 'AUS' # Australia | R
+CNT <- 'AUT' # Austria | R
+CNT <- 'AZE' # Azerbaijan | R
+CNT <- 'BHR' # Bahrain | R
+CNT <- 'BFL' # Belgium (Flemish) | R
+CNT <- 'BFR' # Belgium (French) | R
+CNT <- 'BGR' # Bulgaria | R
+CNT <- 'CAN' # Canada | R E
+CNT <- 'CHL' # Chile | R
+CNT <- 'CZE' # Czech Republic | R
+CNT <- 'DNK' # Denmark | R E
+CNT <- 'EGY' # Egypt | L
+CNT <- 'ENG' # England | R
+CNT <- 'FIN' # Finland | R
+CNT <- 'FRA' # France | R
+CNT <- 'GEO' # Georgia | R E
+CNT <- 'DEU' # Germany | R
+CNT <- 'HKG' # Hong Kong | R
+CNT <- 'HUN' # Hungary | R
+CNT <- 'IRN' # Iran | R L
+CNT <- 'IRL' # Ireland | R E
+CNT <- 'ISR' # Israel | R E
+CNT <- 'ITA' # Italy | R E
+CNT <- 'KAZ' # Kazakhstan | R
+CNT <- 'KWT' # Kuwait | L
+CNT <- 'LVA' # Latvia | R
+CNT <- 'LTU' # Lithuania | R
+CNT <- 'MAC' # Macao, China | R
+CNT <- 'MLT' # Malta | R
+CNT <- 'MAR' # Morocco | R L
+CNT <- 'NLD' # Netherlands | R
+CNT <- 'NZL' # New Zealand | R
+CNT <- 'NIR' # Northern Ireland | R
+CNT <- 'NOR' # Norway | R E
+CNT <- 'OMN' # Oman | R
+CNT <- 'POL' # Poland | R
+CNT <- 'PRT' # Portugal | R E
+CNT <- 'QAT' # Qatar | R
+CNT <- 'RUS' # Russia | R
+CNT <- 'SAU' # Saudi Arabia | R
+CNT <- 'SGP' # Singapore | R E
+CNT <- 'SVK' # Slovakia | R
+CNT <- 'SVN' # Slovenia | R E
+CNT <- 'ZAF' # South Africa | L
+CNT <- 'ESP' # Spain | R
+CNT <- 'SWE' # Sweden | R E
+CNT <- 'TWN' # Taiwan | R E
+CNT <- 'TTO' # Trinidad and Tobago | R
+CNT <- 'UAE' # United Arab Emirates | R E
+CNT <- 'USA' # United States | R E
+
+CNT <- 'ABA' # Buenos Aires, Argentina | R
+CNT <- 'COT' # Ontario, Canada | R
+CNT <- 'CQU' # Quebec, Canada | R
+CNT <- 'DN3' # Denmark (3rd grade) | L
+CNT <- 'NO4' # Norway (4th grade) | R
+CNT <- 'RMO' # Moscow city, Russia | R
+CNT <- 'ZA5' # South Africa (5th grade) | R
+CNT <- 'EAN' # Andalusia, Spain | R
+CNT <- 'EMA' # Madrid, Spain | R
+CNT <- 'AAD' # Abu Dhabi, United Arab Emirates | R E
+CNT <- 'ADU' # Dubai, United Arab Emirates | R E
+
+
+
+#### Create Objects ####
 
 library(haven) # read SPSS
 
-Country <- 'Australia' # enter country manually
-CNT <- 'AUS' # enter country code manually
+# lookup table
+CT <- data.frame('Australia', 'Austria', 'Azerbaijan', 'Bahrain', 'Belgium (Fl)',
+                 'Belgium (Fr)', 'Bulgaria', 'Canada', 'Chile', 'Czech Republic',
+                 'Denmark', 'Egypt', 'England', 'Finland', 'France',
+                 'Georgia', 'Germany', 'Hong Kong', 'Hungary', 'Iran',
+                 'Ireland', 'Israel', 'Italy', 'Kazakhstan', 'Kuwait',
+                 'Latvia', 'Lithuania', 'Macao', 'Malta', 'Morocco',
+                 'Netherlands', 'New Zealand', 'Northern Ireland', 'Norway (5)', 'Oman',
+                 'Poland', 'Portugal', 'Qatar', 'Russia', 'Saudi Arabia',
+                 'Singapore', 'Slovakia', 'Slovenia', 'South Africa', 'Spain',
+                 'Sweden', 'Taiwan', 'Trinidad and Tobago', 'United Arab Emirates', 'United States',
+                 'Buenos Aires', 'Ontario', 'Quebec', 'Denmark (3)', 'Norway (4)',
+                 'Moscow', 'South Africa (5)', 'Andalusia', 'Madrid', 'Abu Dhabi', 'Dubai')
+names(CT) <- c('AUS', 'AUT', 'AZE', 'BHR', 'BFL', 'BFR', 'BGR', 'CAN', 'CHL', 'CZE',
+               'DNK', 'EGY', 'ENG', 'FIN', 'FRA', 'GEO', 'DEU', 'HKG', 'HUN', 'IRN',
+               'IRL', 'ISR', 'ITA', 'KAZ', 'KWT', 'LVA', 'LTU', 'MAC', 'MLT', 'MAR',
+               'NLD', 'NZL', 'NIR', 'NOR', 'OMN', 'POL', 'PRT', 'QAT', 'RUS', 'SAU',
+               'SGP', 'SVK', 'SVN', 'ZAF', 'ESP', 'SWE', 'TWN', 'TTO', 'UAE', 'USA',
+               'ABA', 'COT', 'CQU', 'DN3', 'NO4', 'RMO', 'ZA5', 'EAN', 'EMA', 'AAD', 'ADU')
 
-PIRLS16 <- read_spss('PIRLS/2016/P16_1/ASGAUSR4.sav') # read data
+Country <- as.character(CT[,CNT])
 
-P16 <- PIRLS16[c('IDSTUD', 'ITSEX', 'ASDAGE', 'HOUWGT', 'JKZONE', 'JKREP', 'ASDRLOWP',
-                 'ASRREA01', 'ASRREA02', 'ASRREA03', 'ASRREA04', 'ASRREA05')]
+if (test == 'E') { # ePIRLS
+  PIRLS16 <- read_spss(paste0('PIRLS/2016/4E/ASG', CNT, 'E1.sav'))
+  P16 <- PIRLS16[c('IDSTUD', 'ITSEX', 'ASDAGE', 'HOUWGT', 'JKZONE', 'JKREP', 'ASDELOWP',
+                   'ASEREA01', 'ASEREA02', 'ASEREA03', 'ASEREA04', 'ASEREA05')] # subset columns
+} else { # PIRLS and PIRLS Literacy have the same column names
+  if (test == 'R') { # PIRLS
+    PIRLS16 <- read_spss(paste0('PIRLS/2016/4/ASG', CNT, 'R4.sav'))
+  } else if (test == 'L') {PIRLS16 <- read_spss(paste0('PIRLS/2016/4L/ASG', CNT, 'L2.sav'))} # Literacy
+  P16 <- PIRLS16[c('IDSTUD', 'ITSEX', 'ASDAGE', 'HOUWGT', 'JKZONE', 'JKREP', 'ASDRLOWP',
+                   'ASRREA01', 'ASRREA02', 'ASRREA03', 'ASRREA04', 'ASRREA05')] # subset columns
+}
 
 names(P16) <- c('Student', 'Sex', 'Age', 'HWt', 'JKZ', 'JKR', 'Low',
                 'PV1', 'PV2', 'PV3', 'PV4', 'PV5') # rename columns
