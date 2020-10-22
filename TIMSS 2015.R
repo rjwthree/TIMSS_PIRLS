@@ -144,16 +144,14 @@ names(CT) <- c('ARM', 'AUS', 'BHR', 'BFL', 'BWA', 'BGR', 'CAN', 'CHL', 'HRV', 'C
 
 Country <- as.character(CT[,CNT])
 
-if (Grade == 4) { # 4th grade assessment
-  TIMSS15 <- read_spss(paste0('TIMSS/2015/4/ASG', CNT, 'M6.sav')) # read data
-  T15 <- TIMSS15[c('IDSTUD', 'ITSEX', 'ASDAGE', 'HOUWGT', 'JKZONE', 'JKREP', 'ASDMLOWP',
-                   'ASMMAT01', 'ASMMAT02', 'ASMMAT03', 'ASMMAT04', 'ASMMAT05')] # subset columns
-} else if (Grade == 8) { # 8th grade assessment
-  TIMSS15 <- read_spss(paste0('TIMSS/2015/8/BSG', CNT, 'M6.sav')) # read data
+if (Grade == 8) { # 8th grade assessment
+  TIMSS15 <- read_spss(paste0('TIMSS/2015/8/BSG', CNT, 'M6.sav'))
   T15 <- TIMSS15[c('IDSTUD', 'ITSEX', 'BSDAGE', 'HOUWGT', 'JKZONE', 'JKREP', 'BSDMLOWP',
                    'BSMMAT01', 'BSMMAT02', 'BSMMAT03', 'BSMMAT04', 'BSMMAT05')] # subset columns
-} else if (Grade == 'N') { # Numeracy assessment
-  TIMSS15 <- read_spss(paste0('TIMSS/2015/N/ASG', CNT, 'N1.sav')) # read data
+} else { # Grade 4 and numeracy have the same column names
+  if (Grade == 4) {
+    TIMSS15 <- read_spss(paste0('TIMSS/2015/4/ASG', CNT, 'M6.sav')) # 4th grade assessment
+  } else if (Grade == 'N') {TIMSS15 <- read_spss(paste0('TIMSS/2015/N/ASG', CNT, 'N1.sav'))} # numeracy
   T15 <- TIMSS15[c('IDSTUD', 'ITSEX', 'ASDAGE', 'HOUWGT', 'JKZONE', 'JKREP', 'ASDMLOWP',
                    'ASMMAT01', 'ASMMAT02', 'ASMMAT03', 'ASMMAT04', 'ASMMAT05')] # subset columns
 }
