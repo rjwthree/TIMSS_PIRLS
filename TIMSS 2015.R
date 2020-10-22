@@ -76,7 +76,7 @@ CNT <- 'ITA' # Italy | 4 8
 CNT <- 'JPN' # Japan | 4 8
 CNT <- 'JOR' # Jordan | 8 N
 CNT <- 'KAZ' # Kazakhstan | 4 8
-CNT <- 'KWT' # Kuwait | 4 8
+CNT <- 'KWT' # Kuwait | 4 8 N
 CNT <- 'LBN' # Lebanon | 8
 CNT <- 'LTU' # Lithuania | 4 8
 CNT <- 'MYS' # Malaysia | 8
