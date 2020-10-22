@@ -36,7 +36,7 @@
 #### Select Country ####
 
 # Numeracy (N) is an easier version of the standard 4th grade assessment
-# Norway adminstered the 4th grade assessment to 5th graders
+# Norway administered the 4th grade assessment to 5th graders
 # Norway, South Africa, and Botswana adminstered the 8th grade assessment to 9th graders
 # Norway also tested benchmark samples of similar size in the 4th and 8th grades
 # the script ignores this: 'Grade' tracks the assessment rather than the grade of students
