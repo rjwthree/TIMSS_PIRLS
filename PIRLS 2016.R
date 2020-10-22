@@ -133,7 +133,7 @@ names(CT) <- c('AUS', 'AUT', 'AZE', 'BHR', 'BFL', 'BFR', 'BGR', 'CAN', 'CHL', 'C
                'DNK', 'EGY', 'ENG', 'FIN', 'FRA', 'GEO', 'DEU', 'HKG', 'HUN', 'IRN',
                'IRL', 'ISR', 'ITA', 'KAZ', 'KWT', 'LVA', 'LTU', 'MAC', 'MLT', 'MAR',
                'NLD', 'NZL', 'NIR', 'NOR', 'OMN', 'POL', 'PRT', 'QAT', 'RUS', 'SAU',
-               'SGP', 'SVK', 'SVN', 'ZAF', 'ESP', 'SWE', 'TWN', 'TTO', 'UAE', 'USA',
+               'SGP', 'SVK', 'SVN', 'ZAF', 'ESP', 'SWE', 'TWN', 'TTO', 'ARE', 'USA',
                'ABA', 'COT', 'CQU', 'DN3', 'NO4', 'RMO', 'ZA5', 'EAN', 'EMA', 'AAD', 'ADU')
 
 Country <- as.character(CT[,CNT])
