@@ -95,7 +95,7 @@ CNT <- 'ESP' # Spain | R
 CNT <- 'SWE' # Sweden | R E
 CNT <- 'TWN' # Taiwan | R E
 CNT <- 'TTO' # Trinidad and Tobago | R
-CNT <- 'UAE' # United Arab Emirates | R E
+CNT <- 'ARE' # United Arab Emirates | R E
 CNT <- 'USA' # United States | R E
 
 CNT <- 'ABA' # Buenos Aires, Argentina | R
