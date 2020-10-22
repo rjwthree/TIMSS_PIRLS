@@ -757,7 +757,7 @@ Variables <- c(Country, CNT, Size, FSize, MSize, WtRatio, Low, M, E[1:3], exp(c(
 Output <- format(data.frame(Names, Variables), scientific = F) # put everything in this
 
 # select file name manually, store as a csv
-write.csv(x = Output, file = paste0('PIRLS output/2016/Countries/', CNT, '.csv'))
+write.csv(x = Output, file = paste0('PIRLS output/2016/', test, '/Countries/', CNT, '.csv'))
 
 
 
