@@ -8,6 +8,7 @@
 #### Outline ####
 
 # [1] Read and Format Data
+# select country
 # objects needed throughout the script
 # [2] Weighted Functions
 # functions needed throughout the script, with descriptions
@@ -32,28 +33,129 @@
 ##### Read and Format Data #####
 ################################
 
-# in the selected file ASGAUSM6.sav, AUS is the country code for Australia
-# see pp. 47-49 of the "TIMSS 2015 User Guide for the International Database" for country codes
-# the initial 'A' in ASGAUSM6.sav is instead 'B' for 8th grade files
-# Armenia (ARM) is in the database (4th and 8th) but is not in the report due to late testing
+#### Select Country ####
+
+# Numeracy (N) is an easier version of the standard 4th grade assessment
 # Norway adminstered the 4th grade assessment to 5th graders
 # Norway, South Africa, and Botswana adminstered the 8th grade assessment to 9th graders
 # Norway also tested benchmark samples of similar size in the 4th and 8th grades
+# the script ignores this: 'Grade' tracks the assessment rather than the grade of students
+# Armenia (ARM) is not in the report due to late testing, but it is in the database
+
+# manually subset a grade and a polity (benchmarks at the end)
+
+Grade <- 4 # 48 countries, 6 benchmarks
+Grade <- 8 # 39 countries, 6 benchmarks
+Grade <- 'N' # 7 countries, 1 benchmark
+
+CNT <- 'ARM' # Armenia | 4 8
+CNT <- 'AUS' # Australia | 4 8
+CNT <- 'BHR' # Bahrain | 4 8 N
+CNT <- 'BFL' # Belgium (Flemish) | 4
+CNT <- 'BWA' # Botswana | 8
+CNT <- 'BGR' # Bulgaria | 4
+CNT <- 'CAN' # Canada | 4 8
+CNT <- 'CHL' # Chile | 4 8
+CNT <- 'HRV' # Croatia | 4
+CNT <- 'CYP' # Cyprus | 4
+CNT <- 'CZE' # Czech Republic | 4
+CNT <- 'DNK' # Denmark | 4
+CNT <- 'EGY' # Egypt | 8
+CNT <- 'ENG' # England | 4 8
+CNT <- 'FIN' # Finland | 4
+CNT <- 'FRA' # France | 4
+CNT <- 'GEO' # Georgia | 4 8
+CNT <- 'DEU' # Germany | 4
+CNT <- 'HKG' # Hong Kong | 4 8
+CNT <- 'HUN' # Hungary | 4 8
+CNT <- 'IDN' # Indonesia | 4 N
+CNT <- 'IRN' # Iran | 4 8 N
+CNT <- 'IRL' # Ireland | 4 8
+CNT <- 'ISR' # Israel | 8
+CNT <- 'ITA' # Italy | 4 8
+CNT <- 'JPN' # Japan | 4 8
+CNT <- 'JOR' # Jordan | 8 N
+CNT <- 'KAZ' # Kazakhstan | 4 8
+CNT <- 'KWT' # Kuwait | 4 8
+CNT <- 'LBN' # Lebanon | 8
+CNT <- 'LTU' # Lithuania | 4 8
+CNT <- 'MYS' # Malaysia | 8
+CNT <- 'MLT' # Malta | 8
+CNT <- 'MAR' # Morocco | 4 8 N
+CNT <- 'NLD' # Netherlands | 4
+CNT <- 'NZL' # New Zealand | 4 8
+CNT <- 'NIR' # Northern Ireland | 4
+CNT <- 'NOR' # Norway | 4 8
+CNT <- 'OMN' # Oman | 4 8
+CNT <- 'POL' # Poland | 4
+CNT <- 'PRT' # Portugal | 4
+CNT <- 'QAT' # Qatar | 4 8
+CNT <- 'RUS' # Russia | 4 8
+CNT <- 'SAU' # Saudi Arabia | 4 8
+CNT <- 'SRB' # Serbia | 4
+CNT <- 'SGP' # Singapore | 4 8
+CNT <- 'SVK' # Slovakia | 4
+CNT <- 'SVN' # Slovenia | 4 8
+CNT <- 'ZAF' # South Africa | 8 N
+CNT <- 'KOR' # South Korea | 4 8
+CNT <- 'ESP' # Spain | 4
+CNT <- 'SWE' # Sweden | 4 8
+CNT <- 'TWN' # Taiwan | 4 8
+CNT <- 'THA' # Thailand | 8
+CNT <- 'TUR' # Turkey | 4 8
+CNT <- 'ARE' # United Arab Emirates | 4 8
+CNT <- 'USA' # United States | 4 8
+
+CNT <- 'ABA' # Buenos Aires, Argentina | 4 8 N
+CNT <- 'COT' # Ontario, Canada | 4 8
+CNT <- 'CQU' # Quebec, Canada | 4 8
+CNT <- 'NO4' # Norway (4th grade) | 4
+CNT <- 'NO8' # Norway (8th grade) | 8
+CNT <- 'AAD' # Abu Dhabi, United Arab Emirates | 4 8
+CNT <- 'ADU' # Dubai, United Arab Emirates | 4 8
+
+
+
+#### Create Objects ####
 
 library(haven) # read SPSS
 
-Country <- 'Australia' # enter country manually
-CNT <- 'AUS' # enter country code manually
-Grade <- 4 # enter grade manually
+# lookup table
+CT <- data.frame('Armenia', 'Australia', 'Bahrain', 'Belgium', 'Botswana',
+                 'Bulgaria', 'Canada', 'Chile', 'Croatia', 'Cyprus',
+                 'Czech Republic', 'Denmark', 'Egypt', 'England', 'Finland',
+                 'France', 'Georgia', 'Germany', 'Hong Kong', 'Hungary',
+                 'Indonesia', 'Iran', 'Ireland', 'Israel', 'Italy',
+                 'Japan', 'Jordan', 'Kazakhstan', 'Kuwait', 'Lebanon',
+                 'Lithuania', 'Malaysia', 'Malta', 'Morocco', 'Netherlands',
+                 'New Zealand', 'Northern Ireland', 'Norway', 'Oman', 'Poland',
+                 'Portugal', 'Qatar', 'Russia', 'Saudi Arabia', 'Serbia',
+                 'Singapore', 'Slovakia', 'Slovenia', 'South Africa', 'South Korea',
+                 'Spain', 'Sweden', 'Taiwan', 'Thailand', 'Turkey',
+                 'United Arab Emirates', 'United States', 'Buenos Aires', 'Ontario', 'Quebec',
+                 'Norway (4)', 'Norway (8)', 'Abu Dhabi', 'Dubai')
+names(CT) <- c('ARM', 'AUS', 'BHR', 'BFL', 'BWA', 'BGR', 'CAN', 'CHL', 'HRV', 'CYP',
+               'CZE', 'DNK', 'EGY', 'ENG', 'FIN', 'FRA', 'GEO', 'DEU', 'HKG', 'HUN',
+               'IDN', 'IRN', 'IRL', 'ISR', 'ITA', 'JPN', 'JOR', 'KAZ', 'KWT', 'LBN',
+               'LTU', 'MYS', 'MLT', 'MAR', 'NLD', 'NZL', 'NIR', 'NOR', 'OMN', 'POL',
+               'PRT', 'QAT', 'RUS', 'SAU', 'SRB', 'SGP', 'SVK', 'SVN', 'ZAF', 'KOR',
+               'ESP', 'SWE', 'TWN', 'THA', 'TUR', 'ARE', 'USA', 'ABA', 'COT', 'CQU',
+               'NO4', 'NO8', 'AAD', 'ADU')
 
-TIMSS15 <- read_spss('TIMSS/2015/T15_4_1/ASGAUSM6.sav') # read data
+Country <- as.character(CT[,CNT])
 
-if (Grade == 4 | Grade == 5 | Grade == 'N') { # subset columns
+if (Grade == 4) { # 4th grade assessment
+  TIMSS15 <- read_spss(paste0('TIMSS/2015/4/ASG', CNT, 'M6.sav')) # read data
   T15 <- TIMSS15[c('IDSTUD', 'ITSEX', 'ASDAGE', 'HOUWGT', 'JKZONE', 'JKREP', 'ASDMLOWP',
-                   'ASMMAT01', 'ASMMAT02', 'ASMMAT03', 'ASMMAT04', 'ASMMAT05')]
-} else if (Grade == 8 | Grade == 9) {
+                   'ASMMAT01', 'ASMMAT02', 'ASMMAT03', 'ASMMAT04', 'ASMMAT05')] # subset columns
+} else if (Grade == 8) { # 8th grade assessment
+  TIMSS15 <- read_spss(paste0('TIMSS/2015/8/BSG', CNT, 'M6.sav')) # read data
   T15 <- TIMSS15[c('IDSTUD', 'ITSEX', 'BSDAGE', 'HOUWGT', 'JKZONE', 'JKREP', 'BSDMLOWP',
-                   'BSMMAT01', 'BSMMAT02', 'BSMMAT03', 'BSMMAT04', 'BSMMAT05')]
+                   'BSMMAT01', 'BSMMAT02', 'BSMMAT03', 'BSMMAT04', 'BSMMAT05')] # subset columns
+} else if (Grade == 'N') { # Numeracy assessment
+  TIMSS15 <- read_spss(paste0('TIMSS/2015/N/ASG', CNT, 'N1.sav')) # read data
+  T15 <- TIMSS15[c('IDSTUD', 'ITSEX', 'ASDAGE', 'HOUWGT', 'JKZONE', 'JKREP', 'ASDMLOWP',
+                   'ASMMAT01', 'ASMMAT02', 'ASMMAT03', 'ASMMAT04', 'ASMMAT05')] # subset columns
 }
 
 names(T15) <- c('Student', 'Sex', 'Age', 'HWt', 'JKZ', 'JKR', 'Low',
