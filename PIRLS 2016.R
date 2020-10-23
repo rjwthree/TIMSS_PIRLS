@@ -43,9 +43,9 @@
 
 # manually subset a test and a polity (benchmarks at the end)
 
-test <- 'R' # PIRLS (47 countries, 10 benchmarks)
-test <- 'E' # ePIRLS (14 countries, 2 benchmarks)
-test <- 'L' # PIRLS Literacy (5 countries, 1 benchmark)
+test <- 'R' # PIRLS — 47/50 countries, 10/11 benchmarks
+test <- 'E' # ePIRLS — 14/50 countries, 2/11 benchmarks
+test <- 'L' # PIRLS Literacy — 5/50 countries, 1/11 benchmarks
 
 CNT <- 'AUS' # Australia | R
 CNT <- 'AUT' # Austria | R
