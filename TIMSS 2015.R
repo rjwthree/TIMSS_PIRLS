@@ -44,9 +44,9 @@
 
 # manually subset a grade and a polity (benchmarks at the end)
 
-Grade <- 4 # 48 countries, 6 benchmarks
-Grade <- 8 # 39 countries, 6 benchmarks
-Grade <- 'N' # 7 countries, 1 benchmark
+Grade <- 4 # 48/57 countries, 6/7 benchmarks
+Grade <- 8 # 39/57 countries, 6/7 benchmarks
+Grade <- 'N' # 7/57 countries, 1/7 benchmarks (50 total countries at 4th grade; 2 did numeracy but not 4th)
 
 CNT <- 'ARM' # Armenia | 4 8
 CNT <- 'AUS' # Australia | 4 8
