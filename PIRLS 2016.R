@@ -123,7 +123,7 @@ CT <- data.frame('Australia', 'Austria', 'Azerbaijan', 'Bahrain', 'Belgium (Fl)'
                  'Georgia', 'Germany', 'Hong Kong', 'Hungary', 'Iran',
                  'Ireland', 'Israel', 'Italy', 'Kazakhstan', 'Kuwait',
                  'Latvia', 'Lithuania', 'Macao', 'Malta', 'Morocco',
-                 'Netherlands', 'New Zealand', 'Northern Ireland', 'Norway (5)', 'Oman',
+                 'Netherlands', 'New Zealand', 'Northern Ireland', 'Norway', 'Oman',
                  'Poland', 'Portugal', 'Qatar', 'Russia', 'Saudi Arabia',
                  'Singapore', 'Slovakia', 'Slovenia', 'South Africa', 'Spain',
                  'Sweden', 'Taiwan', 'Trinidad and Tobago', 'United Arab Emirates', 'United States',
