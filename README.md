@@ -7,7 +7,11 @@ The first major section describes the results; the second section describes the 
 
 The full output from all 50 countries from [PIRLS](https://github.com/rjwthree/TIMSS_PIRLS/blob/master/Full%20results%20(reading).csv) and 57 countries from [TIMSS](https://github.com/rjwthree/TIMSS_PIRLS/blob/master/Full%20results%20(math).csv) is available in csv files, but is difficult to read because there are so many analyses and countries. I've visualized some of the results and hyperlinked them in the discussion below. See further down for definitions of all my effect sizes.
 
+#### Gender inequality
 
+Although flawed, the World Economic Forum's Global Gender Gap Index (GGGI) is arguably the best quantification of women's disadvantages around the world. The reports published in [Oct 2016](https://www.weforum.org/reports/the-global-gender-gap-report-2016) and [Nov 2017](https://www.weforum.org/reports/the-global-gender-gap-report-2017), which corresponds best with the data collection timeline of TIMSS 2015 and PIRLS 2016, respectively, contain data on nearly all the countries tested by [TIMSS](https://github.com/rjwthree/TIMSS_PIRLS/blob/master/Country%20codes%20(math).csv) and [PIRLS](https://github.com/rjwthree/TIMSS_PIRLS/blob/master/Country%20codes%20(reading).csv).
+
+The index is an average of four subindices which can range from 0 to 1. For each subindex, a score of 1 would indicate equality or female advantage. Spearman's correlation coefficient will be used here because non-parametric statistics are most suitable.
 
 ## Code
 
