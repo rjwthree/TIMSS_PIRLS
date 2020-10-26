@@ -39,7 +39,7 @@
 # Norway administered the 4th grade assessment to 5th graders
 # Norway, South Africa, and Botswana adminstered the 8th grade assessment to 9th graders
 # Norway also tested benchmark samples of similar size in the 4th and 8th grades
-# the script ignores this: 'Grade' tracks the assessment rather than the grade of students
+# The script ignores this: 'Grade' tracks the assessment rather than the grade of students
 # Armenia (ARM) is not in the report due to late testing, but it is in the database
 
 # manually subset a grade and a polity (benchmarks at the end)
