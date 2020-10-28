@@ -614,7 +614,7 @@ for (i in 1:10) {EA[i] <- mean(EAs[(5*i-4):(5*i)])} # age-adjusted effect sizes
 
 L <- length(unique(T15$JKZ)) # number of jackknife zones
 L1 <- rep(1:L, times = 2) # vector to select jackknife zones
-L2 <- c(rep(1, times = L), rep(0, times = L)) # vector to select jackknife replicate codes
+L2 <- rep(c(1,0), each = L) # vector to select jackknife replicate codes
 L3 <- rev(L2) # vector to select jackknife replicate codes
 L <- 2*L # double L for subsequent use
 
