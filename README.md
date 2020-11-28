@@ -1,4 +1,4 @@
-This repository on pause until TIMSS 2019 data are released in Dec 2020.
+Work on this repository paused until TIMSS 2019 data are released in Dec 2020.
 
 # Sex Differences in TIMSS 2015 Math and PIRLS 2016 Reading
 These scripts analyze the most recently released data on 4th and 8th grade math exams from the [Trends in International Mathematics and Science Study (TIMSS)](https://github.com/rjwthree/TIMSS_PIRLS/blob/master/TIMSS%202015.R), and 4th grade reading exams from the [Progress in International Reading Literacy Study (PIRLS)](https://github.com/rjwthree/TIMSS_PIRLS/blob/master/PIRLS%202016.R). TIMSS is administered every four years and PIRLS every five years by the International Association for the Evaluation of Educational Achievement (IEA). https://timssandpirls.bc.edu/
