@@ -44,32 +44,31 @@ All functions used for analysis are user-defined, for various reasons related to
 ## Effect Sizes
 *Effect sizes with an asterisk are novel; they were adapted from other statistics.
 
-Means and Medians - Means and medians of total group, females, and males, as well as male-female mean and median differences.
+Means and Medians — Means and medians of total group, females, and males, as well as male-female mean and median differences.
 
 Cohen's _d_ — This is a very common effect size and it is implemented as usual: the raw mean difference divided by the quadratic mean of standard deviations.
 
 U3* — The proportion of males above the female median. Adapted from the canonical Cohen's U3, which is incorrectly based on the mean rather than the median.
-U3* — The proportion of males above the female median. Adapted from the canonical Cohen's U3, which is incorrectly based on the mean rather than the median.
 
-Probability of Superiority (PS) - The probability that a random male will have a higher score than a random female.
+Probability of Superiority (PS) — The probability that a random male will have a higher score than a random female.
 
-Median Absolute Deviation Ratio (MADR) - The male-female ratio of median absolute deviation (MAD) from the median.
+Median Absolute Deviation Ratio (MADR) — The male-female ratio of median absolute deviation (MAD) from the median.
 
-Left MADR and Right MADR* - The MADR divided into the left and right tails. That is, the male-female ratio of the median absolute deviation from the median among the subset of scores below or above the median, respectively.
+Left MADR and Right MADR* — The MADR divided into the left and right tails. That is, the male-female ratio of the median absolute deviation from the median among the subset of scores below or above the median, respectively.
 
-Standard Deviation Ratio (SDR) - The ratio of male SD to female SD.
+Standard Deviation Ratio (SDR) — The ratio of male SD to female SD.
 
-Left SDR and Right SDR* - The SDR divided into the left and right tails. That is, the male-female ratio of the square root of the mean squared deviation from the mean among the subset of scores below or above the mean, respectively.
+Left SDR and Right SDR* — The SDR divided into the left and right tails. That is, the male-female ratio of the square root of the mean squared deviation from the mean among the subset of scores below or above the mean, respectively.
 
-Gini's Mean Difference Ratio (GMDR) - Imagine randomly selecting two students and finding the distance between their scores. GMD gives the expected value of this interval: the mean absolute difference. The GMDR is the male-female ratio.
+Gini's Mean Difference Ratio (GMDR) — Imagine randomly selecting two students and finding the distance between their scores. GMD gives the expected value of this interval: the mean absolute difference. The GMDR is the male-female ratio.
 
-Tail Proportion Ratios (TPRs) - The proportion of males below (left tail) or above (right tail) a threshold, divided by the proportion of females below or above the threshold. The thresholds are defined by the total group. The left tail TPRs are below the 5th and 10th percentiles, and the right tail TPRs are above the 90th and 95th percentiles.
+Tail Proportion Ratios (TPRs) — The proportion of males below (left tail) or above (right tail) a threshold, divided by the proportion of females below or above the threshold. The thresholds are defined by the total group. The left tail TPRs are below the 5th and 10th percentiles, and the right tail TPRs are above the 90th and 95th percentiles.
 
-U3 Ratios (U3Rs)* - The proportion of males below (left tail) or above (right tail) a threshold defined by the female subgroup, divided by the natural proportion of females below or above that threshold (e.g., 10% above the 90th percentile). The left tail U3Rs are below the 5th and 10th percentiles, and the right tail U3Rs are above the 90th and 95th percentiles. Adapted from U3 (see above).
+U3 Ratios (U3Rs)* — The proportion of males below (left tail) or above (right tail) a threshold defined by the female subgroup, divided by the natural proportion of females below or above that threshold (e.g., 10% above the 90th percentile). The left tail U3Rs are below the 5th and 10th percentiles, and the right tail U3Rs are above the 90th and 95th percentiles. Adapted from U3 (see above).
 
-Median-aligned U3 Ratios (MU3Rs)* - U3Rs calculated after aligning the male and female medians, for each percentile. The MU3R below/above the median is 1 by definition. A U shape (values decrease to the left of the median and increase to the right) indicates higher male variability, and an upside-down U shape (values increase to the left of the median and decrease to the right) indicates higher female variability.
+Median-aligned U3 Ratios (MU3Rs)* — U3Rs calculated after aligning the male and female medians, for each percentile. The MU3R below/above the median is 1 by definition. A U shape (values decrease to the left of the median and increase to the right) indicates higher male variability, and an upside-down U shape (values increase to the left of the median and decrease to the right) indicates higher female variability.
 
-Standardized Quantile Differences (SQDs)* - Raw male-female differences at each percentile, as a percentage of the mean of male and female MADs. An increasing trend from left to right indicates higher male variability; a decreasing trend indicates higher female variability. The purpose of dividing by MAD is to standardize the quantile differences with a robust measure of scale.
+Standardized Quantile Differences (SQDs)* — Raw male-female differences at each percentile, as a percentage of the mean of male and female MADs. An increasing trend from left to right indicates higher male variability; a decreasing trend indicates higher female variability. The purpose of dividing by MAD is to standardize the quantile differences with a robust measure of scale.
 
 The next section adjusts the scores linearly for age and recalculates the effect sizes from Cohen's _d_ to GMDR.
 
