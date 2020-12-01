@@ -15,6 +15,10 @@ Although flawed, the World Economic Forum's Global Gender Gap Index (GGGI) is ar
 
 The index is an average of four subindices which can range from 0 to 1. For each subindex, a score of 1 would indicate equality or female advantage. Spearman's correlation coefficient will be used here because non-parametric statistics are most suitable.
 
+--
+-
+—
+
 ## Code
 
 The scripts proceed as follows:
