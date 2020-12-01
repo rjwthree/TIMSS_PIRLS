@@ -15,10 +15,6 @@ Although flawed, the World Economic Forum's Global Gender Gap Index (GGGI) is ar
 
 The index is an average of four subindices which can range from 0 to 1. For each subindex, a score of 1 would indicate equality or female advantage. Spearman's correlation coefficient will be used here because non-parametric statistics are most suitable.
 
---
--
-—
-
 ## Code
 
 The scripts proceed as follows:
@@ -50,9 +46,10 @@ All functions used for analysis are user-defined, for various reasons related to
 
 Means and Medians - Means and medians of total group, females, and males, as well as male-female mean and median differences.
 
-Cohen's _d_ - This is a very common effect size and it is implemented as usual: the raw mean difference divided by the quadratic mean of standard deviations.
+Cohen's _d_ — This is a very common effect size and it is implemented as usual: the raw mean difference divided by the quadratic mean of standard deviations.
 
-U3* - The proportion of males above the female median. Adapted from the canonical Cohen's U3, which is incorrectly based on the mean rather than the median.
+U3* — The proportion of males above the female median. Adapted from the canonical Cohen's U3, which is incorrectly based on the mean rather than the median.
+U3* — The proportion of males above the female median. Adapted from the canonical Cohen's U3, which is incorrectly based on the mean rather than the median.
 
 Probability of Superiority (PS) - The probability that a random male will have a higher score than a random female.
 
