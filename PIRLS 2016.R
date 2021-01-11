@@ -263,7 +263,7 @@ wt.ecdf <- function(x, w, p) {
   a <- x[ascend]
   b <- w[ascend]
   n <- length(x)
-  z <- length(a[a <= p])
+  z <- sum(a <= p)
   
   if (z == 0) {
     return(0)
